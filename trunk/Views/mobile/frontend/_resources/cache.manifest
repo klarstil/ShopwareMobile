@@ -1,0 +1,9 @@
+# ----------------------------------------------------------------------
+# Shopware Mobile - Offline Cache
+#
+# Bitte achten Sie darauf, dass der richtige MIME-Type in der .htaccess
+# gesetzt ist.
+#
+# AddType text/cache-manifest .manifest
+# ----------------------------------------------------------------------
+CACHE MANIFEST

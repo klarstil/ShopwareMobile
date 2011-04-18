@@ -10,6 +10,10 @@
  */
 class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Components_Plugin_Bootstrap
 {
+
+	// MobileTemplate Backend Icon
+	private static $icnBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABwElEQVQ4jY3SO6/TMBjG8b/jpAlJSi+0alVoYUEHmJC4iIlP0q1zJyYY+Q6Hjc6I4fA1GBAdGJCABVF0quoAp216cWI7DCAEDVLr0Xqen+zXFuys4+Nn+Ww2wxhDHIW4nodSCqVSms0Gw+FQ/J13d4Hx+C2vTk6o1qrcf/AQ13MZv3nNZDKh3+/vxotAkiTcvnOXXrfL5StdttstRzdv0Wp3UErtBxzp8eTpYxq1+E8h8APOFktePH+5HxACOldjKlEJbeSvkCvxqhdBFPpFwBiDsUu2uSQnR+CQ6pS1NhitD7iCgMn8A5dMiHAFYHE2Zc5PHfRBgOPwZfaO70uDyRVuZFGfGsSre2ht9gMgCIMQ31ekWY5aLXDKKxLxEWsPAIwxlCK4EHl4WuKlEr/uslydYa3dD2RZhso/Q64wQuP4gkRK1iWPTBef4b/A11Mol0NcE5JaSywVer0hVQecYLPZskk6eCIiME02WlNx55RWS7Jsuh+Yz88ZPXqPsWCFpFqtsfjxDaUUN46uFwBnd6NerxP4Pr7n0mm1uNbrEQYlKuWIOI4KQGEqo9Eon06nvz+NAHIApJS0220Gg8E/nZ864b4HQnsY4wAAAABJRU5ErkJggg==';
+
 	/**
 	 * install()
 	 *
@@ -48,7 +52,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 			'onPostDispatch'
 		);
 		$this->subscribeEvent($event);
-		
+
 		return true;
 	}
 	
@@ -82,30 +86,30 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 		if(!$request->isDispatched()||$response->isException()){
 			return;
 		}
-		
+
+	    // Set session value
 		if($request->sViewport == 'mobile') {
 			Shopware()->Session()->offsetSet('Mobile', 1);
 		}
-		
+
+	    // Add icon for Backend module
 		if($request->getModuleName() != 'frontend') {
-		
-		$icnBase64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABwElEQVQ4jY3SO6/TMBjG8b/jpAlJSi+0alVoYUEHmJC4iIlP0q1zJyYY+Q6Hjc6I4fA1GBAdGJCABVF0quoAp216cWI7DCAEDVLr0Xqen+zXFuys4+Nn+Ww2wxhDHIW4nodSCqVSms0Gw+FQ/J13d4Hx+C2vTk6o1qrcf/AQ13MZv3nNZDKh3+/vxotAkiTcvnOXXrfL5StdttstRzdv0Wp3UErtBxzp8eTpYxq1+E8h8APOFktePH+5HxACOldjKlEJbeSvkCvxqhdBFPpFwBiDsUu2uSQnR+CQ6pS1NhitD7iCgMn8A5dMiHAFYHE2Zc5PHfRBgOPwZfaO70uDyRVuZFGfGsSre2ht9gMgCIMQ31ekWY5aLXDKKxLxEWsPAIwxlCK4EHl4WuKlEr/uslydYa3dD2RZhso/Q64wQuP4gkRK1iWPTBef4b/A11Mol0NcE5JaSywVer0hVQecYLPZskk6eCIiME02WlNx55RWS7Jsuh+Yz88ZPXqPsWCFpFqtsfjxDaUUN46uFwBnd6NerxP4Pr7n0mm1uNbrEQYlKuWIOI4KQGEqo9Eon06nvz+NAHIApJS0220Gg8E/nZ864b4HQnsY4wAAAABJRU5ErkJggg==";
-		
-		
-		$view->extendsBlock('backend_index_css', '<style type="text/css">a.iphone { background-image: url("'. $icnBase64 .'"); background-repeat: no-repeat; }</style>', 'append');
-		
+			$view->extendsBlock('backend_index_css', '<style type="text/css">a.iphone { background-image: url("'. self::$icnBase64 .'"); background-repeat: no-repeat; }</style>', 'append');
+			return;
+		}
+
+	    // Merge template directories
+		if($version === 'mobile' && Shopware()->Session()->offsetGet('Mobile') == 1) {
+			$dirs = Shopware()->Template()->getTemplateDir();
+			$newdirs = array_merge(array(dirname(__FILE__) . '/Views/mobile/'), $dirs);
+			Shopware()->Template()->setTemplateDir($newdirs);
+			
 		} else {
-			if($version === 'mobile' && Shopware()->Session()->offsetGet('Mobile') == 1) {
-	    		$dirs = Shopware()->Template()->getTemplateDir();
-	    		$newdirs = array_merge(array(dirname(__FILE__) . '/Views/mobile/'), $dirs);
-	    		Shopware()->Template()->setTemplateDir($newdirs);
-	    	} else {
-				$view->addTemplateDir(dirname(__FILE__). '/Views/');
-				$view->extendsTemplate('mobile/frontend/plugins/swag_mobiletemplate/index.tpl');
-			}
+			$view->addTemplateDir(dirname(__FILE__). '/Views/');
+			$view->extendsTemplate('mobile/frontend/plugins/swag_mobiletemplate/index.tpl');
 		}
     }
-    
+
     /**
      * onGetControllerPath()
      *
