@@ -1,237 +1,11 @@
+/**
+ * ----------------------------------------------------------------------
+ * detail.js
+ *
+ * Views fuer die Artikeldetailseite
+ * ----------------------------------------------------------------------
+ */
 Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Cart', 'App.views.Account', 'App.views.Info');
-
-App.views.Viewport = Ext.extend(Ext.TabPanel, {
-	fullscreen: true,
-	id: 'viewport',
-	cls: 'viewport',
-	ui: 'dark',
-	layout: 'card',
-	cardSwitchAnimation: {
-		type: 'slide',
-		direction: 'left'
-	},
-
-	tabBar: {
-		id: 'tabbar',
-		dock: 'bottom',
-		layout: {
-			pack: 'center'
-		}
-	},
-
-	initComponent: function () {
-		Ext.apply(App.views, {
-			shop:    new App.views.Shop.index,
-			search:  new App.views.Search.index,
-			cart:    new App.views.Cart.index,
-			account: new App.views.Account.index,
-			info:    new App.views.Info.index
-		});
-
-		Ext.apply(this, {
-			items: [
-				App.views.shop,
-				App.views.search,
-				App.views.cart,
-				App.views.account,
-				App.views.info
-			]
-		});
-		this.constructor.superclass.initComponent.call(this);
-	},
-
-	getCartButton: function () {
-		return this.tabBar.items.getAt(2)
-	}
-});
-
-/*	MAIN SHOP PANEL
- -------------------------------------------- */
-App.views.Shop.index = Ext.extend(Ext.Panel, {
-	id: 'shop',
-	title: 'Shop',
-	iconCls: 'home',
-	layout: 'card',
-	initComponent: function () {
-		Ext.apply(App.views, {
-			home: new App.views.Shop.home
-		});
-		Ext.apply(this, {
-			items: [
-				App.views.home
-			]
-		});
-		App.views.Shop.index.superclass.initComponent.call(this);
-	}
-});
-
-/* Shop - Startseite */
-App.views.Shop.home = Ext.extend(Ext.Panel, {
-	id: 'home',
-	scroll: 'vertical',
-	layout: 'vbox',
-
-	initComponent: function() {
-		var me = this,
-				items;
-
-		/* Shoplogo */
-		me.logo = new Ext.Panel({
-			id: 'logo',
-			scroll: false,
-			autoHeight: true
-		});
-
-		/* Einkaufsweltencarousel */
-		me.promotions = new Ext.Carousel({
-			id: 'promotions',
-			store: App.stores.Promotions,
-			height: 150,
-			width: '100%',
-			direction: 'horizontal',
-			style: 'border-bottom: 1px solid #c7c7c7'
-		});
-
-		/* Hauptkategorien */
-		me.list = new Ext.List({
-			id: 'categories',
-			store: App.stores.Categories,
-			scroll: false,
-			itemTpl: '<strong>{name}</strong> <span class="count">({count} Artikel)</span><tpl if="desc"><div class="desc">{desc}</div></tpl>',
-			listeners: {
-				scope: this,
-				selectionchange: function(selModel, recs) {
-					selModel.deselect(recs);
-				},
-				itemtap: function(pnl, idx, el, event) {
-					Ext.dispatch({
-						controller: 'categories',
-						action: 'show',
-						idx: idx,
-						store: App.stores.Categories,
-						type: 'slide',
-						direction: 'left'
-					});
-				}
-			}
-		});
-
-		/* Render Einkaufswelten, wenn der Store geladen ist */
-		me.promotions.store.on({
-			scope: this,
-			load: function() {
-				me.promotions.doLayout();
-			}
-		});
-
-		/* Einkaufswelten auslesen */
-		items = this.getPromotionItems(me.promotions.store);
-		me.promotions.add(items);
-
-		Ext.apply(this, {
-			items: [me.logo, me.promotions, me.list]
-		});
-
-		App.views.Shop.home.superclass.initComponent.call(this);
-	},
-
-	getPromotionItems: function(store) {
-		var items = [];
-		store.each(function(rec) {
-			items.push({
-				html: '<div class="slideArticle"><div class="art_thumb" style="background-image: url(' + rec.get('img_url') + ')"></div><div class="name">' + rec.get('name') + '</div><div class="price">' + rec.get('price') + ' &euro;</div><div class="desc">' + rec.get('desc') + '</div></div>',
-				cls: 'slideArticle'
-			});
-		});
-		return items;
-	}
-});
-
-App.views.Shop.listing = Ext.extend(Ext.Panel, {
-	id: 'listing',
-	layout: 'fit',
-	listeners: {
-		scope: this,
-		beforeactivate: function(me) {
-			me.list.update('');
-			me.list.setLoading(true);
-		},
-		activate: function(me) {
-			me.list.update(me.list.store);
-			me.list.refresh();
-			me.list.setLoading(false);
-		},
-		deactivate: function(me) {
-			me.destroy();
-		}
-	},
-
-	initComponent: function() {
-		var me = this;
-
-		/* Kategorieliste */
-		me.list = new Ext.List({
-			id: 'listingList',
-			store: App.stores.Listing,
-			itemTpl: '<div class="image"<tpl if="image_url"> style="background-image:url({image_url})"</tpl>></div><strong>{articleName}</strong><span class="price">{price} &euro;</span><div class="desc">{description_long}</div>',
-			listeners: {
-				scope: this,
-				activate: function(me) {
-					me.scroller.scrollTo({
-						x: 0,
-						y: 0
-					})
-				},
-				itemtap: function(me, idx) {
-					Ext.dispatch({
-						controller: 'detail',
-						action: 'show',
-						idx: idx,
-						store: me.store,
-						type: 'slide',
-						direction: 'left'
-					});
-				}
-			}
-		});
-
-		/* Kategorietoolbar - Back Button */
-		me.backBtn = new Ext.Button({
-			id: 'backBtn',
-			text: 'Zur&uuml;ck',
-			ui: 'back',
-			scope: this,
-			handler: me.onBackBtn
-		});
-
-		/* Kategorietoolbar */
-		me.toolbar = new Ext.Toolbar({
-			id: 'shop_toolbar',
-			dock: 'top',
-			items: [me.backBtn]
-		});
-
-		Ext.apply(me, {
-			dockedItems: [me.toolbar],
-			items: [me.list]
-		});
-
-		App.views.Shop.listing.superclass.initComponent.call(me);
-	},
-
-	onBackBtn: function() {
-		try {
-			this.ownerCt.layout.prev({
-				type: 'slide',
-				direction: 'right'
-			});
-		} catch(err) {
-			Ext.getCmp('shop').setActiveItem('home', {direction: 'right', type: 'slide'});
-		}
-	}
-});
-
-/* Detail */
 App.views.Shop.detail = Ext.extend(Ext.Panel, {
 	id: 'detail',
 	layout: 'card',
@@ -243,7 +17,7 @@ App.views.Shop.detail = Ext.extend(Ext.Panel, {
 	},
 	initComponent: function() {
 		var me = this;
-		
+
 		/* Backbutton */
 		me.backBtn = new Ext.Button({
 			id: 'detailBackBtn',
@@ -359,7 +133,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 			me.destroy();
 		}
 	},
-	
+
 	initComponent: function() {
 		var me = this, store = App.stores.Detail, tpl = App.views.Shop;
 
@@ -540,7 +314,7 @@ App.views.Shop.buyPnl = Ext.extend(Ext.Panel, {
 			me.destroy();
 			Ext.getCmp('detailSegBtn').show();
 			Ext.getCmp('detailBackBtn').setHandler(Ext.getCmp('detail').onBackBtn);
-		},
+		}
 	},
 	initComponent: function() {
 		var me = this,
@@ -578,13 +352,13 @@ App.views.Shop.buyPnl = Ext.extend(Ext.Panel, {
 					xtype: 'fieldset',
 					title: 'Artikel hinzuf&uuml;gen',
 					defaults: {
-						labelWidth: '50%',
+						labelWidth: '50%'
 					},
 					items: [me.ordernumber, me.spinner]
 				}
 			]
 		});
-		
+
 		// Variant support
 		if (!Ext.isEmpty(rec.data.sVariants)) {
 
@@ -673,7 +447,7 @@ App.views.Shop.buyPnl = Ext.extend(Ext.Panel, {
 	}
 });
 
-/* Comments view */
+/* Comments views */
 App.views.Shop.comments = Ext.extend(Ext.Panel, {
 	id: 'votes',
 	layout: 'vbox',
@@ -693,7 +467,7 @@ App.views.Shop.comments = Ext.extend(Ext.Panel, {
 	initComponent: function() {
 		var me = this;
 
-		// Comment view
+		// Comment views
 		me.commentsView = new App.views.Shop.commentsView;
 
 		// Comment form
@@ -824,7 +598,7 @@ App.views.Shop.commentForm = Ext.extend(Ext.form.FormPanel, {
 	}
 });
 
-/* Picture view */
+/* Picture views */
 var lastpinch = 75;
 App.views.Shop.pictures = Ext.extend(Ext.Carousel, {
 	id: 'pictures',
@@ -904,433 +678,4 @@ App.views.Shop.pictures = Ext.extend(Ext.Carousel, {
 			el.setAttribute('width', lastpinch + '%');
 		});
 	}
-});
-
-/*	MAIN SEARCH PANEL	
- -------------------------------------------- */
-App.views.Search.index = Ext.extend(Ext.Panel, {
-	id: 'search',
-	title: 'Suche',
-	iconCls: 'search',
-	layout: 'card',
-	html: 'Suche',
-	initComponent: function() {
-		Ext.apply(this, {
-			dockedItems: [new App.views.Search.toolbar],
-			items: [new App.views.Search.list]
-		});
-		App.views.Search.index.superclass.initComponent.call(this);
-	}
-});
-
-/*	SEARCH PANEL - TOOLBAR	
- -------------------------------------------- */
-App.views.Search.toolbar = Ext.extend(Ext.Toolbar, {
-	ui: 'dark',
-	dock: 'top',
-	initComponent: function() {
-		Ext.apply(this, {
-			items: [
-				{
-					id: 'searchfield',
-					xtype: 'searchfield',
-					name: 'search_query',
-					autoFocus: true,
-					hasFocus: true,
-					width: '65%',
-					placeHolder: 'Ihr Suchbegriff',
-					listeners: {
-						scope: this,
-						keyup: this.onKeyUp
-					}
-				},
-				{ xtype: 'spacer' },
-				{
-					id: 'searchBtn',
-					xtype: 'button',
-					text: 'Suchen',
-					ui: 'action small',
-					scope: this,
-					handler: this.onSearch
-				}
-			]
-		});
-
-		this.constructor.superclass.initComponent.call(this);
-	},
-
-	onKeyUp: function(cmp, event) {
-		var val = cmp.getValue();
-		if (event.browserEvent.keyCode == 13) {
-			cmp.blur();
-			this.onSearch(val);
-		}
-	},
-
-	onSearch: function(val) {
-		App.stores.Search.load({
-			params: {
-				sSearch: val
-			}
-		});
-	},
-});
-
-App.views.Search.list = Ext.extend(Ext.List, {
-	store: App.stores.Search,
-	itemTpl: '<div class="image" style="background-image:url({image})"></div><strong class="name">{name}</strong><span class="price">{price} &euro;</span>',
-	itemtap: this.onItemTap,
-	scope: this,
-	initComponent: function() {
-
-		this.store.on({
-			scope: this,
-			datachanged: this.onDataChanged
-		});
-		App.views.Search.list.superclass.initComponent.call(this);
-	},
-
-	onDataChanged: function(store) {
-		this.refresh();
-	},
-
-	onItemTap: function(view, idx, item, event) {
-		Ext.dispatch({
-			controller: 'detail',
-			action: 'show',
-			idx: idx,
-			store: this.store,
-			searchCall: true
-		})
-	}
-
-});
-
-/*	MAIN CART PANEL	
- -------------------------------------------- */
-App.views.Cart.index = Ext.extend(Ext.Panel, {
-	id: 'cart',
-	title: 'Warenkorb',
-	iconCls: 'cart',
-	autoHeight: true,
-	scroll: 'vertical',
-	initComponent: function() {
-
-		this.toolbar = new Ext.Toolbar({
-			dock: 'top',
-			title: this.title
-		});
-
-		this.checkoutBtn = new Ext.Button({
-			id: 'checkout',
-			ui: 'confirm',
-			text: 'Zur Kasse gehen',
-			disabled: true,
-			style: 'margin: 0.5em'
-		});
-
-		Ext.apply(this, {
-			dockedItems: [this.toolbar],
-			items: [new App.views.Cart.list, this.checkoutBtn]
-		});
-		App.views.Cart.index.superclass.initComponent.call(this);
-	}
-});
-
-App.views.Cart.list = Ext.extend(Ext.Panel, {
-	id: 'cartlist',
-	scroll: 'vertical',
-	layout: 'fit',
-	autoHeight: true,
-	flex: 1,
-	initComponent: function() {
-
-		Ext.apply(this, {
-			tpl: App.views.Cart.indexTpl,
-			data: App.stores.Cart,
-			store: App.stores.Cart,
-			autoHeight: true,
-			scroll: false,
-			listeners: {
-				el: {
-					tap: this.onDeleteBtn,
-					delegate: '.deleteBtn',
-					scope: this
-				},
-				scope: this
-			}
-		});
-
-		this.store.on({
-			datachanged: this.onDataChanged,
-			scope: this
-		});
-
-		App.views.Cart.list.superclass.initComponent.call(this);
-	},
-
-	onDataChanged: function(store) {
-		this.update(this.store);
-	},
-
-	update: function (store) {
-		if (store.items.length) {
-			this.tpl = App.views.Cart.indexTpl;
-			this.hideCheckoutBtn(false);
-		} else {
-			this.tpl = App.views.Cart.emptyTpl;
-			this.hideCheckoutBtn(true);
-		}
-		App.views.Cart.list.superclass.update.apply(this, arguments);
-	},
-
-	onDeleteBtn: function(event, el) {
-		var el = Ext.get(el), val;
-		val = el.dom.attributes[1].nodeValue;
-		App.stores.Cart.remove(val);
-		return false;
-	},
-
-	hideCheckoutBtn: function(state) {
-		var btn = Ext.getCmp('checkout');
-		if (state === true) {
-			btn.hide()
-		} else {
-			btn.show();
-		}
-	}
-});
-
-/*	MAIN ACCOUNT PANEL	
- -------------------------------------------- */
-App.views.Account.index = Ext.extend(Ext.Panel, {
-	id: 'account',
-	title: 'Registierung',
-	iconCls: 'user',
-	layout: 'card',
-	scroll: false,
-	flex: 1,
-	initComponent: function() {
-
-		this.toolbar = new Ext.Toolbar({
-			dock: 'top',
-			title: this.title
-		});
-
-		Ext.apply(this, {
-			dockedItems: [this.toolbar],
-			items: [new App.views.Account.register]
-		});
-		App.views.Account.index.superclass.initComponent.call(this);
-	}
-});
-
-App.views.Account.register = Ext.extend(Ext.form.FormPanel, {
-	id: 'register',
-	autoHeight: true,
-	scroll: 'vertical',
-	items: [
-		{
-			xtype: 'fieldset',
-			title: 'Pers&ouml;nliche Angaben',
-			defaults: {
-				labelWidth: '38%'
-			},
-			items: [
-				{
-					xtype: 'selectfield',
-					label: 'Ich bin',
-					required: true,
-					name: 'iam',
-					options: [
-						{ text: 'Privatkunde', value: 'private' },
-						{ text: 'Firma', value: 'company' }
-					]
-				},
-				{
-					xtype: 'selectfield',
-					label: 'Anrede',
-					required: true,
-					name: 'salutation',
-					options: [
-						{ text: 'Herr', value: 'mr' },
-						{ text: 'Frau', value: 'mrs' }
-					]
-				},
-				{
-					xtype: 'textfield',
-					label: 'Vorname',
-					required: true,
-					placeHolder: 'Max'
-				},
-				{
-					xtype: 'textfield',
-					label: 'Nachname',
-					required: true,
-					placeHolder: 'Mustermann'
-				},
-				{
-					xtype: 'emailfield',
-					label: 'E-Mail',
-					required: true,
-					placeHolder: 'me@shopware.de'
-				},
-				{
-					xtype: 'passwordfield',
-					label: 'Passwort',
-					required: true,
-				},
-				{
-					xtype: 'textfield',
-					label: 'Telefon',
-					required: true,
-					placeHolder: '02555997500'
-				},
-				{
-					xtype: 'datepickerfield',
-					label: 'Geburtstag',
-					picker: {
-						name: 'birthday',
-						yearFrom: 1900,
-						yearTo: 1999,
-						dayText: 'Tag',
-						yearText: 'Jahr',
-						monthText: 'Monat',
-						slotOrder: ['day', 'month', 'year']
-					}
-				}
-			]
-		},
-		{
-			xtype: 'fieldset',
-			title: 'Ihre Adresse',
-			defaults: {
-				labelWidth: '38%'
-			},
-			items: [
-				{
-					xtype: 'textfield',
-					label: 'Stra&szlig;e',
-					required: true
-				},
-				{
-					xtype: 'textfield',
-					label: 'Hausnr.',
-					required: true
-				},
-				{
-					xtype: 'textfield',
-					label: 'PLZ',
-					required: true
-				},
-				{
-					xtype: 'textfield',
-					label: 'Ort',
-					required: true,
-				},
-				{
-					xtype: 'selectfield',
-					label: 'Land',
-					required: true,
-					name: 'country',
-					options: [
-						{text: 'Deutschland', value: 'germany'},
-						{text: '&Ouml;sterreich', value: 'austria'},
-						{text: 'Schweiz', value: 'swiss'}
-					]
-				}
-			]
-		},
-		{
-			xtype: 'button',
-			text: 'Registierung absenden',
-			style: 'margin: 0.5em',
-			ui: 'confirm',
-			disabled: true
-		}
-	],
-	initComponent: function() {
-		App.views.Account.register.superclass.initComponent.call(this);
-	}
-});
-
-/*	MAIN INFO PANEL	
- -------------------------------------------- */
-App.views.Info.index = Ext.extend(Ext.Panel, {
-	id: 'info',
-	title: 'Informationen',
-	iconCls: 'info',
-	layout: 'card',
-	initComponent: function() {
-
-		this.toolbar = new Ext.Toolbar({
-			dock: 'top',
-			title: 'Informationen',
-			id: 'info_toolbar',
-			items: [
-				{
-					xtype: 'button',
-					id: 'info_backBtn',
-					text: 'Zur&uuml;ck',
-					handler: this.onBackBtn,
-					ui: 'back',
-					hidden: true
-				}
-			]
-		});
-
-		Ext.apply(this, {
-			dockedItems: [this.toolbar],
-			items: [new App.views.Info.list, new App.views.Info.Detail]
-		});
-		App.views.Info.index.superclass.initComponent.call(this);
-	},
-
-	onBackBtn: function() {
-		Ext.getCmp('info').getToolbar().setTitle('Informationen');
-		Ext.getCmp('info').setActiveItem('static_list', { type: 'slide', direction: 'right' });
-	},
-	getToolbar: function() {
-		return this.toolbar;
-	}
-});
-
-App.views.Info.list = Ext.extend(Ext.List, {
-	store: App.stores.Info,
-	itemTpl: '{description}',
-	id: 'static_list',
-	listeners: {
-		scope: this,
-		activate: function() {
-			var backbtn = Ext.getCmp('info_backBtn');
-			backbtn.hide();
-		},
-		deactivate: function() {
-			var backbtn = Ext.getCmp('info_backBtn');
-			backbtn.show();
-		}
-	},
-	initComponent: function() {
-
-		this.on({
-			scope: this,
-			itemtap: this.onItemTap
-		})
-
-		App.views.Info.list.superclass.initComponent.call(this);
-	},
-	onItemTap: function(pnl, idx, item, event) {
-		var item = App.stores.Info.getAt(idx);
-		var detail = Ext.getCmp('infoDetail');
-		detail.update('<div class="inner">' + item.data.html + '</div>');
-
-		Ext.getCmp('info').getToolbar().setTitle(item.data.description);
-		Ext.getCmp('info').setActiveItem('infoDetail', { type: 'slide' });
-	},
-});
-
-App.views.Info.Detail = Ext.extend(Ext.Panel, {
-	id: 'infoDetail',
-	height: '100%',
-	scroll: 'vertical'
 });

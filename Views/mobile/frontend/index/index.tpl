@@ -1,5 +1,5 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html mainfest="{link file='frontend/_resources/cache.manifest'}">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">	
     <title>{$sShopname}</title>
@@ -28,7 +28,7 @@
     </script>
 </head>
 <body>
-    <script type="text/javascript" src="{link file='frontend/_resources/app/_sencha/sencha-touch-debug.js'}"></script>
+    <script type="text/javascript" src="{link file='frontend/_resources/app/_sencha/sencha-touch.js'}"></script>
     
     <div id="sencha-app">
     
@@ -48,10 +48,17 @@
         <script type="text/javascript" src="{link file='frontend/_resources/app/templates.js'}"></script>
         
         <!-- Controllers -->
-        <script type="text/javascript" src="{link file='frontend/_resources/app/controllers.js'}"></script>
+        <script type="text/javascript" src="{link file='frontend/_resources/app/controllers/category_controller.js'}"></script>
+        <script type="text/javascript" src="{link file='frontend/_resources/app/controllers/detail_controller.js'}"></script>
         
         <!-- Views -->
-        <script type="text/javascript" src="{link file='frontend/_resources/app/views.js'}"></script>
+        <script type="text/javascript" src="{link file='frontend/_resources/app/views/main.js'}"></script>
+        <script type="text/javascript" src="{link file='frontend/_resources/app/views/shop.js'}"></script>
+        <script type="text/javascript" src="{link file='frontend/_resources/app/views/detail.js'}"></script>
+        <script type="text/javascript" src="{link file='frontend/_resources/app/views/search.js'}"></script>
+        <script type="text/javascript" src="{link file='frontend/_resources/app/views/cart.js'}"></script>
+        <script type="text/javascript" src="{link file='frontend/_resources/app/views/account.js'}"></script>
+        <script type="text/javascript" src="{link file='frontend/_resources/app/views/info.js'}"></script>
     </div>
 </body>
 </html>

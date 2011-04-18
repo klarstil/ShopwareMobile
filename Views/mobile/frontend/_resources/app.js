@@ -797,7 +797,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 	}	
 });
 
-/* Detail view */
+/* Detail views */
 App.views.Shop.detail = Ext.extend(Ext.DataView, {
 	id: 'teaser',
 	store: App.stores.Detail,
@@ -846,7 +846,7 @@ App.views.Shop.desc = Ext.extend(Ext.DataView, {
 	}
 });
 
-/* Comments view */
+/* Comments views */
 App.views.Shop.comments = Ext.extend(Ext.DataView, {
 	id: 'votes',
 	store: App.stores.Detail,
