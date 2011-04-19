@@ -23,6 +23,12 @@
     background: url(../images/logo.png) no-repeat center center;
 }
 #logo div { background: url(../images/logo.png) no-repeat center center }
+.normalView {
+    color: #666;
+    font-size: 12px;
+    padding: 12px 0;
+    font-weight: 700;
+}
 
 /*  PROMOTION CAROUSEL  
     -------------------------------------------- */
@@ -112,6 +118,8 @@
     font-size: 12px;
     max-width: 80%;
 }
+
+
 
 /*  DETAILVIEW
     -------------------------------------------- */

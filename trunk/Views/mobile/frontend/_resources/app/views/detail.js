@@ -74,7 +74,7 @@ App.views.Shop.detail = Ext.extend(Ext.Panel, {
 
 	onBackBtn: function() {
 		Ext.dispatch({
-			controller: 'categories',
+			controller: 'category',
 			action: 'show',
 			store: App.stores.Listing,
 			type: 'slide',
