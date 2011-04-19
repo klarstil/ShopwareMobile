@@ -1,6 +1,20 @@
+/**
+ * $$()
+ *
+ * Gibt ein DOM-Element ueber eine gegebene ID zurueck
+ *
+ * @param id - dom element
+ * @return dom element
+ */
 $$ = function(id) {
 	return document.getElementById(id);
 }
+
+/**
+ * App Helpers
+ *
+ * Beinhaltet diverse Helper Methoden
+ */
 App.Helpers = {
 	// Send post request
 	postRequest: function(url, params, callback, scope) {

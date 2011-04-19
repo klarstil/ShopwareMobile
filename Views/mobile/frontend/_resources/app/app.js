@@ -58,6 +58,7 @@ App.RequestURL = {
 	getPictures:   App.basePath + '/MobileTemplate/getArticleImages',
 	getSearch:     App.basePath + '/AjaxSearch/jsonSearch',
 	getInfo:       App.basePath + '/MobileTemplate/getInfoSites',
+	useNormalSite: App.basePath + '/mobile/useNormalSite',
 
 	// Basket
 	getBasket:     App.basePath + '/MobileTemplate/getBasket',

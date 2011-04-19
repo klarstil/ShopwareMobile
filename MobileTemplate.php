@@ -228,6 +228,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 * addCommentAction()
 	 *
 	 * Speichert ein Benutzerkommentar
+	 * 
 	 * @access public
 	 * @return void
 	 */

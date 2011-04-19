@@ -56,6 +56,7 @@ App.views.Shop.home = Ext.extend(Ext.Panel, {
 			id: 'categories',
 			store: App.stores.Categories,
 			scroll: false,
+			height: '100%',
 			itemTpl: '<strong>{name}</strong> <span class="count">({count} Artikel)</span><tpl if="desc"><div class="desc">{desc}</div></tpl>',
 			listeners: {
 				scope: this,
@@ -64,13 +65,29 @@ App.views.Shop.home = Ext.extend(Ext.Panel, {
 				},
 				itemtap: function(pnl, idx, el, event) {
 					Ext.dispatch({
-						controller: 'categories',
+						controller: 'category',
 						action: 'show',
 						idx: idx,
 						store: App.stores.Categories,
 						type: 'slide',
 						direction: 'left'
 					});
+				}
+			}
+		});
+
+		/* Link zur normalen View */
+		me.normalView = new Ext.Panel({
+			fullscreen: false,
+			cls: 'normalView',
+			html: 'Zur normalen Ansicht wechseln',
+			listeners: {
+				scope: this,
+				click: {
+					element: 'body',
+					fn: function() {
+						window.location.href = App.RequestURL.useNormalSite;
+					}
 				}
 			}
 		});
@@ -88,7 +105,12 @@ App.views.Shop.home = Ext.extend(Ext.Panel, {
 		me.promotions.add(items);
 
 		Ext.apply(this, {
-			items: [me.logo, me.promotions, me.list]
+			items: [
+				me.logo,
+				me.promotions,
+				me.list,
+				me.normalView
+			]
 		});
 
 		App.views.Shop.home.superclass.initComponent.call(this);

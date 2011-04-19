@@ -19,6 +19,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 	 *
 	 * Installationsroutine des Plugins
 	 *
+	 * @access public
 	 * @return {boolean} true
 	 */
 	public function install()
@@ -61,6 +62,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 	 *
 	 * Gibt alle Meta-Datem des Plugins zurueck 
 	 *
+	 * @access public
 	 * @return {array} meta_data
 	 */
 	public function getInfo()
@@ -74,6 +76,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
      * Stellt den Template alle wesentlichen Konfigurationsoptionen
      * zur Verfuegung
      *
+     * @access public
      * @return {void}
      */
     public static function onPostDispatch(Enlight_Event_EventArgs $args)
@@ -82,13 +85,15 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 		$response = $args->getSubject()->Response();
 		$view = $args->getSubject()->View();
 		$version = self::checkForMobileDevice();
-		
+
 		if(!$request->isDispatched()||$response->isException()){
 			return;
 		}
 
 	    // Set session value
-		if($request->sViewport == 'mobile') {
+		if($request->sViewport == 'mobile' && $request->sAction == 'useNormalSite') {
+			Shopware()->Session()->offsetSet('Mobile', 0);
+		} else if($request->sViewport == 'mobile') {
 			Shopware()->Session()->offsetSet('Mobile', 1);
 		}
 
@@ -98,14 +103,19 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 			return;
 		}
 
+	    $mobileSession = Shopware()->Session()->offsetGet('Mobile');
+
 	    // Merge template directories
-		if($version === 'mobile' && Shopware()->Session()->offsetGet('Mobile') == 1) {
+		if($version === 'mobile' && $mobileSession == 1) {
 			$dirs = Shopware()->Template()->getTemplateDir();
 			$newdirs = array_merge(array(dirname(__FILE__) . '/Views/mobile/'), $dirs);
 			Shopware()->Template()->setTemplateDir($newdirs);
-			
 		} else {
 			$view->addTemplateDir(dirname(__FILE__). '/Views/');
+			if(!empty($mobileSession) && $mobileSession == 0) { $active = 1; } else { $active = 0; }
+			$view->assign('shopwareMobile', array(
+				'active' => $active
+			));
 			$view->extendsTemplate('mobile/frontend/plugins/swag_mobiletemplate/index.tpl');
 		}
     }
@@ -115,6 +125,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
      *
      * Stellt die komplette Frontendlogik zur Verfuegung
      *
+     * @access public
      * @return {string} path
      */
     public static function onGetControllerPath()
@@ -127,6 +138,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
      *
      * Stellt die komplette Backendlogik zur Verfuegung
      *
+     * @access public
      * @return {string} path
      */
     public static function onGetControllerPathBackend()
@@ -139,15 +151,17 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
      *
      * Untersucht den User Agent nach Mobilen Endgeraeten
      *
+     * @access private
      * @return {string} $device
      */
     private function checkForMobileDevice() {
     	$agent = $_SERVER['HTTP_USER_AGENT'];
     	$device = 'desktop';
-    	
-    	if(stristr($agent,'ipad') || stristr($agent,'iphone') || strstr($agent,'iphone') || stristr($agent,'android')) {
+
+    	if(preg_match('/(Android|BlackBerry|iPhone|iPod)/i', $agent)) {
     		$device = 'mobile';
     	}
+
 		return $device;
     }
  
