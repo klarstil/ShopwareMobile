@@ -126,6 +126,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 			me.desc.refresh();
 			me.bundle.refresh();
 			me.doLayout();
+			me.formPnl.doLayout();
 			me.setLoading(false);
 		},
 		deactivate: function(me) {
@@ -135,7 +136,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 	},
 
 	initComponent: function() {
-		var me = this, store = App.stores.Detail, tpl = App.views.Shop;
+		var me = this, store = App.stores.Detail, rec = store.getAt(0), tpl = App.views.Shop;
 
 		/* Infopanel mit Bild */
 		me.info = new Ext.DataView({
@@ -157,11 +158,6 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 		store.on({
 			datachanged: me.onDataChanged,
 			scope: this
-		});
-
-		// Hidden Bestellnummer
-		me.ordernumber = new Ext.form.Hidden({
-			name: 'sOrdernumber'
 		});
 
 		// Anzahl spinner
@@ -187,7 +183,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 					defaults: {
 						labelWidth: '50%'
 					},
-					items: [me.ordernumber, me.spinner]
+					items: [me.spinner]
 				}
 			]
 		});
@@ -219,6 +215,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 				}
 			}
 		});
+		
 
 		// Beschreibung
 		me.desc = new Ext.DataView({
@@ -242,9 +239,22 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 		if(!store.isLoading()) {
 			var item = store.getAt(0), data = item.data;
 
+			// Add hidden ordernumber
+			me.buildOrdernumber(item);
+
 			// Check for bundle
 			if(!Ext.isEmpty(data.sBundles)) {
 				me.add(me.bundle);
+			}
+
+			// Check for variants
+			if(!Ext.isEmpty(item.data.sVariants)) {
+				me.buildVariantField(item);
+			}
+
+			// Check for configurator
+			if(!Ext.isEmpty(item.data.sConfigurator)) {
+				me.buildConfigurator(item);
 			}
 
 			// Check for liveshopping
@@ -261,9 +271,22 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 	onDataChanged: function(store) {
 		var me = this, item = store.getAt(0), data = item.data.liveshoppingData;
 
+		// Add hidden ordernumber
+		me.buildOrdernumber(item);
+
 		// Check for bundle
 		if(!Ext.isEmpty(item.data.sBundles)) {
 			me.add(me.bundle);
+		}
+
+		// Check for variants
+		if(!Ext.isEmpty(item.data.sVariants)) {
+			me.buildVariantField(item);
+		}
+
+		// Check for configurator
+		if(!Ext.isEmpty(item.data.sConfigurator)) {
+			me.buildConfigurator(item);
 		}
 
 		// Check for liveshopping
@@ -284,9 +307,12 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 	},
 
 	onBuyBtn: function() {
-		var buyPnl = new App.views.Shop.buyPnl
-		Ext.getCmp('detail').add(buyPnl);
-		Ext.getCmp('detail').setActiveItem(buyPnl, { type: 'cube' })
+		var values = Ext.getCmp('formPnl').getValues();
+		console.log(values);
+		App.stores.Cart.add(values);
+		//var buyPnl = new App.views.Shop.buyPnl
+		//Ext.getCmp('detail').add(buyPnl);
+		//Ext.getCmp('detail').setActiveItem(buyPnl, { type: 'cube' })
 	},
 
 	onImageTap: function() {
@@ -294,156 +320,67 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 			controller: 'detail',
 			action: 'showPictures'
 		})
-	}
-});
-
-App.views.Shop.buyPnl = Ext.extend(Ext.Panel, {
-	id: 'buyPnl',
-	scroll: 'vertical',
-	standardSubmit: false,
-	listeners: {
-		scope: this,
-		beforeactivate: function(me) {
-			me.setLoading(true);
-			Ext.getCmp('detailSegBtn').hide();
-		},
-		activate: function(me) {
-			me.setLoading(false);
-		},
-		deactivate: function(me) {
-			me.destroy();
-			Ext.getCmp('detailSegBtn').show();
-			Ext.getCmp('detailBackBtn').setHandler(Ext.getCmp('detail').onBackBtn);
-		}
 	},
-	initComponent: function() {
-		var me = this,
-				store = App.stores.Detail,
-				rec = store.getAt(0),
-				options = [];
+	buildVariantField: function(item) {
+		var me = this;
+		var options = [];
 
-		// Handle toolbar
-		Ext.getCmp('detailBackBtn').setHandler(me.onBackBtn, me);
-
-		// Hidden Bestellnummer
-		me.ordernumber = new Ext.form.Hidden({
-			name: 'sOrdernumber',
-			value: rec.get('ordernumber')
+		// Hauptvariante
+		options.push({
+			text: item.data.additionaltext,
+			value: item.data.ordernumber
 		});
 
-		// Anzahl spinner
-		me.spinner = new Ext.form.Spinner({
-			value: 1,
-			label: 'Anzahl',
-			required: true,
-			xtype: 'spinnerfield',
-			minValue: 1,
-			maxValue: 100,
-			cycle: false,
-			name: 'sQuantity'
-		});
-
-		// Form panel
-		me.formPnl = new Ext.form.FormPanel({
-			id: 'formPnl',
-			items: [
-				{
-					id: 'buyFieldset',
-					xtype: 'fieldset',
-					title: 'Artikel hinzuf&uuml;gen',
-					defaults: {
-						labelWidth: '50%'
-					},
-					items: [me.ordernumber, me.spinner]
-				}
-			]
-		});
-
-		// Variant support
-		if (!Ext.isEmpty(rec.data.sVariants)) {
-
-			// Hauptvariante
+		for(var idx in item.data.sVariants) {
+			var varArticle = item.data.sVariants[idx];
 			options.push({
-				text: rec.data.additionaltext,
-				value: rec.data.ordernumber
+				text: varArticle.additionaltext,
+				value: varArticle.ordernumber
 			});
+		}
+		me.variant = new Ext.form.Select({
+			label: 'Bitte w&auml;hlen',
+			required: true,
+			options: options,
+			name: 'sAdd'
+		});
+		Ext.getCmp('buyFieldset').add(me.variant);
+	},
 
-			for(var idx in rec.data.sVariants) {
-				var item = rec.data.sVariants[idx];
+	buildConfigurator: function(rec) {
+		var me = this, groupIdx = 1, configurator = rec.data.sConfigurator, options = [];
+		Ext.each(configurator, function(group, groupID) {
+
+			// Collect options
+			for(var idx in group.values) {
+				var item =  group.values[idx];
+
 				options.push({
-					text: item.additionaltext,
-					value: item.ordernumber
+					text: item.optionname,
+					value: item.optionID
 				});
 			}
-			me.variant = new Ext.form.Select({
-				label: 'Bitte w&auml;hlen',
-				required: true,
-				options: options,
-				name: 'sAdd'
+			
+			var fieldset = new Ext.form.FieldSet({
+				cls: 'configuratorFieldset',
+				title: group.groupname,
+				instructions: group.groupdescription,
+				items: [{
+					xtype: 'selectfield',
+					options: options,
+					name: 'group['+groupIdx+']'
+				}]
 			});
-			Ext.getCmp('buyFieldset').add(me.variant);
-		}
-
-		// Konfigurator support
-		if(!Ext.isEmpty(rec.data.sConfigurator)) {
-			var groupIdx = 1;
-			var configurator = rec.data.sConfigurator;
-			var options = [];
-			Ext.each(configurator, function(group, groupID) {
-
-				// Collect options
-				for(var idx in group.values) {
-					var item =  group.values[idx];
-
-					options.push({
-						text: item.optionname,
-						value: item.optionID
-					});
-				}
-				var fieldset = new Ext.form.FieldSet({
-					title: group.groupname,
-					instructions: group.groupdescription,
-					items: [{
-						xtype: 'selectfield',
-						options: options,
-						name: 'group['+groupIdx+']'
-					}]
-				});
-				me.formPnl.add(fieldset);
-				groupIdx++;
-			});
-		}
-
-		me.buyBtn = new Ext.Button({
-			ui: 'confirm rounded',
-			text: 'In den Warenkorb legen',
-			style: 'margin: 0 1em',
-			handler: me.onBuyBtn
+			Ext.getCmp('formPnl').add(fieldset);
+			groupIdx++;
 		});
-
-		Ext.apply(me, {
-			items: [me.formPnl, me.buyBtn]
-		});
-		App.views.Shop.buyPnl.superclass.initComponent.call(me);
 	},
-
-	onBackBtn: function(scope) {
-		Ext.dispatch({
-			controller: 'detail',
-			action: 'showInfo'
+	buildOrdernumber: function(item) {
+		var ordernumber = new Ext.form.Hidden({
+			name: 'sOrdernumber',
+			value: item.data.ordernumber
 		});
-		Ext.getCmp('detail').setActiveItem('teaser', { type: 'cube', direction: 'right'});
-	},
-
-	onBuyBtn: function() {
-		var values = Ext.getCmp('formPnl').getValues();
-		App.stores.Cart.add(values);
-
-		Ext.dispatch({
-			controller: 'detail',
-			action: 'showInfo'
-		});
-		Ext.getCmp('detail').setActiveItem('teaser', { type: 'cube', direction: 'right'});
+		Ext.getCmp('formPnl').add(ordernumber);
 	}
 });
 
