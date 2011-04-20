@@ -2,10 +2,19 @@
  * ----------------------------------------------------------------------
  * detail.js
  *
- * Views fuer die Artikeldetailseite
+ * View for the article details page
+ *
+ * @link http://www.shopware.de
+ * @author S.Pohl <stp@shopware.de>
  * ----------------------------------------------------------------------
  */
+
 Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Cart', 'App.views.Account', 'App.views.Info');
+
+/**
+ * Main Detail Panel
+ * Contains the three different sections (e.g. Detail, Comments, Pictures)
+ */
 App.views.Shop.detail = Ext.extend(Ext.Panel, {
 	id: 'detail',
 	layout: 'card',
@@ -68,11 +77,22 @@ App.views.Shop.detail = Ext.extend(Ext.Panel, {
 		App.views.Shop.detail.superclass.initComponent.call(me);
 	},
 
+	/**
+	 * getToolbar
+	 *
+	 * Returns the detail toolbar
+	 */
 	getToolbar: function() {
 		return Ext.getCmp('detailToolbar');
 	},
 
+	/**
+	 * onBackBtn - event handler
+	 *
+	 * Handles the back button
+	 */
 	onBackBtn: function() {
+		App.stores.Detail.clearListeners();
 		Ext.dispatch({
 			controller: 'category',
 			action: 'show',
@@ -82,6 +102,15 @@ App.views.Shop.detail = Ext.extend(Ext.Panel, {
 		})
 	},
 
+	/**
+	 * onNavBtn - event handler
+	 *
+	 * Handles the segmented button to change the section
+	 *
+	 * @param pnl
+	 * @param btn
+	 * @param pressed
+	 */
 	onNavBtn: function(pnl, btn, pressed) {
 		if (pressed === true) {
 			if (btn.text === 'Detail') {
@@ -109,7 +138,11 @@ App.views.Shop.detail = Ext.extend(Ext.Panel, {
 	}
 });
 
-/* Detailseite */
+/**
+ * Detail view
+ *
+ * Contains the basic article informations
+ */
 var interval;
 App.views.Shop.info = Ext.extend(Ext.Panel, {
 	id: 'teaser',
@@ -136,9 +169,9 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 	},
 
 	initComponent: function() {
-		var me = this, store = App.stores.Detail, rec = store.getAt(0), tpl = App.views.Shop;
+		var me = this, store = App.stores.Detail, tpl = App.views.Shop;
 
-		/* Infopanel mit Bild */
+		/* Teaser Panel with main picture */
 		me.info = new Ext.DataView({
 			store: store,
 			tpl: tpl.detailTpl,
@@ -155,12 +188,13 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 			}
 		});
 
+		/* Subscribe event handler */
 		store.on({
-			datachanged: me.onDataChanged,
-			scope: this
+			scope: this,
+			storeLoaded: me.onStoreLoaded
 		});
 
-		// Anzahl spinner
+		/* Amount spinner */
 		me.spinner = new Ext.form.Spinner({
 			value: 1,
 			label: 'Anzahl',
@@ -172,7 +206,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 			name: 'sQuantity'
 		});
 
-		// Form Panel
+		/* "Buy now" form panel */
 		me.formPnl = new Ext.form.FormPanel({
 			id: 'formPnl',
 			width: '100%',
@@ -188,7 +222,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 			]
 		});
 
-		// Bestellbutton
+		/* "Buy now"-Button */
 		me.buyBtn = new Ext.Button({
 			id: 'buyBtn',
 			ui: 'confirm round',
@@ -198,7 +232,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 			height: '33px'
 		});
 
-		// Bundle Support
+		/* Bundle support */
 		me.bundle = new Ext.DataView({
 			store: store,
 			tpl: tpl.bundleTpl,
@@ -215,9 +249,8 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 				}
 			}
 		});
-		
 
-		// Beschreibung
+		/* Article description */
 		me.desc = new Ext.DataView({
 			store: store,
 			tpl: tpl.descTpl,
@@ -235,61 +268,36 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 		});
 
 		App.views.Shop.info.superclass.initComponent.call(this);
-
-		if(!store.isLoading()) {
-			var item = store.getAt(0), data = item.data;
-
-			// Add hidden ordernumber
-			me.buildOrdernumber(item);
-
-			// Check for bundle
-			if(!Ext.isEmpty(data.sBundles)) {
-				me.add(me.bundle);
-			}
-
-			// Check for variants
-			if(!Ext.isEmpty(item.data.sVariants)) {
-				me.buildVariantField(item);
-			}
-
-			// Check for configurator
-			if(!Ext.isEmpty(item.data.sConfigurator)) {
-				me.buildConfigurator(item);
-			}
-
-			// Check for liveshopping
-			if(!Ext.isEmpty(data.liveshoppingData)) {
-				App.Helpers.server.init(timeNow);
-				interval = App.Helpers.liveshopping.init(data.liveshoppingData);
-			}
-
-			// Add desc
-			me.add(me.desc);
-		}
 	},
 
-	onDataChanged: function(store) {
-		var me = this, item = store.getAt(0), data = item.data.liveshoppingData;
-
-		// Add hidden ordernumber
+	/**
+	 * onStoreLoaded - Event handler
+	 *
+	 * Handles the different article types and creates the needed elements (e.g. variants, configurator, bundles)
+	 */
+	onStoreLoaded: function() {
+		var me = this, store = App.stores.Detail, item = store.getAt(0), data = item.data.liveshoppingData;
+		me._item = item;
+		
+		/* Create hidden input field */
 		me.buildOrdernumber(item);
 
-		// Check for bundle
+		/* If needed, add bundle view */
 		if(!Ext.isEmpty(item.data.sBundles)) {
 			me.add(me.bundle);
 		}
 
-		// Check for variants
+		/* If needed, add variant select box */
 		if(!Ext.isEmpty(item.data.sVariants)) {
 			me.buildVariantField(item);
 		}
 
-		// Check for configurator
+		/* If needed, add configurator fieldset(s) */
 		if(!Ext.isEmpty(item.data.sConfigurator)) {
 			me.buildConfigurator(item);
 		}
 
-		// Check for liveshopping
+		/* If needed, add live-shopping functionality */
 		if(!Ext.isEmpty(item.data.liveshoppingData)) {
 			App.Helpers.server.init(timeNow);
 			interval = App.Helpers.liveshopping.init(data);
@@ -299,33 +307,58 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 		me.doLayout();
 	},
 
+	/**
+	 * onBundleBtn - Event handler
+	 *
+	 * Adds bundle articles to cart
+	 */
 	onBundleBtn: function() {
-		var me = this, store = App.stores.Detail;
-		var item = store.getAt(0);
-		var bundle = item.data.sBundles
+		var store = App.stores.Detail,
+			item = store.getAt(0),
+			bundle = item.data.sBundles;
+
+
 		App.stores.Cart.addBundle(item.data.ordernumber, bundle[0].id);
 	},
 
+	/**
+	 * onBuyBtn - Event handler
+	 *
+	 * Adds an article to cart
+	 *
+	 */
 	onBuyBtn: function() {
 		var values = Ext.getCmp('formPnl').getValues();
-		console.log(values);
 		App.stores.Cart.add(values);
 		//var buyPnl = new App.views.Shop.buyPnl
 		//Ext.getCmp('detail').add(buyPnl);
 		//Ext.getCmp('detail').setActiveItem(buyPnl, { type: 'cube' })
 	},
 
+	/**
+	 * onImageTap - Event handler
+	 *
+	 * Calls an controller action
+	 */
 	onImageTap: function() {
 		Ext.dispatch({
 			controller: 'detail',
 			action: 'showPictures'
 		})
 	},
+
+	/**
+	 * buildVariantField
+	 *
+	 * Builds the needed form field for variant articles
+	 *
+	 * @param item - Store article data
+	 */
 	buildVariantField: function(item) {
 		var me = this;
 		var options = [];
 
-		// Hauptvariante
+		/* Main variant */
 		options.push({
 			text: item.data.additionaltext,
 			value: item.data.ordernumber
@@ -347,11 +380,18 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 		Ext.getCmp('buyFieldset').add(me.variant);
 	},
 
+	/**
+	 * buildConfigurator
+	 *
+	 * Builds the needed form elements for configurator articles
+	 *
+	 * @param rec - Store article data
+	 */
 	buildConfigurator: function(rec) {
 		var me = this, groupIdx = 1, configurator = rec.data.sConfigurator, options = [];
-		Ext.each(configurator, function(group, groupID) {
+		Ext.each(configurator, function(group) {
 
-			// Collect options
+			/* Collection options */
 			for(var idx in group.values) {
 				var item =  group.values[idx];
 
@@ -368,27 +408,70 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 				items: [{
 					xtype: 'selectfield',
 					options: options,
-					name: 'group['+groupIdx+']'
+					name: 'group['+groupIdx+']',
+					listeners: {
+						scope: this,
+						change: me.onConfiguratorChange
+					}
 				}]
 			});
 			Ext.getCmp('formPnl').add(fieldset);
 			groupIdx++;
+			options = [];
 		});
 	},
+
+	/**
+	 * buildOrdernumber
+	 *
+	 * Creates an hidden input field - needed
+	 *
+	 * @param item
+	 */
 	buildOrdernumber: function(item) {
 		var ordernumber = new Ext.form.Hidden({
+			id: 'hiddenOrdernumber',
 			name: 'sOrdernumber',
 			value: item.data.ordernumber
 		});
 		Ext.getCmp('formPnl').add(ordernumber);
+	},
+
+	/**
+	 * onConfiguratorChange - Event handler
+	 *
+	 * Handles the configuration of an configurator article
+	 *
+	 * @param select
+	 * @param val
+	 */
+	onConfiguratorChange: function(select, val) {
+		var store  = App.stores.Detail,
+			item   = store.getAt(0),
+			configurator = item.data.sConfigurator,
+			groupId, active;
+
+		groupId = parseInt(select.name.match(/[0-9]/i));
+		configurator = configurator[(groupId - 1)];
+		active = configurator.values[val];
+		
+		if(active && active.ordernumber) {
+			Ext.getCmp('hiddenOrdernumber').setValue(active.ordernumber);
+		} else {
+			Ext.getCmp('hiddenOrdernumber').setValue(item.data.ordernumber);
+		}
 	}
 });
 
-/* Comments views */
+/**
+ * Comments Main view
+ * Contains the different elements/views for the article comments
+ */
 App.views.Shop.comments = Ext.extend(Ext.Panel, {
 	id: 'votes',
 	layout: 'vbox',
 	scroll: 'vertical',
+	
 	listeners: {
 		scope: this,
 		beforeactivate: function(me) {
@@ -401,23 +484,23 @@ App.views.Shop.comments = Ext.extend(Ext.Panel, {
 			me.destroy();
 		}
 	},
+	
 	initComponent: function() {
-		var me = this;
+		Ext.apply(this, {
+			items: [
+				new App.views.Shop.commentsView,
+				new App.views.Shop.commentForm
+			]
+		});
 
-		// Comment views
-		me.commentsView = new App.views.Shop.commentsView;
-
-		// Comment form
-		me.commentForm = new App.views.Shop.commentForm;
-
-		Ext.apply(me, {
-			items: [me.commentsView, me.commentForm]
-		})
-
-		App.views.Shop.comments.superclass.initComponent.call(me);
+		App.views.Shop.comments.superclass.initComponent.call(this);
 	}
 });
 
+/**
+ * Comments View
+ * Lists the user comments for an specific article
+ */
 App.views.Shop.commentsView = Ext.extend(Ext.DataView, {
 	id: 'commentsView',
 	store: App.stores.Detail,
@@ -437,11 +520,23 @@ App.views.Shop.commentsView = Ext.extend(Ext.DataView, {
 		App.views.Shop.commentsView.superclass.initComponent.call(me);
 	},
 
+	/**
+	 * onDataChanged - Event handler
+	 *
+	 * Updates store and refresh the layout
+	 */
 	onDataChanged: function() {
 		this.update(this.store);
 		this.refresh();
 	},
 
+	/**
+	 * update - Event handler
+	 *
+	 * Pre dispatch the default update function
+	 *
+	 * @param store
+	 */
 	update: function(store) {
 		if (store) {
 			var item = store.getAt(0);
@@ -455,6 +550,10 @@ App.views.Shop.commentsView = Ext.extend(Ext.DataView, {
 	}
 });
 
+/**
+ * Comment Form
+ * Allows the user to create a comment for a specific article
+ */
 App.views.Shop.commentForm = Ext.extend(Ext.form.FormPanel, {
 	id: 'commentForm',
 	width: '100%',
@@ -513,13 +612,12 @@ App.views.Shop.commentForm = Ext.extend(Ext.form.FormPanel, {
 		handler: function() {
 			var me = Ext.getCmp('commentForm'),
 			    store = App.stores.Detail,
-			    item = store.getAt(0),
-			    articleID = store.data.items[0].data.articleID
+			    articleID = store.data.items[0].data.articleID,
 				values = me.getValues(true);
 
 			values.articleID = articleID;
 
-			App.Helpers.postRequest(App.RequestURL.addComment, values, function(data) {
+			App.Helpers.postRequest(App.RequestURL.addComment, values, function() {
 				Ext.Msg.alert('Erfolg', 'Ihr Kommentar wurde erfolgreich hinzugef&uuml;gt');
 				store.load({
 					params: {
@@ -535,7 +633,10 @@ App.views.Shop.commentForm = Ext.extend(Ext.form.FormPanel, {
 	}
 });
 
-/* Picture views */
+/**
+ * Picture View
+ * Creates an carousel, which contains all article pictures
+ */
 var lastpinch = 75;
 App.views.Shop.pictures = Ext.extend(Ext.Carousel, {
 	id: 'pictures',
@@ -584,10 +685,15 @@ App.views.Shop.pictures = Ext.extend(Ext.Carousel, {
 		App.views.Shop.pictures.superclass.initComponent.call(this);
 	},
 
+	/**
+	 * onPinch - Event handler
+	 *
+	 * Resize the current picture through a pinch gesture
+	 *
+	 * @param obj
+	 */
 	onPinch: function(obj) {
-		var me = this;
 		var element = this.query('img');
-		var active = Ext.getCmp('pictures').getActiveItem();
 		Ext.each(element, function(el) {
 
 			// Calculate zoom value based on deltaScale
@@ -604,8 +710,12 @@ App.views.Shop.pictures = Ext.extend(Ext.Carousel, {
 		});
 	},
 
+	/**
+	 * onDblTap - Event handler
+	 *
+	 * Resize the current picture to a specific value
+	 */
 	onDblTap: function() {
-		var active = Ext.getCmp('pictures').getActiveItem();
 		if(lastpinch < 75) {
 			return;
 		}

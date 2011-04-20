@@ -2,14 +2,25 @@
  * ----------------------------------------------------------------------
  * detail_controller.js
  *
- * Steuert die Ausgabe der Detailseite
+ * Handles the complete detail view logic
+ *
+ * @link http://www.shopware.de
+ * @author S.Pohl <stp@shopware.de>
  * ----------------------------------------------------------------------
  */
 Ext.regController('detail', {
     last: null,
     detail: Ext.getCmp('detail'),
+
+	/**
+	 * show
+	 *
+	 * Create the main view on runtime and handles the detail store
+	 *
+	 * @param options
+	 */
     show: function(options) {
-        var store, rec, pictures, view, me = this;
+        var store, rec, pictures, view = Ext.getCmp('detail'), me = this;
 
         if(!view) {
             view = new App.views.Shop.detail;
@@ -24,7 +35,10 @@ Ext.regController('detail', {
 	    App.stores.Detail.load({
             params: {
                 articleId: rec.data.articleID
-            }
+            }, callback: function() {
+			    App.stores.Detail.fireEvent('storeLoaded');
+			    Ext.getCmp('teaser').doLayout();
+		    }
         });
 
         Ext.dispatch({
@@ -35,8 +49,13 @@ Ext.regController('detail', {
         Ext.getCmp('shop').setActiveItem(view, 'slide');
     },
 
+	/**
+	 * showInfo
+	 *
+	 * Creates the info view on runtime
+	 */
     showInfo: function() {
-        var view;
+        var view = Ext.getCmp('teaser');
 
         if(!view) {
             view = new App.views.Shop.info;
@@ -45,8 +64,13 @@ Ext.regController('detail', {
         }
     },
 
+	/**
+	 * showComments
+	 *
+	 * Creates the comment main view on runtime
+	 */
     showComments: function() {
-        var view;
+        var view = Ext.getCmp('votes');
 
         if(!view) {
             view = new App.views.Shop.comments;
@@ -54,8 +78,13 @@ Ext.regController('detail', {
         }
     },
 
+	/**
+	 * showPictures
+	 *
+	 * Creates the picture view on runtime and handles the picture store
+	 */
     showPictures: function() {
-        var view, me = this;
+        var view = Ext.getCmp('pictures'), me = this;
 
         App.stores.Picture.load({
             params: {
