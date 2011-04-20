@@ -53,15 +53,25 @@ Ext.regController('detail', {
 	 * showInfo
 	 *
 	 * Creates the info view on runtime
+	 *
+	 * @param options
 	 */
-    showInfo: function() {
+    showInfo: function(options) {
         var view = Ext.getCmp('teaser');
+
+		console.log(options);
+		console.log(App.stores.Detail);
 
         if(!view) {
             view = new App.views.Shop.info;
             Ext.getCmp('detail').add(view);
-	        Ext.getCmp('detail').doLayout();
         }
+		
+		if(options.refresh) {
+			App.stores.Detail.fireEvent('storeLoaded');
+		}
+
+		Ext.getCmp('detail').doLayout();
     },
 
 	/**
