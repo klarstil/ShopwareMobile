@@ -116,7 +116,8 @@ App.views.Shop.detail = Ext.extend(Ext.Panel, {
 			if (btn.text === 'Detail') {
 				Ext.dispatch({
 					controller: 'detail',
-					action: 'showInfo'
+					action: 'showInfo',
+					refresh: true
 				});
 
 				Ext.getCmp('detail').setActiveItem('teaser', 'fade');
@@ -163,6 +164,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 			me.setLoading(false);
 		},
 		deactivate: function(me) {
+			App.stores.Detail.clearListeners();
 			clearInterval(interval);
 			me.destroy();
 		}
@@ -188,12 +190,11 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 			}
 		});
 
-		/* Subscribe event handler */
 		store.on({
 			scope: this,
 			storeLoaded: me.onStoreLoaded
 		});
-
+		
 		/* Amount spinner */
 		me.spinner = new Ext.form.Spinner({
 			value: 1,
@@ -276,6 +277,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 	 * Handles the different article types and creates the needed elements (e.g. variants, configurator, bundles)
 	 */
 	onStoreLoaded: function() {
+		console.log('view onStoreLoaded');
 		var me = this, store = App.stores.Detail, item = store.getAt(0), data = item.data.liveshoppingData;
 		me._item = item;
 		
@@ -505,9 +507,9 @@ App.views.Shop.commentsView = Ext.extend(Ext.DataView, {
 	id: 'commentsView',
 	store: App.stores.Detail,
 	scroll: false,
+	height: '100%',
 	tpl: App.views.Shop.commentsTpl,
 	itemSelector: '.headline',
-	emptyText: 'Super Ingo',
 	initComponent:  function() {
 		var me = this;
 
