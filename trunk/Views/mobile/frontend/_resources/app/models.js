@@ -132,8 +132,9 @@ Ext.regModel('Search', {
 
 Ext.regModel('Static', {
 	fields: [
-		{ name: 'description', type: 'string' },
-		{ name: 'html', type: 'string' }
+		{ name: 'name', type: 'string' },
+		{ name: 'content', type: 'array' },
+		{ name: 'groupName', type: 'string' }
 	],
 	proxy: {
 		type: 'ajax',
