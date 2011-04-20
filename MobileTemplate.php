@@ -370,25 +370,25 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 * @access public
 	 * @param  {string} $group
 	 */
-	public function getInfoSitesAction($group = '%gLeft%')
+	public function getInfoSitesAction()
 	{
-		$sql = "SELECT cms_s.description, cms_s.html, cms_s.grouping FROM s_cms_static AS cms_s
-				WHERE cms_s.grouping LIKE ?";
-		$row = Shopware()->Db()->fetchAll($sql, array(
-			$group
-		));
-		
-		$i = 0;
-		foreach($row as $item)
-		{
-			$row[$i] = array(
-				'description' => utf8_encode($item['description']),
-				'html' => utf8_encode($item['html']) 
-			);
-			$i++;
+		$plugin = Shopware()->Plugins()->Core()->ControllerBase();
+		$menu = $plugin->getMenu();
+		$output = array();
+		foreach($menu as $name => $groups) {
+			if($name !== 'gDisabled') {
+				$count = count($groups);
+				foreach($groups as $site) {
+					$output[] = array(
+						'name'      => utf8_encode($site['description']),
+						'content'   => $site['html'],
+						'groupName' => $name . ' (' . $count . ' Seiten)'
+					);
+				}
+			}
 		}
 		
-		$this->jsonOutput(array('sStatics' => $row));
+		$this->jsonOutput(array('sStatics' => $output));
 	}
 	
 	/**

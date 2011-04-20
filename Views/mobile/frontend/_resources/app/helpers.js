@@ -134,6 +134,27 @@ App.Helpers = {
 			}
 		}
 	},
+	
+	/**
+	 * truncate
+	 *
+	 * Truncates a string and returns it
+	 *
+	 * @param str - string to truncate
+	 * @param length - length of visible string part
+	 * @param trailing - trailing symbol
+	 */
+	truncate: function(str, length, trailing) {
+		if(!str || !length) { return false; }
+
+		if(!trailing) {
+			trailing = '...';
+		}
+
+		length = length - trailing.length;
+
+		return str.substring(0, length) + trailing;
+	},
 
 	number_format: function (number, decimals, dec_point, thousands_sep) {
         var n = number,

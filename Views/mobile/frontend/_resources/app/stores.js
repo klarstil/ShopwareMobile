@@ -37,7 +37,12 @@ App.stores.Search = new Ext.data.Store({
 
 App.stores.Info = new Ext.data.Store({
 	model: 'Static',
-	autoLoad: true
+	autoLoad: true,
+	sorter: 'name',
+
+	getGroupString: function(record) {
+		return record.get('groupName');
+	}
 });
 
 /**
