@@ -1,3 +1,14 @@
+/**
+ * ----------------------------------------------------------------------
+ * stores.js
+ *
+ * Contains the application stores
+ *
+ * @link http://www.shopware.de
+ * @author S.Pohl <stp@shopware.de>
+ * ----------------------------------------------------------------------
+ */
+
 App.stores.Categories = new Ext.data.Store({
 	model: 'MainCategories',
 	autoLoad: true
@@ -29,6 +40,10 @@ App.stores.Info = new Ext.data.Store({
 	autoLoad: true
 });
 
+/**
+ * TODO: Konfigurator-Support einbauen
+ * Bei Konfigurator-Artikel kommt es zur Zeit noch zu Konflikten bei der jetzigen Implementierung....
+ */
 App.CartClass = Ext.extend(Ext.util.Observable, {
 	
 	//Properties
