@@ -24,13 +24,33 @@ Ext.regModel('MainCategories', {
 		{ name: 'id', type: 'int' },
 		{ name: 'name', type: 'string' },
 		{ name: 'desc', type: 'string' },
-		{ name: 'count', type: 'int'}
+		{ name: 'sub', type: 'string'}
 	],
 	proxy: {
 		type: 'ajax',
 		url: App.RequestURL.getCategories,
 		reader: {
 			type: 'json',
+			root: 'categories'
+		}
+	}
+});
+
+Ext.regModel('Categories', {
+	idProperty: 'id',
+	fields: [
+		{ name: 'parentId', type: 'int' },
+		{ name: 'text', type: 'string' },
+		{ name: 'desc', type: 'string'},
+		{ name: 'img', type: 'string' },
+		{ name: 'count', type: 'int' },
+		{ name: 'id', type: 'string' }
+	],
+	proxy: {
+		type: 'ajax',
+		url: '/MobileTemplate/getCategoriesTree',
+		reader: {
+			type: 'tree',
 			root: 'categories'
 		}
 	}

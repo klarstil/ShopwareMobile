@@ -57,7 +57,7 @@ App.views.Shop.home = Ext.extend(Ext.Panel, {
 			store: App.stores.Categories,
 			scroll: false,
 			height: '100%',
-			itemTpl: '<strong>{name}</strong> <span class="count">({count} Artikel)</span><tpl if="desc"><div class="desc">{desc}</div></tpl>',
+			itemTpl: '<strong>{name}</strong><tpl if="desc"><div class="desc">{desc}</div></tpl>',
 			listeners: {
 				scope: this,
 				selectionchange: function(selModel, recs) {
@@ -134,12 +134,11 @@ App.views.Shop.listing = Ext.extend(Ext.Panel, {
 	listeners: {
 		scope: this,
 		beforeactivate: function(me) {
-			me.list.update('');
+			//me.list.update('');
 			me.list.setLoading(true);
 		},
 		activate: function(me) {
-			me.list.update(me.list.store);
-			me.list.refresh();
+			//me.list.update(me.list.store);
 			me.list.setLoading(false);
 		},
 		deactivate: function(me) {
@@ -150,7 +149,45 @@ App.views.Shop.listing = Ext.extend(Ext.Panel, {
 	initComponent: function() {
 		var me = this;
 
-		/* Kategorieliste */
+		/* Subcategory list */
+		me.subList = new Ext.NestedList({
+			id: 'subListing',
+			store: App.stores.CategoriesTree,
+			scroll: false,
+			displayField: 'text',
+			title: 'Kategorien',
+			toolbar: { ui: 'dark' },
+			getItemTextTpl: function(node) {
+				//'<div class="catImg" <tpl if="img">style="background-image: url({img})"</tpl>></div>'
+				return '<div class="info"><span class="title">{text}&nbsp;<span class="count">({count} Artikel)</span></span></div>'
+					+ '<tpl if="desc"><p class="desc">{desc}</p></tpl>';
+			},
+			listeners: {
+				scope: this,
+				beforeactivate: function(me) {
+					me.update('');
+				},
+				activate: function(me) {
+					me.update(me.store);
+				},
+				deactivate: function(me) {
+					me.destroy();
+				},
+				leafitemtap: function(me, idx) {
+					console.log('leafitemtap');
+					Ext.dispatch({
+						controller: 'category',
+						action: 'showArticleListing',
+						idx: idx,
+						store: me.store,
+						type: 'slide',
+						direction: 'left'
+					});
+				}
+			}
+		});
+
+		/* Category list */
 		me.list = new Ext.List({
 			id: 'listingList',
 			store: App.stores.Listing,
@@ -192,11 +229,6 @@ App.views.Shop.listing = Ext.extend(Ext.Panel, {
 			items: [me.backBtn]
 		});
 
-		Ext.apply(me, {
-			dockedItems: [me.toolbar],
-			items: [me.list]
-		});
-
 		App.views.Shop.listing.superclass.initComponent.call(me);
 	},
 
@@ -209,5 +241,8 @@ App.views.Shop.listing = Ext.extend(Ext.Panel, {
 		} catch(err) {
 			Ext.getCmp('shop').setActiveItem('home', {direction: 'right', type: 'slide'});
 		}
+	},
+	getToolbar: function() {
+		return this.list.toolbar;
 	}
 });
