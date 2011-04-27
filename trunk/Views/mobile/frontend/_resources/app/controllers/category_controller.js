@@ -53,5 +53,14 @@ Ext.regController('category', {
 			rec;
 
 		rec = store.getAt(idx);
+		if(list) {
+			view.add(view.list);
+			view.toolbar.add(view.backBtn);
+			view.addDocked(view.toolbar);
+			view.setActiveItem(view.list, {
+                type: options.type, direction: options.direction
+            });
+			App.stores.Listing.load({ params: { categoryId: rec.data.id } });
+		}
 	}
 });

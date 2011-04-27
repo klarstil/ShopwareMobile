@@ -130,7 +130,7 @@ App.views.Shop.home = Ext.extend(Ext.Panel, {
 
 App.views.Shop.listing = Ext.extend(Ext.Panel, {
 	id: 'listing',
-	layout: 'fit',
+	layout: 'card',
 	listeners: {
 		scope: this,
 		beforeactivate: function(me) {
@@ -154,12 +154,13 @@ App.views.Shop.listing = Ext.extend(Ext.Panel, {
 			id: 'subListing',
 			store: App.stores.CategoriesTree,
 			scroll: false,
+			height:  '100%',
 			displayField: 'text',
 			title: 'Kategorien',
 			toolbar: { ui: 'dark' },
 			getItemTextTpl: function(node) {
 				//'<div class="catImg" <tpl if="img">style="background-image: url({img})"</tpl>></div>'
-				return '<div class="info"><span class="title">{text}&nbsp;<span class="count">({count} Artikel)</span></span></div>'
+				return '<div class="info"><span class="title">{text}</span></div>'
 					+ '<tpl if="desc"><p class="desc">{desc}</p></tpl>';
 			},
 			listeners: {
