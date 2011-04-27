@@ -151,9 +151,13 @@ App.Helpers = {
 			trailing = '...';
 		}
 
-		length = length - trailing.length;
+		if(str.length > length) {
 
-		return str.substring(0, length) + trailing;
+			length = length - trailing.length;
+			str = str.substring(0, length) + trailing;
+		}
+
+		return str;
 	},
 
 	number_format: function (number, decimals, dec_point, thousands_sep) {

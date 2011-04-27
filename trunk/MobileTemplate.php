@@ -10,6 +10,7 @@
  */
 class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Action
 {
+
 	/**
 	 * getMainCategoriesAction()
 	 *
@@ -21,6 +22,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	public function getMainCategoriesAction()
 	{
 		$main_categories = Shopware()->Modules()->Categories()->sGetMainCategories();
+		print_r($main_categories);
 		$i = 0;
 		foreach($main_categories as $cat) {
 			$retCats['categories'][$i] = array(
@@ -372,23 +374,55 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	public function getInfoSitesAction()
 	{
-		$plugin = Shopware()->Plugins()->Core()->ControllerBase();
-		$menu = $plugin->getMenu();
+		$config = Shopware()->Plugins()->Frontend()->SwagMobileTemplate()->Config();
+		if(!empty($config->staticgroup)) {
+			$menu = $this->getMenu($config->staticgroup);
+		} else {
+			$plugin = Shopware()->Plugins()->Core()->ControllerBase();
+			$menu = $plugin->getMenu();
+		}
+
 		$output = array();
 		foreach($menu as $name => $groups) {
-			if($name !== 'gDisabled') {
+			if($name !== 'gDisabled' && $name === $config->staticgroup) {
 				$count = count($groups);
 				foreach($groups as $site) {
+					if(!empty($site['link'])) {
+						preg_match('/\?sViewport=ticket&sFid=([0-9])/i', $site['link'], $id);
+						$forms = Shopware()->Modules()->CmsSupport()->sConstruct($id[1]);
+						if($forms) {
+							$forms = Shopware()->Modules()->CmsSupport()->sELEMENTS;
+						}
+					}
 					$output[] = array(
 						'name'      => utf8_encode($site['description']),
 						'content'   => $site['html'],
-						'groupName' => $name . ' (' . $count . ' Seiten)'
+						'groupName' => $name . ' (' . $count . ' Seiten)',
+						'form'      => $forms,
+						'link'      => $site['link'],
+						'sFid'      => $id[1]
 					);
+					$forms = array();
+					Shopware()->Modules()->CmsSupport()->sELEMENTS = null;
 				}
 			}
 		}
-		
 		$this->jsonOutput(array('sStatics' => $output));
+	}
+
+	/**
+	 * processFormAction
+	 *
+	 * Verarbeitet Formulare
+	 *
+	 * @return void
+	 */
+	public function processFormAction() {
+		if(!empty($this->Request()->Submit)) {
+			die('Form submitted');
+		} else {
+			die('Form NOT submitted');
+		}
 	}
 	
 	/**
@@ -529,5 +563,45 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 		   $str = utf8_decode($str );
 		 }
 		return $str;
+	}
+
+	/**
+	 * getMenu
+	 *
+	 * Laedt die angegebene Gruppe von statischen Shopseiten
+	 * 
+	 * @param string $groupName
+	 * @return array
+	 */
+	private function getMenu($groupName = '') {
+		$menu = array();
+		$sql = 'SELECT `id`, `description`, `html`, `grouping`, `link` FROM s_cms_static WHERE grouping!=\'\' ORDER BY position ASC';
+		if(!empty($groupName)) {
+			$sql = "SELECT `id`, `description`, `html`, `grouping`, `link` FROM `s_cms_static` WHERE `grouping` LIKE '%".$groupName."%' GROUP BY id ORDER BY position ASC";
+		}
+
+		$links = Shopware()->Db()->fetchAll($sql);
+		foreach ($links as $link)
+		{
+			$groups = explode('|', $link['grouping']);
+			foreach ($groups as $group)
+			{
+				$group = trim($group);
+				if(empty($group)) continue;
+				$menu[$group][] = $link;
+			}
+		}
+
+		if (!empty(Shopware()->System()->sSubShop['navigation']))
+		{
+			foreach (explode(';', Shopware()->System()->sSubShop['navigation']) as $group)
+			{
+				$group = explode(':', $group);
+				if(empty($group[0])||empty($group[1])||empty($menu[$group[1]])) continue;
+				$menu[$group[0]] = $menu[$group[1]];
+			}
+		}
+
+		return $menu;
 	}
 }

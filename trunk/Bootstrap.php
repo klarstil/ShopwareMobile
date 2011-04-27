@@ -35,6 +35,12 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
  			'onGetControllerPathBackend'
 	 	);
 	 	$this->subscribeEvent($event);
+
+		$event = $this->createEvent(
+			'Enlight_Controller_Action_PostDispatch',
+			'onPostDispatch'
+		);
+		$this->subscribeEvent($event);
 	 	
 		$parent = $this->Menu()->findOneBy('label', 'Marketing');
         $item = $this->createMenuItem(array(
@@ -48,11 +54,14 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 		$this->Menu()->addItem($item);
 		$this->Menu()->save();
 
-		$event = $this->createEvent(
-			'Enlight_Controller_Action_PostDispatch',
-			'onPostDispatch'
-		);
-		$this->subscribeEvent($event);
+		$form = $this->Form();
+		$form->setElement('text', 'supportedDevices', array('label'=>'Unterst&uuml;tzte Ger&auml;te (mit Pipe getrennt)','value'=>'Android|BlackBerry|iPhone|iPod', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
+		$form->setElement('text', 'requestText', array('label'=>'Aufforderungstext','value'=>'Möchten Sie die für mobile Endgeräte optimierte Version dieser Seite aufrufen?', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
+		$form->setElement('text', 'staticGroup', array('label'=>'Shopseiten-Gruppe','value'=>'gLeft', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
+		$form->setElement('checkbox', 'normalSite', array('label'=>'Link zur normalen Ansicht anzeigen','value'=>'1', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
+		$form->setElement('checkbox', 'activeBlog', array('label'=>'Blogartikel auf Startseite anzeigen','value'=>'0', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
+		$form->setElement('textarea', 'additionalCSS', array('label'=>'Zusätzliches CSS','value'=>'', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
+		$form->save();
 
 		return true;
 	}
@@ -85,6 +94,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 		$response = $args->getSubject()->Response();
 		$view = $args->getSubject()->View();
 		$version = self::checkForMobileDevice();
+		$config = Shopware()->Plugins()->Frontend()->SwagMobileTemplate()->Config();
 
 		if(!$request->isDispatched()||$response->isException()){
 			return;

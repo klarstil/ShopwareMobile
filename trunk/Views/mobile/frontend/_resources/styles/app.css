@@ -1,10 +1,9 @@
 /**
- *
- *
- *
- *
- *
+ * Mobile Stylesheet
  */
+
+/*  GENERAL
+    -------------------------------------------- */
 .clear {height: 0; clear: both;}
 #shop, #categories { background: #fff; }
 
@@ -131,7 +130,7 @@
 #detail { background: #eee }
 #detail #formPnl .x-panel-body { padding: 0 1em 0.2em }
 #detail #formPnl .x-panel-body .x-panel-body { padding: 0 }
-#detail .x-mask { height: 100% !important; width: 100% !important; }
+#detail .x-mask, #infoDetail .x-mask { height: 100% !important; width: 100% !important; }
 #detail .image {
     display: block;
     padding: 4px;
@@ -537,8 +536,7 @@
 #static_list .x-list-header { color: #fff }
 #static_list strong { font-weight: 700 }
 #infoDetail .inner {
-    margin: 0.5em;
-    padding: 0.5em;
+    padding: 1em;
     background: #fff;
     border: 1px solid #c7c7c7;
     border-radius: 8px;
@@ -546,14 +544,23 @@
 }
 #infoDetail p {margin:0 0 1em;}
 
-#infoDetail h1, #infoDetail h2 {
-    font-weight: 700;
-    font-size: 20px;
-    margin:0 0 1em;
-}
-#infoDetail h2 { font-size: 16px; }
+#infoDetail blockquote {margin:1.5em;color:#666;font-style:italic;}
+#infoDetail ul li, #infoDetail ol li { margin: 0 0 0 22px }
+#infoDetail ul li {list-style-type:disc;}
+#infoDetail ol li {list-style-type:decimal;}
+#infoDetail dl {margin:0 0 1.5em 0;}
+#infoDetail dl dt {font-weight:bold;}
+#infoDetail dd {margin-left:1.5em;}
 
-.x-list-header
+#infoDetail h1, #infoDetail h2, #infoDetail h3, #infoDetail h4, #infoDetail h5, #infoDetail h6 {font-weight:700;color:#111;}
+#infoDetail h1 {font-size:1.6em;line-height:1;margin-bottom:0.5em;}
+#infoDetail h2 {font-size:1.2em;margin-bottom:0.75em;}
+#infoDetail h3 {font-size:1em;line-height:1;margin-bottom:1em;}
+#infoDetail h4 {font-size:1em;line-height:1.25;margin-bottom:1.25em;}
+#infoDetail h5 {font-size:1em;font-weight:bold;margin-bottom:1.5em;}
+#infoDetail h6 {font-size:1em;font-weight:bold;}
+#infoDetail h1 img, #infoDetail h2 img, #infoDetail h3 img, #infoDetail h4 img, #infoDetail h5 img, #infoDetail h6 img {margin:0;}
+
 
 /*  TABPANEL ICONS
     -------------------------------------------- */
