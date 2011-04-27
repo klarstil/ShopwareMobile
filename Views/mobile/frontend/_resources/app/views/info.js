@@ -39,7 +39,7 @@ App.views.Info.index = Ext.extend(Ext.Panel, {
 
 		Ext.apply(this, {
 			dockedItems: [this.toolbar],
-			items: [new App.views.Info.list, new App.views.Info.Detail]
+			items: [new App.views.Info.list]
 		});
 		App.views.Info.index.superclass.initComponent.call(this);
 	},
@@ -70,7 +70,6 @@ App.views.Info.list = Ext.extend(Ext.List, {
 	store: App.stores.Info,
 	itemTpl: '<strong>{name}</strong>',
 	id: 'static_list',
-	grouped: true,
 	listeners: {
 		scope: this,
 		activate: function() {
@@ -83,12 +82,6 @@ App.views.Info.list = Ext.extend(Ext.List, {
 		}
 	},
 	initComponent: function() {
-
-		this.on({
-			scope: this,
-			itemtap: this.onItemTap
-		});
-
 		App.views.Info.list.superclass.initComponent.call(this);
 	},
 
@@ -99,16 +92,17 @@ App.views.Info.list = Ext.extend(Ext.List, {
 	 *
 	 * @param pnl
 	 * @param idx
-	 * @param item
-	 * @param event
 	 */
-	onItemTap: function(pnl, idx, item, event) {
-		var item = App.stores.Info.getAt(idx);
-		var detail = Ext.getCmp('infoDetail');
-		detail.update('<div class="inner">' + item.data.content + '</div>');
+	onItemTap: function(pnl, idx) {
+		var item = App.stores.Info.getAt(idx), view = Ext.getCmp('infoDetail');
 
-		Ext.getCmp('info').getToolbar().setTitle(item.data.name);
-		Ext.getCmp('info').setActiveItem('infoDetail', { type: 'slide' });
+		if(!view) {
+			view = new App.views.Info.Detail(item);
+			Ext.getCmp('info').add(view);
+		}
+
+		Ext.getCmp('info').getToolbar().setTitle(App.Helpers.truncate(item.data.name, 12, '...'));
+		Ext.getCmp('info').setActiveItem(view, {type: 'slide'});
 	}
 });
 
@@ -116,8 +110,155 @@ App.views.Info.list = Ext.extend(Ext.List, {
  * Detail Panel
  * Filled by onItemTap event handler
  */
-App.views.Info.Detail = Ext.extend(Ext.Panel, {
+App.views.Info.Detail = Ext.extend(Ext.form.FormPanel, {
 	id: 'infoDetail',
 	height: '100%',
-	scroll: 'vertical'
+	scroll: 'vertical',
+	url: '/sViewport,Forms',
+	listeners: {
+		scope: this,
+		deactivate: function(me) {
+			me.destroy();
+		}
+	},
+
+	/**
+	 * constructor
+	 *
+	 * Will be called when a new instance would create
+	 *
+	 * @param item
+	 */
+	constructor: function(item) {
+
+		if(Ext.isObject(item.data.form)) {
+
+			this.hidden = new Ext.form.Hidden({
+				name: 'id',
+				value: item.data.sFid
+			});
+
+			this.submitHidden = new Ext.form.Hidden({
+				name: 'Submit',
+				value: 'Absenden'
+			});
+
+			this.fieldset = new Ext.form.FieldSet({
+				id: 'customFieldset',
+				title: item.data.name,
+				instructions: item.data.content,
+				items: []
+			});
+			this.fieldset.removeAll();
+
+			for(var idx in item.data.form) {
+				this.createFormElement(item.data.form[idx]);
+			}
+
+			this.submitBtn = new Ext.Button({
+				text: 'Absenden',
+				ui: 'confirm',
+				handler: function() {
+					Ext.getCmp('infoDetail').submit();
+				}
+			})
+
+			Ext.apply(this, {
+				items: [this.hidden, this.submitHidden, this.fieldset, this.submitBtn]
+			});
+			this.doLayout();
+		} else {
+			this.update('<div class="inner">' + item.data.content + '</div>');
+		}
+		App.views.Info.Detail.superclass.constructor.call(this);
+	},
+
+	/**
+	 * createFormElements
+	 *
+	 * Dynamic creation of forms
+	 * 
+	 * @param cfg
+	 */
+	createFormElement: function(cfg) {
+
+		//Set references
+		var defaultValue = '';
+		if(cfg.ticket_task != null) {
+			if(cfg.ticket_task == 'email') {
+				defaultValue = this.userEmail;
+			} else if(cfg.ticket_task == 'name') {
+				defaultValue = this.userName;
+			}
+		}
+		switch(cfg.typ) {
+			case 'checkbox':
+				var checkField = new Ext.form.Checkbox({
+					label: cfg.label,
+					name: cfg.name,
+					checked: (parseInt(cfg.value)) ? true : false,
+					required: (cfg.required) ? true : false
+				});
+				this.fieldset.add(checkField);
+				break;
+			case 'textarea':
+				var areaField = new Ext.form.TextArea({
+					label: cfg.label,
+					name: cfg.name,
+					allowBlank: (!cfg.required) ? true : false,
+					required: (cfg.required) ? true : false,
+					placeHolder: (cfg.note) ? cfg.note : false
+				});
+				this.fieldset.add(areaField);
+				break;
+
+			case 'email':
+				var mailField = new Ext.form.Email({
+					label: 'Mail',
+					name: cfg.name,
+					value: defaultValue,
+					allowBlank: (!cfg.required) ? true : false,
+					required: (cfg.required) ? true : false,
+					placeHolder: (cfg.note) ? cfg.note : false
+				});
+				this.fieldset.add(mailField);
+				break;
+			
+			case 'select':
+				var selectValues = cfg.value.split(';');
+				var data = new Array();
+				if(selectValues != null) {
+					for(var i=0; i<selectValues.length; i++) {
+						var tmpArr = new Array();
+						tmpArr.push(selectValues[i]);
+						data.push(tmpArr);
+					}
+				}
+
+				var selectField = new Ext.form.Select({
+					label: cfg.label,
+					name: cfg.name,
+					hiddenName: cfg.name,
+					mode: 'local',
+					displayField: 'value',
+					valueField: 'value',
+					store: new Ext.data.ArrayStore({ autoDestroy: true, fields: ['value'], data: data }),
+					triggerAction: 'all',
+					required: (cfg.required) ? true : false
+				});
+				this.fieldset.add(selectField);
+				break;
+			
+			default:
+				var textField = new Ext.form.Text({
+					label: cfg.label,
+					name: cfg.name,
+					value: defaultValue,
+					allowBlank: (!cfg.required) ? true : false,
+					required: (cfg.required) ? true : false,
+					placeHolder: (cfg.note) ? cfg.note : false
+				});
+			this.fieldset.add(textField);
+		}
+	}
 });
