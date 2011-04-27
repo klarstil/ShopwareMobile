@@ -13,6 +13,9 @@ App.stores.Categories = new Ext.data.Store({
 	model: 'MainCategories',
 	autoLoad: true
 });
+App.stores.CategoriesTree = new Ext.data.TreeStore({
+	model: 'Categories'
+});
 
 App.stores.Promotions = new Ext.data.Store({
 	model: 'Promotion',

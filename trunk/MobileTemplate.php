@@ -17,23 +17,110 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 * Liest alle Hauptkategorien des Shops aus
 	 *
 	 * @access public
-	 * @return {string} $retCats - Array mit den Hauptkategorien
+	 * @return void
 	 */
 	public function getMainCategoriesAction()
 	{
-		$main_categories = Shopware()->Modules()->Categories()->sGetMainCategories();
-		print_r($main_categories);
+		$main_categories = Shopware()->Modules()->Categories()->sGetCategoriesAsArrayById();
 		$i = 0;
 		foreach($main_categories as $cat) {
-			$retCats['categories'][$i] = array(
-				'id'    => $cat['id'],
-				'name'  => utf8_encode($cat['description']),
-				'desc'  => utf8_encode($this->truncate($cat['cmstext'], 100)),
-				'count' => $cat['countArticles']
+			$categoryInfo = Shopware()->Modules()->Categories()->sGetCategoryContent($cat['id']);
+			$output[$i] = array(
+				'id'     => $cat['id'],
+				'name'   => utf8_encode($cat['description']),
+				'desc'   => utf8_encode($this->truncate(strip_tags($categoryInfo['cmstext']), 100)),
+				'sub'    => ($cat['hasSubCategories'] == 1) ? true : false
 			);
 			$i++;
 		}
-		$this->jsonOutput($retCats);
+		$this->jsonOutput(array('categories' => $output));
+	}
+
+	/**
+	 * getCategoriesTreeAction()
+	 *
+	 * Listet alle Unterkategorien einer gegebenen Kategorie-ID auf
+	 *
+	 * @return void
+	 */
+	public function getCategoriesTreeAction() {
+
+		/* Set node */
+		if(!empty($this->Request()->node) && $this->Request()->node !== 'root') {
+			$node = intval($this->Request()->node);
+		} else {
+			$node = 3;
+		}
+		if(isset($this->Request()->categoryID) && !empty($this->Request()->categoryID)) {
+			$node = intval($this->Request()->categoryID);
+		}
+
+		$nodes = array();
+		$sql = "
+			SELECT c.id, c.description, c.position, c.parent, COUNT(c2.id) as count,
+			(
+				SELECT categoryID
+				FROM s_articles_categories
+				WHERE categoryID = c.id
+				LIMIT 1
+			) as article_count
+			FROM s_categories c
+			LEFT JOIN s_categories c2 ON c2.parent=c.id
+			WHERE c.parent=?
+			GROUP BY c.id
+			ORDER BY c.position, c.description
+		";
+		$getCategories = Shopware()->Db()->fetchAll($sql, array($node));
+
+		if (!empty($getCategories)) {
+			foreach($getCategories as $category) {
+
+				$categoryInfo = Shopware()->Modules()->Categories()->sGetCategoryContent($category["id"]);
+
+				/* Handle encoding */
+				if(function_exists('mb_convert_encoding')) {
+					$category["description"] = mb_convert_encoding($category["description"], 'UTF-8', 'HTML-ENTITIES');
+					$categoryInfo['cmstext'] = mb_convert_encoding($categoryInfo['cmstext'], 'UTF-8', 'HTML-ENTITIES');
+				} else {
+					$category["description"] = utf8_encode($category["description"]);
+					$categoryInfo['cmstext'] = utf8_encode($categoryInfo['cmstext']);
+				}
+				$category["description"] = html_entity_decode($category["description"]);
+				$categoryInfo['cmstext'] = $this->truncate(strip_tags($categoryInfo['cmstext']), 100);
+
+				/* Get first article image */
+				$firstArticle = Shopware()->Modules()->Articles()->sGetArticlesByCategory($category['id'], false, 1);
+				$firstArticle = $firstArticle['sArticles'][0];
+				if(!empty($firstArticle['image'])) {
+					$image = $this->stripBasePath($firstArticle['image']['src'][1]);
+				} else {
+					$image = false;
+				}
+
+				/* Fill return array */
+				if(!empty($category["count"])) {
+					$nodes[] = array(
+						'id'       => $category["id"],
+						'parentId' => $category["parent"],
+						'text'     => $category["description"],
+						'desc'     => $categoryInfo['cmstext'],
+						'img'      => $image,
+						'count'    => $category["article_count"]
+					);
+				} else {
+					$nodes[] = array(
+						'id'       => $category["id"],
+						'parentId' => $category["parent"],
+						'text'     => $category["description"],
+						'desc'     => $categoryInfo['cmstext'],
+						'img'      => $image,
+						'count'    => $category["article_count"],
+						'leaf'     => true
+					);
+				}
+			}
+		}
+		$this->jsonOutput(array('categories' => $nodes));
 	}
 	
 	/**
