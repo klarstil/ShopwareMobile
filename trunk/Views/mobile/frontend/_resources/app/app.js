@@ -22,7 +22,7 @@ Ext.regApplication({
 	
 	/* History settings */
 	basePath: '',
-	defaultUrl: '#',
+	defaultUrl: '#home',
 	useHistory: true,
 
     launch: function () {
@@ -33,6 +33,9 @@ Ext.regApplication({
 
 /* Set up router for history support */
 Ext.Router.draw(function(map) {
+	map.connect('home', { controller: 'home', action: 'show' });
+	map.connect('category/:index', { controller: 'category', action: 'show' });
+	map.connect('detail/:articleID', { controller: 'detail', action: 'show' });
 
 	/* Fallback route - would match route like http://example.com/#basket/show to 'basket' controllers 'show' action */
 	map.connect(':controller/:action');

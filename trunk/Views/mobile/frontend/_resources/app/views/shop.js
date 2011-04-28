@@ -32,7 +32,7 @@ App.views.Shop.home = Ext.extend(Ext.Panel, {
 
 	initComponent: function() {
 		var me = this,
-				items;
+			items;
 
 		/* Shoplogo */
 		me.logo = new Ext.Panel({
@@ -60,19 +60,8 @@ App.views.Shop.home = Ext.extend(Ext.Panel, {
 			itemTpl: '<strong>{name}</strong><tpl if="desc"><div class="desc">{desc}</div></tpl>',
 			listeners: {
 				scope: this,
-				selectionchange: function(selModel, recs) {
-					selModel.deselect(recs);
-				},
-				itemtap: function(pnl, idx, el, event) {
-					Ext.dispatch({
-						controller: 'category',
-						action: 'show',
-						idx: idx,
-						store: App.stores.Categories,
-						type: 'slide',
-						direction: 'left'
-					});
-				}
+				selectionchange: me.onSelectionChange,
+				itemtap: me.onItemTap
 			}
 		});
 
@@ -83,21 +72,14 @@ App.views.Shop.home = Ext.extend(Ext.Panel, {
 			html: 'Zur normalen Ansicht wechseln',
 			listeners: {
 				scope: this,
-				click: {
-					element: 'body',
-					fn: function() {
-						window.location.href = App.RequestURL.useNormalSite;
-					}
-				}
+				click: { el: 'body', fn: me.onNormalView }
 			}
 		});
 
 		/* Render Einkaufswelten, wenn der Store geladen ist */
 		me.promotions.store.on({
 			scope: this,
-			load: function() {
-				me.promotions.doLayout();
-			}
+			load: function() { me.promotions.doLayout() }
 		});
 
 		/* Einkaufswelten auslesen */
@@ -114,6 +96,23 @@ App.views.Shop.home = Ext.extend(Ext.Panel, {
 		});
 
 		App.views.Shop.home.superclass.initComponent.call(this);
+	},
+
+	onItemTap: function(pnl, idx) {
+		Ext.dispatch({
+			controller: 'category',
+			action: 'show',
+			historyUrl: 'category/'+ idx,
+			index: idx
+		});
+	},
+
+	onSelectionChange: function(selModel, recs) {
+		selModel.deselect(recs);
+	},
+
+	onNormalView: function() {
+		window.location.href = App.RequestURL.useNormalSite;
 	},
 
 	getPromotionItems: function(store) {
@@ -133,14 +132,6 @@ App.views.Shop.listing = Ext.extend(Ext.Panel, {
 	layout: 'card',
 	listeners: {
 		scope: this,
-		beforeactivate: function(me) {
-			//me.list.update('');
-			me.list.setLoading(true);
-		},
-		activate: function(me) {
-			//me.list.update(me.list.store);
-			me.list.setLoading(false);
-		},
 		deactivate: function(me) {
 			me.destroy();
 		}
@@ -148,72 +139,7 @@ App.views.Shop.listing = Ext.extend(Ext.Panel, {
 
 	initComponent: function() {
 		var me = this;
-
-		/* Subcategory list */
-		me.subList = new Ext.NestedList({
-			id: 'subListing',
-			store: App.stores.CategoriesTree,
-			scroll: false,
-			height:  '100%',
-			displayField: 'text',
-			title: 'Kategorien',
-			toolbar: { ui: 'dark' },
-			getItemTextTpl: function(node) {
-				//'<div class="catImg" <tpl if="img">style="background-image: url({img})"</tpl>></div>'
-				return '<div class="info"><span class="title">{text}</span></div>'
-					+ '<tpl if="desc"><p class="desc">{desc}</p></tpl>';
-			},
-			listeners: {
-				scope: this,
-				beforeactivate: function(me) {
-					me.update('');
-				},
-				activate: function(me) {
-					me.update(me.store);
-				},
-				deactivate: function(me) {
-					me.destroy();
-				},
-				leafitemtap: function(me, idx) {
-					console.log('leafitemtap');
-					Ext.dispatch({
-						controller: 'category',
-						action: 'showArticleListing',
-						idx: idx,
-						store: me.store,
-						type: 'slide',
-						direction: 'left'
-					});
-				}
-			}
-		});
-
-		/* Category list */
-		me.list = new Ext.List({
-			id: 'listingList',
-			store: App.stores.Listing,
-			itemTpl: '<div class="image"<tpl if="image_url"> style="background-image:url({image_url})"</tpl>></div><strong>{articleName}</strong><span class="price">{price} &euro;</span><div class="desc">{description_long}</div>',
-			listeners: {
-				scope: this,
-				activate: function(me) {
-					me.scroller.scrollTo({
-						x: 0,
-						y: 0
-					})
-				},
-				itemtap: function(me, idx) {
-					Ext.dispatch({
-						controller: 'detail',
-						action: 'show',
-						idx: idx,
-						store: me.store,
-						type: 'slide',
-						direction: 'left'
-					});
-				}
-			}
-		});
-
+		
 		/* Kategorietoolbar - Back Button */
 		me.backBtn = new Ext.Button({
 			id: 'backBtn',
@@ -243,7 +169,71 @@ App.views.Shop.listing = Ext.extend(Ext.Panel, {
 			Ext.getCmp('shop').setActiveItem('home', {direction: 'right', type: 'slide'});
 		}
 	},
+	
 	getToolbar: function() {
 		return this.list.toolbar;
+	}
+});
+
+App.views.Shop.artListing = Ext.extend(Ext.List, {
+	id: 'artListing',
+	store: App.stores.Listing,
+	itemTpl: '<div class="image"<tpl if="image_url"> style="background-image:url({image_url})"</tpl>></div><strong>{articleName}</strong><span class="price">{price} &euro;</span><div class="desc">{description_long}</div>',
+	listeners: {
+		scope: this,
+		activate: function(me) {
+			me.scroller.scrollTo({
+				x: 0,
+				y: 0
+			})
+		},
+		itemtap: function(me, idx) {
+			var tmpRec = me.store.getAt(idx);
+			Ext.dispatch({
+				controller: 'detail',
+				action: 'show',
+				historyUrl: 'detail/'+tmpRec.data.articleID,
+				articleID: tmpRec.data.articleID,
+				store: me.store,
+				type: 'slide',
+				direction: 'left'
+			});
+		}
+	},
+	initComponent: function() {
+		App.views.Shop.artListing.superclass.initComponent.call(this);
+	}
+});
+
+/* Subcategory list */
+App.views.Shop.subListing = Ext.extend(Ext.NestedList, {
+	id: 'subListing',
+	store: App.stores.CategoriesTree,
+	scroll: false,
+	height:  '100%',
+	displayField: 'text',
+	title: 'Kategorien',
+	toolbar: { ui: 'dark' },
+	getItemTextTpl: function(node) {
+		return '<div class="info"><span class="title">{text}</span></div>'
+			+ '<tpl if="desc"><p class="desc">{desc}</p></tpl>';
+	},
+	listeners: {
+		scope: this,
+		deactivate: function(me) {
+			me.destroy();
+		},
+		leafitemtap: function(me, idx) {
+			Ext.dispatch({
+				controller: 'category',
+				action: 'show',
+				index: idx,
+				store: me.store,
+				last: true
+			});
+		}
+	},
+	initComponent: function() {
+		App.views.Shop.subListing.superclass.initComponent.call(this);
 	}
 });

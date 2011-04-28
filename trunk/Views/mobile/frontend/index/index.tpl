@@ -48,6 +48,7 @@
         <script type="text/javascript" src="{link file='frontend/_resources/app/templates.js'}"></script>
         
         <!-- Controllers -->
+        <script type="text/javascript" src="{link file='frontend/_resources/app/controllers/main_controller.js'}"></script>
         <script type="text/javascript" src="{link file='frontend/_resources/app/controllers/category_controller.js'}"></script>
         <script type="text/javascript" src="{link file='frontend/_resources/app/controllers/detail_controller.js'}"></script>
         

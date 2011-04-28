@@ -6,61 +6,142 @@
  * ----------------------------------------------------------------------
  */
 Ext.regController('category', {
-    last: null,
-
+	view:     Ext.getCmp('listing'),
+	shopView: Ext.getCmp('shop'),
+	store:    App.stores.Categories,
+	lastRecord: null,
+	
     show: function(options) {
-        var store = options.store,
-            view  = Ext.getCmp('listing');
+	    var record;
 
-        if(!Ext.isDefined(options.idx)) {
-            var idx = this.last;
-        } else {
-            var idx = options.idx;
-            this.last = options.idx;
-        }
-
-		var rec = store.getAt(idx);
-	    if(!view) {
-            view = new App.views.Shop.listing;
-            Ext.getCmp('shop').add(view);
-        }
-	    if(!Ext.isEmpty(rec.data.sub)) {
-		    /* Load tree store with  */
-			App.stores.CategoriesTree.proxy.extraParams = { categoryID: rec.data.id };
-			App.stores.CategoriesTree.load();
-	        App.stores.CategoriesTree.proxy.extraParams = {};
-
-		    view.subList.toolbar.setTitle(rec.data.name);
-		    view.add(view.subList);
-		    view.subList.toolbar.add(view.backBtn);
-		} else {
-			view.add(view.list);
-		    view.addDocked(view.toolbar);
-		    view.doLayout();
+	    if(!this.shopView) {
+		    this.shopView = Ext.getCmp('shop');
 	    }
 
-        Ext.getCmp('shop').setActiveItem(view, {
-            type: options.type, direction: options.direction
-        });
+	    if(!Ext.isDefined(options.index) && !this.lastRecord) {
+		    throw new Error("No index set in dispatch options");
+	    }
 
-	    App.stores.Listing.load({ params: { categoryId: rec.data.id } });
-    },
-	showArticleListing: function(options) {
-		var store = options.store,
-			idx   = options.idx,
-			view  = Ext.getCmp('listing'),
-			list  = Ext.getCmp('subListing'),
-			rec;
-
-		rec = store.getAt(idx);
-		if(list) {
-			view.add(view.list);
-			view.toolbar.add(view.backBtn);
-			view.addDocked(view.toolbar);
-			view.setActiveItem(view.list, {
-                type: options.type, direction: options.direction
-            });
-			App.stores.Listing.load({ params: { categoryId: rec.data.id } });
+	    if(Ext.isDefined(options.store)) {
+		    record = options.store.getAt(options.index);
+		} else {
+		    record = this.store.getAt(options.index);
+	    }
+		if(!Ext.isDefined(options.index) && this.lastRecord) {
+			record = this.lastRecord;
 		}
+
+	    if(Ext.isEmpty(record)) {
+		    Ext.dispatch({
+			    controller: 'main',
+			    action: 'show',
+			    type: 'slide',
+			    direction: 'right',
+			    historyUrl: 'home'
+		    });
+			return false;
+	    } else {
+		    this.lastRecord = record;
+	    }
+
+	    if(!Ext.getCmp('listing')) {
+            this.view = new App.views.Shop.listing;
+            this.shopView.add(this.view);
+		    this.shopView.setActiveItem(this.view, {
+			    type:  (Ext.isDefined(options.type)) ? options.type : 'slide',
+			    direction: (Ext.isDefined(options.direction)) ? options.direction : 'left'
+		    });
+        }
+
+	    if(Ext.isEmpty(record.data.sub)) {
+		    Ext.dispatch({
+			    controller:   'category',
+			    action:       'showArticleListing',
+			    categoryID:   record.data.id,
+			    categoryName: (!Ext.isEmpty(record.data.name)) ? record.data.name : record.data.text,
+			    type: (Ext.isDefined(options.type)) ? options.type : 'slide',
+			    direction: (Ext.isDefined(options.direction)) ? options.direction : 'left'
+		    });
+	    } else {
+		    Ext.dispatch({
+			    controller:   'category',
+			    action:       'showSubCategories',
+			    categoryID:   Ext.isDefined(options.index) ? record.data.id : record.data.parentId,
+			    categoryName: record.data.name,
+			    type: (Ext.isDefined(options.type)) ? options.type : 'slide',
+			    direction: (Ext.isDefined(options.direction)) ? options.direction : 'left'
+		    });
+	    }
+    },
+
+	showSubCategories: function(options) {
+		var store, type, direction, list = Ext.getCmp('subListing');
+	
+		if(!options.store) {
+			console.warn('options.store not defined, use default store');
+			store = App.stores.CategoriesTree;
+		} else {
+			store = options.store;
+		}
+		
+		if(!Ext.isDefined(options.categoryID)) {
+			throw new Error("No categoryID set in dispatch options");
+		}
+
+		if(!list) {
+			list = new App.views.Shop.subListing();
+			this.view.add(list);
+		}
+
+		if(Ext.isDefined(options.categoryName)) {
+			list.toolbar.title = options.categoryName;
+		}
+
+		type = (Ext.isDefined(options.type)) ? options.type : 'slide';
+		direction = (Ext.isDefined(options.direction)) ? options.direction : 'left';
+
+		this.view.setActiveItem(list, {type: type, direction: direction});
+
+		/* TODO - Needs a cleaner workaround */
+		list.setLoading(true);
+		window.setTimeout(function () {
+			store.load({
+				params: { categoryID: options.categoryID },
+				callback: function() { ;list.setLoading(false) }
+			});
+		}, 0);
+
+	},
+	
+	showArticleListing: function(options) {
+		var store, list = Ext.getCmp('artListing'), type, direction;
+		if(!options.store) {
+			console.warn('options.store not defined, use default store');
+			store = App.stores.Listing;
+		} else {
+			store = options.store;
+		}
+		
+		if(!Ext.isDefined(options.categoryID)) {
+			throw new Error("No categoryID set in dispatch options");
+		}
+
+		if(Ext.isDefined(options.categoryName)) {
+			this.view.toolbar.setTitle(options.categoryName);
+		}
+
+		if(!list) {
+			list = new App.views.Shop.artListing;
+			this.view.add(list);
+		}
+
+		type = (Ext.isDefined(options.type)) ? options.type : 'slide';
+		direction = (Ext.isDefined(options.direction)) ? options.direction : 'left';
+		
+		this.view.addDocked(this.view.toolbar);
+		this.view.doLayout();
+		this.view.setActiveItem(list, {type: type, direction: direction});
+		
+		store.load({ params: { categoryID: options.categoryID } });
 	}
 });
