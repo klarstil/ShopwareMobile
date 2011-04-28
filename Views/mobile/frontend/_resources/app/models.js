@@ -80,6 +80,7 @@ Ext.regModel('Articles', {
 Ext.regModel('Detail', {
 	fields: [
 		{ name: 'articleID', type: 'int' },
+		{ name: 'categoryID', type: 'int' },
 		{ name: 'ordernumber', type: 'string' },
 		{ name: 'additionaltext', type: 'string'},
 		{ name: 'date', type: 'date' },

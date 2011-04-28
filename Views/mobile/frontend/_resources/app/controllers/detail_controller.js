@@ -9,8 +9,11 @@
  * ----------------------------------------------------------------------
  */
 Ext.regController('detail', {
-    last: null,
-    detail: Ext.getCmp('detail'),
+    last:       null,
+	shopView:   Ext.getCmp('shop'),
+	view:       Ext.getCmp('detail'),
+	lastRecord: null,
+	store:      App.stores.Detail,
 
 	/**
 	 * show
@@ -20,23 +23,25 @@ Ext.regController('detail', {
 	 * @param options
 	 */
     show: function(options) {
-        var store, rec, pictures, view = Ext.getCmp('detail'), me = this;
+		var store = this.store;
+		if(!this.shopView) {
+			this.shopView = Ext.getCmp('shop');
+		}
 
-        if(!view) {
-            view = new App.views.Shop.detail;
-            me.detail = view;
-            Ext.getCmp('shop').add(view);
+        if(!this.view) {
+            this.view = new App.views.Shop.detail;
+            this.shopView.add(this.view);
         }
 
-        store = options.store;
-        rec = store.getAt(options.idx);
-        this.last = rec;
+		if(!Ext.isDefined(options.articleID)) {
+			throw new Error("No articleID set in dispatch options");
+		}
 
-	    App.stores.Detail.load({
-            params: {
-                articleId: rec.data.articleID
-            }, callback: function() {
-			    App.stores.Detail.fireEvent('storeLoaded');
+	    store.load({
+            params: { articleId: options.articleID},
+		    callback: function() {
+			    this.lastRecord = store.getAt(0);
+			    store.fireEvent('storeLoaded');
 			    Ext.getCmp('teaser').doLayout();
 		    }
         });
@@ -46,7 +51,7 @@ Ext.regController('detail', {
             action: 'showInfo'
         });
 
-        Ext.getCmp('shop').setActiveItem(view, 'slide');
+        this.shopView.setActiveItem(this.view, 'slide');
     },
 
 	/**
@@ -59,19 +64,16 @@ Ext.regController('detail', {
     showInfo: function(options) {
         var view = Ext.getCmp('teaser');
 
-		console.log(options);
-		console.log(App.stores.Detail);
-
         if(!view) {
             view = new App.views.Shop.info;
-            Ext.getCmp('detail').add(view);
+            this.view.add(view);
         }
 		
 		if(options.refresh) {
-			App.stores.Detail.fireEvent('storeLoaded');
+			this.store.fireEvent('storeLoaded');
 		}
 
-		Ext.getCmp('detail').doLayout();
+		this.view.doLayout();
     },
 
 	/**
@@ -84,7 +86,7 @@ Ext.regController('detail', {
 
         if(!view) {
             view = new App.views.Shop.comments;
-            Ext.getCmp('detail').add(view);
+            this.view.add(view);
         }
     },
 
@@ -96,16 +98,18 @@ Ext.regController('detail', {
     showPictures: function() {
         var view = Ext.getCmp('pictures'), me = this;
 
+		this.lastRecord = this.store.getAt(0);
+
         App.stores.Picture.load({
             params: {
-                articleId: me.last.data.articleID
+                articleId: me.lastRecord.data.articleID
             },
             callback: function() {
                 if(!view) {
                     view = new App.views.Shop.pictures;
-                    Ext.getCmp('detail').add(view);
+                    me.view.add(view);
                 }
-                Ext.getCmp('detail').setActiveItem(view, 'fade');
+                me.view.setActiveItem(view, 'fade');
             }
         })
     }

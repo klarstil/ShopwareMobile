@@ -42,16 +42,9 @@ App.views.Shop.detail = Ext.extend(Ext.Panel, {
 			allowMultiple: false,
 			ui: 'light',
 			items: [
-				{
-					text: 'Detail',
-					pressed: true
-				},
-				{
-					text: 'Kommentare'
-				},
-				{
-					text: 'Bilder'
-				}
+				{ text: 'Detail', pressed: true },
+				{ text: 'Kommentare' },
+				{ text: 'Bilder' }
 			],
 			listeners: {
 				scope: this,
@@ -92,10 +85,14 @@ App.views.Shop.detail = Ext.extend(Ext.Panel, {
 	 * Handles the back button
 	 */
 	onBackBtn: function() {
-		App.stores.Detail.clearListeners();
+		var store = App.stores.Detail;
+		store.clearListeners();
+		var tmpRec = store.getAt(0);
+
 		Ext.dispatch({
 			controller: 'category',
 			action: 'show',
+			index: tmpRec.data.categoryID,
 			store: App.stores.Listing,
 			type: 'slide',
 			direction: 'right'
@@ -277,7 +274,6 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 	 * Handles the different article types and creates the needed elements (e.g. variants, configurator, bundles)
 	 */
 	onStoreLoaded: function() {
-		console.log('view onStoreLoaded');
 		var me = this, store = App.stores.Detail, item = store.getAt(0), data = item.data.liveshoppingData;
 		me._item = item;
 		

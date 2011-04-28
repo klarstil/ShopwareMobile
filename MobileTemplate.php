@@ -204,7 +204,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	public function getArticlesByCategoryIdAction()
 	{
-		$id = $this->Request()->getParam('categoryId');
+		$id = $this->Request()->getParam('categoryID');
 		if(empty($id)) { $id = 3; }
 		$articles = Shopware()->Modules()->Articles()->sGetArticlesByCategory($id);
 		
@@ -218,7 +218,6 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 			}
 			$i++;
 		}
-
 		$this->jsonOutput($articles);
 	}
 	
