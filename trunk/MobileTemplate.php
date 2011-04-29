@@ -10,6 +10,24 @@
  */
 class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Action
 {
+	protected $system;
+	protected $config;
+	protected $module;
+
+	/**
+	 * init()
+	 *
+	 * Dient als Konstruktor
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function init()
+	{
+		$this->system = Shopware()->System();
+		$this->config = Shopware()->Config();
+		$this->module = Shopware()->Modules();
+	}
 
 	/**
 	 * getMainCategoriesAction()
@@ -205,7 +223,15 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	public function getArticlesByCategoryIdAction()
 	{
 		$id = $this->Request()->getParam('categoryID');
-		if(empty($id)) { $id = 3; }
+		if(empty($id)) {
+			$id = 3;
+		}
+
+		$page = $this->Request()->getParam('page');
+		if(!empty($page)) {
+			$this->system->_GET['sPage'] = $page;
+		}
+
 		$articles = Shopware()->Modules()->Articles()->sGetArticlesByCategory($id);
 		
 		$i = 0;

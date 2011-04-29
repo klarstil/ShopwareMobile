@@ -82,7 +82,7 @@
     color: #666;
     font-size: 12px;
 }
-#listing .image {
+#artListing .image {
     display: block;
     position: absolute;
     background-repeat: no-repeat;
@@ -94,12 +94,12 @@
     width: 70px;
     border-right: 1px solid #c7c7c7;
 }
-#listing strong, #listing .desc {
+#artListing strong, #artListing .desc {
     position: relative;
     left: 70px;
     display: block;
 }
-#listing .price {
+#artListing .price {
     display: inline-block;
     position: absolute;
     right: 5px;
@@ -111,13 +111,13 @@
     font-weight: 700;
     padding: 1px 8px;
 }
-#listing strong {
+#artListing strong {
     font-weight: 700;
     font-size: 14px;
     margin-bottom: 4px;
     max-width: 58%;
 }
-#listing .desc {
+#artListing .desc {
     color: #666;
     font-size: 12px;
     max-width: 80%;
