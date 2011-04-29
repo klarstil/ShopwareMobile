@@ -27,15 +27,6 @@ App.views.Shop.detail = Ext.extend(Ext.Panel, {
 	initComponent: function() {
 		var me = this;
 
-		/* Backbutton */
-		me.backBtn = new Ext.Button({
-			id: 'detailBackBtn',
-			text: 'Zur&uuml;ck',
-			ui: 'back',
-			scope: this,
-			handler: me.onBackBtn
-		});
-
 		/* Navigationsbutton */
 		me.navBtn = new Ext.SegmentedButton({
 			id: 'detailSegBtn',
@@ -52,20 +43,9 @@ App.views.Shop.detail = Ext.extend(Ext.Panel, {
 			}
 		});
 
-		/* Toolbar */
-		me.toolbar = new Ext.Toolbar({
-			dock: 'top',
-			id: 'detailToolbar',
-			items: [
-				me.backBtn,
-				{ xtype: 'spacer' },
-				me.navBtn
-			]
-		});
-
-		Ext.apply(me, {
-			dockedItems: [me.toolbar]
-		});
+		Ext.getCmp('shop').toolBar.setTitle('');
+		Ext.getCmp('shop').toolBar.add([ { xtype: 'spacer' }, me.navBtn]);
+		Ext.getCmp('shop').toolBar.doComponentLayout();
 
 		App.views.Shop.detail.superclass.initComponent.call(me);
 	},

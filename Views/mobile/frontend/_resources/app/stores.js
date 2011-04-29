@@ -11,7 +11,7 @@
 
 App.stores.Categories = new Ext.data.Store({
 	model: 'MainCategories',
-	autoLoad: true
+	autoLoad: true,
 });
 App.stores.CategoriesTree = new Ext.data.TreeStore({
 	model: 'Categories',
@@ -25,7 +25,11 @@ App.stores.Promotions = new Ext.data.Store({
 });
 
 App.stores.Listing = new Ext.data.Store({
-	model: 'Articles'
+	model: 'Articles',
+	remoteSort: true,
+	remoteFilter: true,
+	currentPage: true,
+	pageSize: 12
 });
 
 App.stores.Detail = new Ext.data.Store({

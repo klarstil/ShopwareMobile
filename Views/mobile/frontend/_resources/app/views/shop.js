@@ -11,38 +11,36 @@ App.views.Shop.index = Ext.extend(Ext.Panel, {
 	title: 'Shop',
 	iconCls: 'home',
 	layout: 'card',
+
 	initComponent: function () {
-		Ext.apply(App.views, {
-			home: new App.views.Shop.home
+		var items;
+		
+		/* Back button */
+		this.backBtn = new Ext.Button({
+			ui: 'back',
+			text: 'Zur&uuml;ck',
+			scope: this,
+			handler: this.onBackBtn,
+			hidden: true
 		});
-		Ext.apply(this, {
-			items: [
-				App.views.home
-			]
+
+		/* Toolbar */
+		this.toolBar = new Ext.Toolbar({
+			title: 'Master',
+			items: [this.backBtn],
+			hidden: true,
+			width: '100%'
 		});
-		App.views.Shop.index.superclass.initComponent.call(this);
-	}
-});
-
-/* Shop - Startseite */
-App.views.Shop.home = Ext.extend(Ext.Panel, {
-	id: 'home',
-	scroll: 'vertical',
-	layout: 'vbox',
-
-	initComponent: function() {
-		var me = this,
-			items;
 
 		/* Shoplogo */
-		me.logo = new Ext.Panel({
+		this.logo = new Ext.Panel({
 			id: 'logo',
 			scroll: false,
 			autoHeight: true
 		});
 
 		/* Einkaufsweltencarousel */
-		me.promotions = new Ext.Carousel({
+		this.promotions = new Ext.Carousel({
 			id: 'promotions',
 			store: App.stores.Promotions,
 			height: 150,
@@ -52,58 +50,130 @@ App.views.Shop.home = Ext.extend(Ext.Panel, {
 		});
 
 		/* Hauptkategorien */
-		me.list = new Ext.List({
+		this.list = new Ext.List({
 			id: 'categories',
 			store: App.stores.Categories,
 			scroll: false,
 			height: '100%',
+			width: '100%',
 			itemTpl: '<strong>{name}</strong><tpl if="desc"><div class="desc">{desc}</div></tpl>',
 			listeners: {
 				scope: this,
-				selectionchange: me.onSelectionChange,
-				itemtap: me.onItemTap
+				selectionchange: this.onSelectionChange,
+				itemtap: this.onItemTap
 			}
 		});
 
 		/* Link zur normalen View */
-		me.normalView = new Ext.Panel({
+		this.normalView = new Ext.Panel({
 			fullscreen: false,
 			cls: 'normalView',
 			html: 'Zur normalen Ansicht wechseln',
 			listeners: {
 				scope: this,
-				click: { el: 'body', fn: me.onNormalView }
+				click: { el: 'body', fn: this.onNormalView }
 			}
 		});
 
 		/* Render Einkaufswelten, wenn der Store geladen ist */
-		me.promotions.store.on({
+		this.promotions.store.on({
 			scope: this,
-			load: function() { me.promotions.doLayout() }
+			load: function() { this.promotions.doLayout() }
 		});
 
 		/* Einkaufswelten auslesen */
-		items = this.getPromotionItems(me.promotions.store);
-		me.promotions.add(items);
+		items = this.getPromotionItems(this.promotions.store);
+		this.promotions.add(items);
 
-		Ext.apply(this, {
-			items: [
-				me.logo,
-				me.promotions,
-				me.list,
-				me.normalView
-			]
+		this.itms = [
+			this.logo,
+			this.promotions,
+			this.list,
+			this.normalView
+		];
+
+		/* Panel */
+		this.pnl = new Ext.Panel({
+			id: 'home',
+			scroll: 'vertical',
+			layout: {
+				type: 'vbox',
+				align:  'center'
+			},
+			items: [this.itms]
 		});
 
-		App.views.Shop.home.superclass.initComponent.call(this);
+		Ext.apply(this, {
+			items: [ this.pnl ],
+			dockedItems:[ this.toolBar ]
+		});
+		App.views.Shop.index.superclass.initComponent.call(this);
+	},
+	
+	syncToolbar: function(card) {
+		var active        = card || this.getActiveItem(),
+			depth         = this.items.indexOf(active),
+			backBtn       = this.backBtn,
+			backToggleMth = (depth !== 0) ? 'show' : 'hide',
+			title;
+
+		if(active.title.length) {
+			title = active.title;
+		} else if(active.ownerCt.title.length) {
+			title = active.ownerCt.title;
+		}
+
+		if(title.length) {
+			this.toolBar.setTitle(title);
+		}
+
+		if(backBtn) {
+			backBtn[backToggleMth]();
+		}
 	},
 
-	onItemTap: function(pnl, idx) {
+	onBackBtn: function() {
+		var curr    = this.getActiveItem(),
+			currIdx = this.items.indexOf(curr),
+			me      = this;
+
+		if(Ext.getCmp('detailSegBtn')) {
+		    Ext.getCmp('detailSegBtn').destroy();
+	    }
+
+		if(currIdx != 1) {
+			var prevDepth      = currIdx - 1,
+				prev           = this.items.getAt(prevDepth);
+
+			this.setActiveItem(prev, {
+				type: 'slide',
+				reverse: true,
+				scope: this
+			});
+			this.syncToolbar(prev);
+
+			window.setTimeout(function() {
+				me.items.getAt(currIdx).destroy();
+			}, 250);
+		} else {
+			var prev = this.items.getAt(0);
+			this.setActiveItem(prev, {
+				type: 'slide',
+				reverse: true,
+				scope: this
+			});
+			this.toolBar.hide();
+			this.doComponentLayout();
+		}
+	},
+
+	onItemTap: function(list, idx) {
 		Ext.dispatch({
 			controller: 'category',
 			action: 'show',
-			historyUrl: 'category/'+ idx,
-			index: idx
+			//historyUrl: 'category/'+ idx,
+			index: idx,
+			panel: this
 		});
 	},
 
@@ -127,57 +197,12 @@ App.views.Shop.home = Ext.extend(Ext.Panel, {
 	}
 });
 
-App.views.Shop.listing = Ext.extend(Ext.Panel, {
-	id: 'listing',
-	layout: 'card',
-	listeners: {
-		scope: this,
-		deactivate: function(me) {
-			me.destroy();
-		}
-	},
 
-	initComponent: function() {
-		var me = this;
-		
-		/* Kategorietoolbar - Back Button */
-		me.backBtn = new Ext.Button({
-			id: 'backBtn',
-			text: 'Zur&uuml;ck',
-			ui: 'back',
-			scope: this,
-			handler: me.onBackBtn
-		});
-
-		/* Kategorietoolbar */
-		me.toolbar = new Ext.Toolbar({
-			id: 'shop_toolbar',
-			dock: 'top',
-			items: [me.backBtn]
-		});
-
-		App.views.Shop.listing.superclass.initComponent.call(me);
-	},
-
-	onBackBtn: function() {
-		try {
-			this.ownerCt.layout.prev({
-				type: 'slide',
-				direction: 'right'
-			});
-		} catch(err) {
-			Ext.getCmp('shop').setActiveItem('home', {direction: 'right', type: 'slide'});
-		}
-	},
-	
-	getToolbar: function() {
-		return this.list.toolbar;
-	}
-});
 
 App.views.Shop.artListing = Ext.extend(Ext.List, {
 	id: 'artListing',
 	store: App.stores.Listing,
+	title: '',
 	itemTpl: '<div class="image"<tpl if="image_url"> style="background-image:url({image_url})"</tpl>></div><strong>{articleName}</strong><span class="price">{price} &euro;</span><div class="desc">{description_long}</div>',
 	listeners: {
 		scope: this,
@@ -187,12 +212,16 @@ App.views.Shop.artListing = Ext.extend(Ext.List, {
 				y: 0
 			})
 		},
+		datachanged: function() {
+			var me = Ext.getCmp('artListing');
+			me.setLoading(false);
+		},
 		itemtap: function(me, idx) {
 			var tmpRec = me.store.getAt(idx);
 			Ext.dispatch({
 				controller: 'detail',
 				action: 'show',
-				historyUrl: 'detail/'+tmpRec.data.articleID,
+				//historyUrl: 'detail/'+tmpRec.data.articleID,
 				articleID: tmpRec.data.articleID,
 				store: me.store,
 				type: 'slide',
@@ -200,28 +229,57 @@ App.views.Shop.artListing = Ext.extend(Ext.List, {
 			});
 		}
 	},
+	
 	initComponent: function() {
+		this.store.on('changePage', this.onChangePage, this);
+
+		this.pagination = new Ext.plugins.ListPagingPlugin({
+			onPagingTap : function(e) {
+				if (!this.loading) {
+					this.loading = true;
+					this.list.setLoading(true);
+					this.list.scroller.setOffset({x: 0, y: 0}, 200);
+					this.list.store.nextPage();
+					this.el.addCls('x-loading');
+					this.list.store.fireEvent('changePage');
+				}
+			}
+		});
+		Ext.apply(this, {
+			//plugins: [this.pagination]
+		});
+
 		App.views.Shop.artListing.superclass.initComponent.call(this);
+	},
+	
+	onChangePage: function() {
+		var raw = this.store.proxy.reader.rawData, pagEl;
+		if(raw.sNumberPages <= this.store.currentPage) {
+			//.. remove plugin
+		}
+		this.setLoading(false);
 	}
+
 });
 
 /* Subcategory list */
 App.views.Shop.subListing = Ext.extend(Ext.NestedList, {
 	id: 'subListing',
 	store: App.stores.CategoriesTree,
-	scroll: false,
 	height:  '100%',
 	displayField: 'text',
-	title: 'Kategorien',
-	toolbar: { ui: 'dark' },
+	updateTitleText: false,
+	useToolbar: false,
+	title: '',
 	getItemTextTpl: function(node) {
 		return '<div class="info"><span class="title">{text}</span></div>'
 			+ '<tpl if="desc"><p class="desc">{desc}</p></tpl>';
 	},
 	listeners: {
 		scope: this,
-		deactivate: function(me) {
-			me.destroy();
+		itemtap: function(list, index, item) {
+			var tmpRec = list.store.getAt(index);
+			Ext.getCmp('shop').toolBar.setTitle(tmpRec.data.text);
 		},
 		leafitemtap: function(me, idx) {
 			Ext.dispatch({
@@ -229,6 +287,7 @@ App.views.Shop.subListing = Ext.extend(Ext.NestedList, {
 				action: 'show',
 				index: idx,
 				store: me.store,
+				panel: this,
 				last: true
 			});
 		}

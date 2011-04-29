@@ -6,16 +6,15 @@
  * ----------------------------------------------------------------------
  */
 Ext.regController('category', {
-	view:     Ext.getCmp('listing'),
-	shopView: Ext.getCmp('shop'),
+	view: Ext.getCmp('shop'),
 	store:    App.stores.Categories,
 	lastRecord: null,
 	
     show: function(options) {
 	    var record;
 
-	    if(!this.shopView) {
-		    this.shopView = Ext.getCmp('shop');
+	    if(!this.view) {
+		    this.view = Ext.getCmp('shop');
 	    }
 
 	    if(!Ext.isDefined(options.index) && !this.lastRecord) {
@@ -27,10 +26,12 @@ Ext.regController('category', {
 		} else {
 		    record = this.store.getAt(options.index);
 	    }
+
 		if(!Ext.isDefined(options.index) && this.lastRecord) {
 			record = this.lastRecord;
 		}
 
+	    /* If no index and no last record, go back to home view */
 	    if(Ext.isEmpty(record)) {
 		    Ext.dispatch({
 			    controller: 'main',
@@ -39,19 +40,9 @@ Ext.regController('category', {
 			    direction: 'right',
 			    historyUrl: 'home'
 		    });
-			return false;
 	    } else {
 		    this.lastRecord = record;
 	    }
-
-	    if(!Ext.getCmp('listing')) {
-            this.view = new App.views.Shop.listing;
-            this.shopView.add(this.view);
-		    this.shopView.setActiveItem(this.view, {
-			    type:  (Ext.isDefined(options.type)) ? options.type : 'slide',
-			    direction: (Ext.isDefined(options.direction)) ? options.direction : 'left'
-		    });
-        }
 
 	    if(Ext.isEmpty(record.data.sub)) {
 		    Ext.dispatch({
@@ -60,7 +51,8 @@ Ext.regController('category', {
 			    categoryID:   record.data.id,
 			    categoryName: (!Ext.isEmpty(record.data.name)) ? record.data.name : record.data.text,
 			    type: (Ext.isDefined(options.type)) ? options.type : 'slide',
-			    direction: (Ext.isDefined(options.direction)) ? options.direction : 'left'
+			    direction: (Ext.isDefined(options.direction)) ? options.direction : 'left',
+			    panel: options.panel
 		    });
 	    } else {
 		    Ext.dispatch({
@@ -72,6 +64,9 @@ Ext.regController('category', {
 			    direction: (Ext.isDefined(options.direction)) ? options.direction : 'left'
 		    });
 	    }
+		this.view.backBtn.show();
+	    this.view.toolBar.show();
+	    this.view.doComponentLayout();
     },
 
 	showSubCategories: function(options) {
@@ -94,7 +89,8 @@ Ext.regController('category', {
 		}
 
 		if(Ext.isDefined(options.categoryName)) {
-			list.toolbar.title = options.categoryName;
+			this.view.toolBar.setTitle(options.categoryName);
+			this.view.title = options.categoryName;
 		}
 
 		type = (Ext.isDefined(options.type)) ? options.type : 'slide';
@@ -102,15 +98,14 @@ Ext.regController('category', {
 
 		this.view.setActiveItem(list, {type: type, direction: direction});
 
-		/* TODO - Needs a cleaner workaround */
+		/* TODO - Needs a better workaround */
 		list.setLoading(true);
 		window.setTimeout(function () {
 			store.load({
 				params: { categoryID: options.categoryID },
-				callback: function() { ;list.setLoading(false) }
+				callback: function() { list.setLoading(false) }
 			});
-		}, 0);
-
+		}, 150);
 	},
 	
 	showArticleListing: function(options) {
@@ -127,7 +122,8 @@ Ext.regController('category', {
 		}
 
 		if(Ext.isDefined(options.categoryName)) {
-			this.view.toolbar.setTitle(options.categoryName);
+			this.view.toolBar.setTitle(options.categoryName);
+			this.view.title = options.categoryName;
 		}
 
 		if(!list) {
@@ -138,10 +134,9 @@ Ext.regController('category', {
 		type = (Ext.isDefined(options.type)) ? options.type : 'slide';
 		direction = (Ext.isDefined(options.direction)) ? options.direction : 'left';
 		
-		this.view.addDocked(this.view.toolbar);
-		this.view.doLayout();
 		this.view.setActiveItem(list, {type: type, direction: direction});
 		
 		store.load({ params: { categoryID: options.categoryID } });
+		store.proxy.extraParams = { categoryID: options.categoryID };
 	}
 });
