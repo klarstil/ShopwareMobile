@@ -83,7 +83,7 @@
     color: #666;
     font-size: 12px;
 }
-#categories .x-list-item-body, #subListing .x-list-item-body {
+#categories .x-list-item-body, #subListing .x-list-item-body, #search .x-list-item-body {
     background: url('../images/listItem-arrow.png') no-repeat center right;
 }
 #artListing .image {
@@ -533,21 +533,26 @@
 #search strong { font-weight: 700; }
 #search .image {
     display: block;
-    height: 57px;
     width: 57px;
+    height: 57px;
     background-repeat: no-repeat;
     background-position: center center;
-    position: absolute;
-    left: 0px;
-    top: 8px;
+    background-color: #fff;
+    float: left;
+    border: 1px solid #c7c7c7;
+    border-radius: 8px;
+    margin: 2px 0.5em 0 0;
+}
+#search .info {
+    float: left;
+    max-width: 75%;
 }
 #search .x-list-item-body { min-height: 57px;}
 #search strong.name {
-    left: 60px;
-    top: 8px;
-    position: absolute;
     font-size: 14px;
     width: 225px;
+    display: block;
+    width: 70%;
 }
 #search .price {
     position: absolute;
@@ -559,6 +564,16 @@
     font-size: 11px;
     font-weight: 700;
     padding: 1px 8px;
+}
+#search .desc {
+    color: #666;
+    font-size: 12px;
+    width: 90%;
+}
+#search .emptySearch {
+    margin: 1em;
+    color: #7e7e7e;
+    text-align: center;
 }
 
 /*  STATIC DETAIL   

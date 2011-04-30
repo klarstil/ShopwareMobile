@@ -50,7 +50,7 @@ App.RequestURL = {
 	getArticle:    App.basePath + '/MobileTemplate/getArticlesByCategoryId',
 	getDetail:     App.basePath + '/MobileTemplate/getArticleDetails',
 	getPictures:   App.basePath + '/MobileTemplate/getArticleImages',
-	getSearch:     App.basePath + '/AjaxSearch/jsonSearch',
+	getSearch:     App.basePath + '/MobileTemplate/search',
 	getInfo:       App.basePath + '/MobileTemplate/getInfoSites',
 	getBasket:     App.basePath + '/MobileTemplate/getBasket',
 	addArticle:    App.basePath + '/MobileTemplate/addArticleToCart',

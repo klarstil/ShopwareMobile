@@ -205,3 +205,11 @@ App.views.Cart.emptyTpl = new Ext.XTemplate(
 		compiled: true
 	}
 );
+
+App.views.Search.itemTpl = new Ext.XTemplate(
+	'<div class="image" style="background-image:url({img})"></div>',
+	'<div class="info">',
+		'<strong class="name">{articleName}</strong><span class="price">{price} &euro;</span>',
+		'<div class="desc">{description}</div>',
+	'</div>'
+);

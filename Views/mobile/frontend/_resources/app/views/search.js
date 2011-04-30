@@ -3,6 +3,9 @@
  * search.js
  *
  * Views fuer die Suche
+ * 
+ * @link http://www.shopware.de
+ * @author S.Pohl <stp@shopware.de>
  * ----------------------------------------------------------------------
  */
 Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Cart', 'App.views.Account', 'App.views.Info');
@@ -11,21 +14,11 @@ App.views.Search.index = Ext.extend(Ext.Panel, {
 	title: 'Suche',
 	iconCls: 'search',
 	layout: 'card',
-	html: 'Suche',
 	initComponent: function() {
-		Ext.apply(this, {
-			dockedItems: [new App.views.Search.toolbar],
-			items: [new App.views.Search.list]
-		});
-		App.views.Search.index.superclass.initComponent.call(this);
-	}
-});
 
-App.views.Search.toolbar = Ext.extend(Ext.Toolbar, {
-	ui: 'dark',
-	dock: 'top',
-	initComponent: function() {
-		Ext.apply(this, {
+		this.toolbar = new Ext.Toolbar({
+			ui: 'dark',
+			dock: 'top',
 			items: [
 				{
 					id: 'searchfield',
@@ -33,7 +26,7 @@ App.views.Search.toolbar = Ext.extend(Ext.Toolbar, {
 					name: 'search_query',
 					autoFocus: true,
 					hasFocus: true,
-					width: '65%',
+					width: '78%',
 					placeHolder: 'Ihr Suchbegriff',
 					listeners: {
 						scope: this,
@@ -43,8 +36,9 @@ App.views.Search.toolbar = Ext.extend(Ext.Toolbar, {
 				{ xtype: 'spacer' },
 				{
 					id: 'searchBtn',
+					iconMask: true,
+					iconCls: 'search',
 					xtype: 'button',
-					text: 'Suchen',
 					ui: 'action small',
 					scope: this,
 					handler: this.onSearch
@@ -52,7 +46,15 @@ App.views.Search.toolbar = Ext.extend(Ext.Toolbar, {
 			]
 		});
 
-		this.constructor.superclass.initComponent.call(this);
+		this.emptyHtml = '<div class="emptySearch">'+
+			'Bitte geben Sie einen Suchbefehl ein, um die Artikelsuche zu starten.'+
+			'</div>';
+
+		Ext.apply(this, {
+			dockedItems: [this.toolbar],
+			html: this.emptyHtml
+		});
+		App.views.Search.index.superclass.initComponent.call(this);
 	},
 
 	onKeyUp: function(cmp, event) {
@@ -64,17 +66,35 @@ App.views.Search.toolbar = Ext.extend(Ext.Toolbar, {
 	},
 
 	onSearch: function(val) {
-		App.stores.Search.load({
-			params: {
-				sSearch: val
-			}
-		});
+		var list   = Ext.getCmp('searchList'),
+			search = Ext.getCmp('search');
+		
+		if(!list) {
+			list = new App.views.Search.list();
+			search.add(list);
+			search.doLayout();
+		}
+		Ext.getCmp('search').add(list);
+		
+		if(val.length >= 3) {
+			Ext.getCmp('search').doLayout();
+			App.stores.Search.load({
+				params: {
+					sSearch: val
+				}
+			});
+		} else {
+			list.destroy();
+			this.update(this.emptyHtml);
+			this.doLayout();
+		}
 	}
 });
 
 App.views.Search.list = Ext.extend(Ext.List, {
+	id: 'searchList',
 	store: App.stores.Search,
-	itemTpl: '<div class="image" style="background-image:url({image})"></div><strong class="name">{name}</strong><span class="price">{price} &euro;</span>',
+	itemTpl: App.views.Search.itemTpl,
 	itemtap: this.onItemTap,
 	scope: this,
 	initComponent: function() {
@@ -91,13 +111,16 @@ App.views.Search.list = Ext.extend(Ext.List, {
 	},
 
 	onItemTap: function(view, idx, item, event) {
+		/*
 		Ext.dispatch({
 			controller: 'detail',
 			action: 'show',
-			idx: idx,
-			store: this.store,
-			searchCall: true
+			articleID: idx,
+			parent: this.ownerCt
 		})
+
+		this.ownerCt.toolbar.hide();
+		*/
 	}
 
 });

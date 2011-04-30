@@ -41,7 +41,8 @@ App.stores.Picture = new Ext.data.Store({
 });
 
 App.stores.Search = new Ext.data.Store({
-	model: 'Search'
+	model: 'Search',
+	pageSize: 12
 });
 
 App.stores.Info = new Ext.data.Store({

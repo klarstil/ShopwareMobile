@@ -34,7 +34,12 @@ Ext.regController('detail', {
 
         if(!this.view || !this.view.isComponent) {
             this.view = new App.views.Shop.detail;
-            this.shopView.add(this.view);
+	        if(Ext.isDefined(options.parent)) {
+				this.shopView = options.parent;
+		        options.parent.add(this.view);
+		    } else {
+		        this.shopView.add(this.view);
+	        }
         }
 
 		if(!Ext.isDefined(options.articleID)) {
@@ -44,6 +49,7 @@ Ext.regController('detail', {
 	    store.load({
             params: { articleId: options.articleID},
 		    callback: function() {
+			    console.log();
 			    this.lastRecord = store.getAt(0);
 			    store.fireEvent('storeLoaded');
 			    Ext.getCmp('teaser').doLayout();
