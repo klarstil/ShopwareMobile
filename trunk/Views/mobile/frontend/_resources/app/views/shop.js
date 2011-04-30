@@ -198,11 +198,11 @@ App.views.Shop.index = Ext.extend(Ext.Panel, {
 	}
 });
 
-App.views.Shop.artListing = Ext.extend(Ext.List, {
+App.views.Shop.artListing = Ext.extend(Ext.Panel, {
 	id: 'artListing',
-	store: App.stores.Listing,
 	title: '',
-	itemTpl: '<div class="image"<tpl if="image_url"> style="background-image:url({image_url})"</tpl>></div><strong>{articleName}</strong><span class="price">{price} &euro;</span><div class="desc">{description_long}</div>',
+	scroll: 'vertical',
+	height: '100%',
 	listeners: {
 		scope: this,
 		activate: function(me) {
@@ -210,28 +210,11 @@ App.views.Shop.artListing = Ext.extend(Ext.List, {
 				x: 0,
 				y: 0
 			})
-		},
-		datachanged: function() {
-			var me = Ext.getCmp('artListing');
-			me.setLoading(false);
-		},
-		itemtap: function(me, idx) {
-			var tmpRec = me.store.getAt(idx);
-			Ext.dispatch({
-				controller: 'detail',
-				action: 'show',
-				//historyUrl: 'detail/'+tmpRec.data.articleID,
-				articleID: tmpRec.data.articleID,
-				store: me.store,
-				type: 'slide',
-				direction: 'left'
-			});
 		}
 	},
 	
 	initComponent: function() {
-		this.store.on('changePage', this.onChangePage, this);
-
+		/*
 		this.pagination = new Ext.plugins.ListPagingPlugin({
 			onPagingTap : function(e) {
 				if (!this.loading) {
@@ -243,12 +226,41 @@ App.views.Shop.artListing = Ext.extend(Ext.List, {
 					this.list.store.fireEvent('changePage');
 				}
 			}
+		}); */
+
+		this.list = new Ext.List({
+			id: 'articleListingList',
+			store: App.stores.Listing,
+			itemTpl: '<div class="image"<tpl if="image_url"> style="background-image:url({image_url})"</tpl>></div><strong>{articleName}</strong><span class="price">{price} &euro;</span><div class="desc">{description_long}</div>',
+			scroll: false,
+			height: '100%',
+			listeners: {
+				scope: this,
+				datachanged: function(me) {
+					me.setLoading(false);
+				},
+				itemtap: function(me, idx) {
+					var tmpRec = me.store.getAt(idx);
+					Ext.dispatch({
+						controller: 'detail',
+						action: 'show',
+						//historyUrl: 'detail/'+tmpRec.data.articleID,
+						articleID: tmpRec.data.articleID,
+						store: me.store,
+						type: 'slide',
+						direction: 'left'
+					});
+				}
+			}
 		});
+		this.list.store.on('changePage', this.onChangePage, this.list);
+		this.list.store.on('checkBanner', this.checkForBanner, this);
 
 		this.banner = new Ext.Panel({
 			id: 'banner',
 			height: '100%'
 		});
+
 		
 		if(!Ext.getCmp('filterBtn')) {
 			this.filterBtn = new Ext.Button({
@@ -263,7 +275,7 @@ App.views.Shop.artListing = Ext.extend(Ext.List, {
 		}
 
 		Ext.apply(this, {
-			//plugins: [this.pagination]
+			items: [this.banner, this.list]
 		});
 
 		App.views.Shop.artListing.superclass.initComponent.call(this);
@@ -281,6 +293,15 @@ App.views.Shop.artListing = Ext.extend(Ext.List, {
 		var filterView = new App.views.Shop.filterView;
 		Ext.getCmp('shop').add(filterView);
 		Ext.getCmp('shop').setActiveItem(filterView, 'flip');
+	},
+
+	checkForBanner: function() {
+		var raw = App.stores.Listing.proxy.reader.rawData, html;
+		if(raw.sBanner && Ext.getCmp('banner')) {
+			html = '<img src="'+raw.sBanner.img+'" alt="'+raw.sBanner.description+'"/>';
+			Ext.getCmp('banner').update(html);
+			this.doLayout();
+		}
 	}
 
 });
@@ -342,12 +363,18 @@ App.views.Shop.subListing = Ext.extend(Ext.NestedList, {
 		this.backBtn = new Ext.Button({
 			ui: 'back',
 			text: 'Startseite',
+			scope: this,
 			handler: function() {
 				shopView.setActiveItem(0, {
 					type: 'slide',
 					reverse: true,
 					scope: this
 				});
+				
+				window.setTimeout(function() {
+					Ext.getCmp('subListing').destroy();
+				}, 250);
+
 			}
 		});
 

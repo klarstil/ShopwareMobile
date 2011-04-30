@@ -144,6 +144,13 @@
     color: #666;
     font-size: 12px;
 }
+#banner img {
+    display: block;
+    width: 100%;
+}
+#banner + #articleListingList {
+    border-top: 1px solid #D1D1D1;
+}
 
 
 /*  DETAILVIEW
