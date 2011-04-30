@@ -233,6 +233,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 		}
 
 		$articles = Shopware()->Modules()->Articles()->sGetArticlesByCategory($id);
+		$suppliers = Shopware()->Modules()->Articles()->sGetAffectedSuppliers($id);
 		
 		$i = 0;
 		foreach($articles['sArticles'] as $article) {
@@ -244,6 +245,8 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 			}
 			$i++;
 		}
+
+		$articles = array_merge($articles, array('sSuppliers' => $suppliers));
 		$this->jsonOutput($articles);
 	}
 	

@@ -11,12 +11,13 @@
 
 App.stores.Categories = new Ext.data.Store({
 	model: 'MainCategories',
-	autoLoad: true,
+	autoLoad: true
 });
 App.stores.CategoriesTree = new Ext.data.TreeStore({
 	model: 'Categories',
 	filterOnLoad: false,
-	sortOnLoad: false
+	sortOnLoad: false,
+	clearOnLoad: true
 });
 
 App.stores.Promotions = new Ext.data.Store({
