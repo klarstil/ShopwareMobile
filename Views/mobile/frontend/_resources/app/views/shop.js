@@ -18,7 +18,7 @@ App.views.Shop.index = Ext.extend(Ext.Panel, {
 		/* Back button */
 		this.backBtn = new Ext.Button({
 			ui: 'back',
-			text: 'Zur&uuml;ck',
+			text: 'Startseite',
 			scope: this,
 			handler: this.onBackBtn,
 			hidden: true
@@ -137,10 +137,6 @@ App.views.Shop.index = Ext.extend(Ext.Panel, {
 			currIdx = this.items.indexOf(curr),
 			me      = this;
 
-		if(Ext.getCmp('detailSegBtn')) {
-		    Ext.getCmp('detailSegBtn').destroy();
-	    }
-
 		if(currIdx != 1) {
 			var prevDepth      = currIdx - 1,
 				prev           = this.items.getAt(prevDepth);
@@ -156,15 +152,20 @@ App.views.Shop.index = Ext.extend(Ext.Panel, {
 				me.items.getAt(currIdx).destroy();
 			}, 250);
 		} else {
-			var prev = this.items.getAt(0);
+			var prev = this.items.getAt(0),
+				last = this.items.getAt(1);
 			this.setActiveItem(prev, {
 				type: 'slide',
 				reverse: true,
 				scope: this
 			});
+			if(last) {
+				last.destroy();
+			}
 			this.toolBar.hide();
 			this.doComponentLayout();
 		}
+
 	},
 
 	onItemTap: function(list, idx) {
@@ -245,9 +246,23 @@ App.views.Shop.artListing = Ext.extend(Ext.List, {
 				}
 			}
 		});
+		
+		if(!Ext.getCmp('filterBtn')) {
+			this.filterBtn = new Ext.Button({
+				id: 'filterBtn',
+				ui: 'plain',
+				iconCls: 'compose',
+				iconMask: true,
+				scope: this,
+				handler: this.onFilterBtn
+			});
+			Ext.getCmp('shop').toolBar.add({xtype: 'spacer'}, this.filterBtn);
+		}
+
 		Ext.apply(this, {
 			//plugins: [this.pagination]
 		});
+
 
 		App.views.Shop.artListing.superclass.initComponent.call(this);
 	},
@@ -258,6 +273,12 @@ App.views.Shop.artListing = Ext.extend(Ext.List, {
 			//.. remove plugin
 		}
 		this.setLoading(false);
+	},
+
+	onFilterBtn: function() {
+		var filterView = new App.views.Shop.filterView;
+		Ext.getCmp('shop').add(filterView);
+		Ext.getCmp('shop').setActiveItem(filterView, 'flip');
 	}
 
 });
@@ -266,22 +287,41 @@ App.views.Shop.artListing = Ext.extend(Ext.List, {
 App.views.Shop.subListing = Ext.extend(Ext.NestedList, {
 	id: 'subListing',
 	store: App.stores.CategoriesTree,
+	toolbar: {
+		ui: 'dark'
+	},
 	height:  '100%',
 	displayField: 'text',
-	updateTitleText: false,
-	useToolbar: false,
-	title: '',
+	updateTitleText: true,
+	useToolbar: true,
+	title: 'Kategorien',
 	getItemTextTpl: function(node) {
 		return '<div class="info"><span class="title">{text}</span></div>'
 			+ '<tpl if="desc"><p class="desc">{desc}</p></tpl>';
 	},
 	listeners: {
 		scope: this,
+		beforeactivate: function(me) {
+			// Hide Shop toolbar
+			var shopView = Ext.getCmp('shop');
+			shopView.toolBar.hide();
+			shopView.doLayout();
+			shopView.doComponentLayout();
+		},
+		activate: function(me) {
+			if(me.backButton.isHidden()) {
+				me.backBtn.show();
+				me.toolbar.doLayout();
+			}
+		},
 		itemtap: function(list, index, item) {
 			var tmpRec = list.store.getAt(index);
-			Ext.getCmp('shop').toolBar.setTitle(tmpRec.data.text);
+			list.ownerCt.backBtn.hide();
 		},
 		leafitemtap: function(me, idx) {
+			var subListing = Ext.getCmp('subListing'),
+				shopView = Ext.getCmp('shop');
+			shopView.backBtn.setText(subListing.toolbar.title);
 			Ext.dispatch({
 				controller: 'category',
 				action: 'show',
@@ -294,5 +334,150 @@ App.views.Shop.subListing = Ext.extend(Ext.NestedList, {
 	},
 	initComponent: function() {
 		App.views.Shop.subListing.superclass.initComponent.call(this);
+
+		var shopView = Ext.getCmp('shop');
+
+		this.backBtn = new Ext.Button({
+			ui: 'back',
+			text: 'Startseite',
+			handler: function() {
+				shopView.setActiveItem(0, {
+					type: 'slide',
+					reverse: true,
+					scope: this
+				});
+			}
+		});
+
+		this.toolbar.add(this.backBtn);
+		this.toolbar.doLayout();
+
+		shopView.toolBar.hide();
+		shopView.doComponentLayout();
+
+
+	},
+	syncToolbar: function(card) {
+		var list          = card || this.getActiveItem(),
+			depth         = this.items.indexOf(list),
+			recordNode    = list.recordNode,
+			parentNode    = recordNode ? recordNode.parentNode : null,
+			backBtn       = this.backButton,
+			backBtnText   = this.useTitleAsBackText && parentNode ? this.renderTitleText(parentNode) : this.backText,
+			backToggleMth = (depth !== 0) ? 'show' : 'hide',
+			backHomeMth   = (depth === 0) ? 'show' : 'hide',
+			shopView      = Ext.getCmp('shop');
+
+			if (backBtn) {
+				backBtn[backToggleMth]();
+				this.backBtn[backHomeMth]();
+				if (parentNode) {
+					backBtn.setText(backBtnText);
+				} else if(parentNode === null) {
+					this.backBtn.show();
+					this.toolbar.doLayout();
+				}
+			}
+
+
+			if (this.toolbar && this.updateTitleText) {
+				this.toolbar.setTitle(recordNode && recordNode.getRecord() ? this.renderTitleText(recordNode) : this.title || '');
+				this.toolbar.doLayout();
+			}
+	}
+});
+
+App.views.Shop.filterView = Ext.extend(Ext.form.FormPanel, {
+	id: 'filterView',
+	scroll: 'vertical',
+	listeners: {
+		beforeactivate: function(me) {
+			var shopView = Ext.getCmp('shop');
+			shopView.toolBar.hide();
+			shopView.doComponentLayout();
+		},
+		deactivate: function(me) {
+			var shopView = Ext.getCmp('shop');
+			shopView.toolBar.show();
+			shopView.doComponentLayout();
+			me.destroy();
+		}
+	},
+	initComponent: function() {
+		var store = App.stores.Listing,
+			rawData = store.proxy.reader.rawData;
+
+		this.toolBar = new Ext.Toolbar({
+			ui: 'dark',
+			title: 'Verfeinern',
+			items: [
+				{xtype: 'spacer'},
+				{
+					xtype: 'button',
+					ui: 'action',
+					text: 'Fertig',
+					scope: this,
+					handler: this.onBackBtn
+				}
+			]
+		});
+
+		this.perPage = new Ext.form.Select({
+			label: 'Pro Seite',
+			name: 'sPerPage',
+			labelWidth: '40%',
+			options: [
+				{text: '12 Artikel',  value: '12'},
+				{text: '24 Artikel', value: '24'},
+				{text: '36 Artikel',  value: '36'},
+				{text: '48 Artikel', value: '48'}
+			]
+		});
+
+		this.sort = new Ext.form.Select({
+			label: 'Sortierung',
+			name: 'sSort',
+			labelWidth: '40%',
+			options: [
+				{text: 'Erscheinungsdatum',  value: '1'},
+				{text: 'Beliebtheit', value: '2'},
+				{text: 'Niedrigster Preis',  value: '3'},
+				{text: 'Höchster Preis', value: '4'},
+				{text: 'Erscheinungsdatum',  value: '5'},
+				{text: 'Artikelbezeichnung', value: '6'}
+			]
+		});
+
+		var itms = [];
+		Ext.each(rawData.sSuppliers, function(item) {
+			itms.push({
+				text: item.name,
+				value: item.id
+			});
+		});
+
+		this.supplier = new Ext.form.Select({
+			label: 'Hersteller',
+			name: 'sSupplier',
+			labelWidth: '40%',
+			options: itms
+		});
+
+		
+		this.fieldSet = new Ext.form.FieldSet({
+			instructions: 'Bitte w&auml;hlen Sie eine Eigenschaft um die Artikelauflistung an Ihre pers&ouml;nlichen Bed&uuml;rfnisse anzupassen.',
+			items: [this.perPage, this.sort, this.supplier]
+		})
+
+		Ext.apply(this, {
+			dockedItems: [this.toolBar],
+			items: [this.fieldSet]
+		});
+		App.views.Shop.filterView.superclass.initComponent.call(this);
+	},
+
+	onBackBtn: function() {
+		var shopView = Ext.getCmp('shop');
+		shopView.setActiveItem(this.prev(), 'flip');
 	}
 });

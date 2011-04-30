@@ -23,12 +23,16 @@ Ext.regController('detail', {
 	 * @param options
 	 */
     show: function(options) {
-		var store = this.store;
+		var store = this.store,
+			view = Ext.getCmp('detail');
+
+		this.view = view;
+
 		if(!this.shopView) {
 			this.shopView = Ext.getCmp('shop');
 		}
 
-        if(!this.view) {
+        if(!this.view || !this.view.isComponent) {
             this.view = new App.views.Shop.detail;
             this.shopView.add(this.view);
         }

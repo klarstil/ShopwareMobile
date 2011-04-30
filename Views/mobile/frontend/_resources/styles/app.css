@@ -6,6 +6,7 @@
     -------------------------------------------- */
 .clear {height: 0; clear: both;}
 #shop, #categories { background: #fff; }
+.hidden { display: none }
 
 /*  STARS
     -------------------------------------------- */
@@ -82,6 +83,9 @@
     color: #666;
     font-size: 12px;
 }
+#categories .x-list-item-body, #subListing .x-list-item-body {
+    background: url('../images/listItem-arrow.png') no-repeat center right;
+}
 #artListing .image {
     display: block;
     position: absolute;
@@ -117,14 +121,11 @@
     margin-bottom: 4px;
     max-width: 58%;
 }
-#artListing .desc {
+#artListing .desc, #subListing .desc {
     color: #666;
     font-size: 12px;
     max-width: 80%;
 }
-
-/*  SUBLISTING
-    -------------------------------------------- */
 #subListing .catImg {
     height: 57px;
     width: 57px;
@@ -136,13 +137,14 @@
     -webkit-box-shadow: 0 0 1px #555;
     float: left;
 }
-#subListing .title { font-weight: 700; margin: 0 8px 0 10px }
+#subListing .desc { max-width: 96% }
+#subListing .title { font-weight: 700; }
 #subListing .count {
     font-weight: 500;
     color: #666;
     font-size: 12px;
 }
-#subListing .desc { left: 10px }
+
 
 /*  DETAILVIEW
     -------------------------------------------- */

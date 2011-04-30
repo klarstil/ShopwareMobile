@@ -25112,7 +25112,6 @@ Ext.NestedList = Ext.extend(Ext.Panel, {
             'leafitemtap'
         );
     },
-
     
     getListConfig: function(node) {
         var itemId = node.internalId,

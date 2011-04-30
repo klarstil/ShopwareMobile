@@ -64,9 +64,6 @@ Ext.regController('category', {
 			    direction: (Ext.isDefined(options.direction)) ? options.direction : 'left'
 		    });
 	    }
-		this.view.backBtn.show();
-	    this.view.toolBar.show();
-	    this.view.doComponentLayout();
     },
 
 	showSubCategories: function(options) {
@@ -89,8 +86,9 @@ Ext.regController('category', {
 		}
 
 		if(Ext.isDefined(options.categoryName)) {
-			this.view.toolBar.setTitle(options.categoryName);
-			this.view.title = options.categoryName;
+			//this.view.toolBar.setTitle(options.categoryName);
+			list.title = options.categoryName;
+			list.toolbar.setTitle(options.categoryName);
 		}
 
 		type = (Ext.isDefined(options.type)) ? options.type : 'slide';
@@ -121,14 +119,16 @@ Ext.regController('category', {
 			throw new Error("No categoryID set in dispatch options");
 		}
 
-		if(Ext.isDefined(options.categoryName)) {
-			this.view.toolBar.setTitle(options.categoryName);
-			this.view.title = options.categoryName;
-		}
-
 		if(!list) {
 			list = new App.views.Shop.artListing;
 			this.view.add(list);
+		}
+
+		if(Ext.isDefined(options.categoryName)) {
+			this.view.toolBar.setTitle(options.categoryName);
+			this.view.title = options.categoryName;
+			this.view.backBtn.show();
+			this.view.toolBar.doLayout();
 		}
 
 		type = (Ext.isDefined(options.type)) ? options.type : 'slide';
@@ -138,5 +138,9 @@ Ext.regController('category', {
 		
 		store.load({ params: { categoryID: options.categoryID } });
 		store.proxy.extraParams = { categoryID: options.categoryID };
+
+		this.view.backBtn.show();
+	    this.view.toolBar.show();
+	    this.view.doComponentLayout();
 	}
 });

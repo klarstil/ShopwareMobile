@@ -20,12 +20,31 @@ App.views.Shop.detail = Ext.extend(Ext.Panel, {
 	layout: 'card',
 	listeners: {
 		scope: this,
+		beforeactivate: function(me) {
+			var shopView   = Ext.getCmp('shop'),
+				artListing = Ext.getCmp('artListing');
+
+			artListing.filterBtn.hide();
+			shopView.toolBar.doLayout();
+			shopView.backBtn.setHandler(me.onBackBtn);
+
+		},
+		beforedeactivate: function(me) {
+			var shopView   = Ext.getCmp('shop');
+			shopView.backBtn.setHandler(shopView.onBackBtn, shopView);
+			me.navBtn.destroy();
+		},
 		deactivate: function(me) {
+			var shopView   = Ext.getCmp('shop'),
+				artListing = Ext.getCmp('artListing');
+
+			artListing.filterBtn.show();
+			shopView.toolBar.doLayout();
 			me.destroy();
 		}
 	},
 	initComponent: function() {
-		var me = this;
+		var me = this, shop = Ext.getCmp('shop');
 
 		/* Navigationsbutton */
 		me.navBtn = new Ext.SegmentedButton({
@@ -43,21 +62,13 @@ App.views.Shop.detail = Ext.extend(Ext.Panel, {
 			}
 		});
 
-		Ext.getCmp('shop').toolBar.setTitle('');
-		Ext.getCmp('shop').toolBar.add([ { xtype: 'spacer' }, me.navBtn]);
-		Ext.getCmp('shop').toolBar.doComponentLayout();
+		shop.toolBar.setTitle('');
+		shop.toolBar.add([me.navBtn]);
+		shop.toolBar.doComponentLayout();
 
 		App.views.Shop.detail.superclass.initComponent.call(me);
 	},
 
-	/**
-	 * getToolbar
-	 *
-	 * Returns the detail toolbar
-	 */
-	getToolbar: function() {
-		return Ext.getCmp('detailToolbar');
-	},
 
 	/**
 	 * onBackBtn - event handler
@@ -72,11 +83,11 @@ App.views.Shop.detail = Ext.extend(Ext.Panel, {
 		Ext.dispatch({
 			controller: 'category',
 			action: 'show',
-			index: tmpRec.data.categoryID,
+			categoryID: tmpRec.data.categoryID,
 			store: App.stores.Listing,
 			type: 'slide',
 			direction: 'right'
-		})
+		});
 	},
 
 	/**
