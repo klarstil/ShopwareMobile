@@ -222,18 +222,40 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	public function getArticlesByCategoryIdAction()
 	{
+		// Handle category id
 		$id = $this->Request()->getParam('categoryID');
 		if(empty($id)) {
 			$id = 3;
 		}
 
+		// Handle page
 		$page = $this->Request()->getParam('page');
 		if(!empty($page)) {
 			$this->system->_GET['sPage'] = $page;
 		}
 
-		$articles = Shopware()->Modules()->Articles()->sGetArticlesByCategory($id);
+		// Handle article per page
+		$limit = $this->Request()->getParam('limit');
+		if(!empty($limit)) {
+			$this->system->_GET['sPerPage'] = $limit;
+		}
+
+		// Handle article sorting
+		$sort = $this->Request()->getParam('sSort');
+		if(!empty($sort)) {
+			$this->system->_POST['sSort'] = $sort;
+		}
+
+		// Handle supplier
+		$supplier = $this->Request()->getParam('sSupplier');
+		if(!empty($supplier)) {
+			$this->system->_GET['sSupplier'] = $supplier;
+		}
+
+		// Fetch data
+		$articles  = Shopware()->Modules()->Articles()->sGetArticlesByCategory($id);
 		$suppliers = Shopware()->Modules()->Articles()->sGetAffectedSuppliers($id);
+		$banner   = Shopware()->Modules()->Marketing()->sBanner($id);
 		
 		$i = 0;
 		foreach($articles['sArticles'] as $article) {
@@ -246,7 +268,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 			$i++;
 		}
 
-		$articles = array_merge($articles, array('sSuppliers' => $suppliers));
+		$articles = array_merge($articles, array('sSuppliers' => $suppliers), array('sBanner' => $banner));
 		$this->jsonOutput($articles);
 	}
 	

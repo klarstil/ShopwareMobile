@@ -198,8 +198,6 @@ App.views.Shop.index = Ext.extend(Ext.Panel, {
 	}
 });
 
-
-
 App.views.Shop.artListing = Ext.extend(Ext.List, {
 	id: 'artListing',
 	store: App.stores.Listing,
@@ -246,6 +244,11 @@ App.views.Shop.artListing = Ext.extend(Ext.List, {
 				}
 			}
 		});
+
+		this.banner = new Ext.Panel({
+			id: 'banner',
+			height: '100%'
+		});
 		
 		if(!Ext.getCmp('filterBtn')) {
 			this.filterBtn = new Ext.Button({
@@ -262,7 +265,6 @@ App.views.Shop.artListing = Ext.extend(Ext.List, {
 		Ext.apply(this, {
 			//plugins: [this.pagination]
 		});
-
 
 		App.views.Shop.artListing.superclass.initComponent.call(this);
 	},
@@ -390,8 +392,9 @@ App.views.Shop.subListing = Ext.extend(Ext.NestedList, {
 App.views.Shop.filterView = Ext.extend(Ext.form.FormPanel, {
 	id: 'filterView',
 	scroll: 'vertical',
+	store: App.stores.Listing,
 	listeners: {
-		beforeactivate: function(me) {
+		beforeactivate: function() {
 			var shopView = Ext.getCmp('shop');
 			shopView.toolBar.hide();
 			shopView.doComponentLayout();
@@ -426,6 +429,12 @@ App.views.Shop.filterView = Ext.extend(Ext.form.FormPanel, {
 			label: 'Pro Seite',
 			name: 'sPerPage',
 			labelWidth: '40%',
+			listeners: {
+				scope: this,
+				change: function(select, value) {
+					this.store.pageSize = parseInt(value);
+				}
+			},
 			options: [
 				{text: '12 Artikel',  value: '12'},
 				{text: '24 Artikel', value: '24'},
@@ -438,6 +447,12 @@ App.views.Shop.filterView = Ext.extend(Ext.form.FormPanel, {
 			label: 'Sortierung',
 			name: 'sSort',
 			labelWidth: '40%',
+			listeners: {
+				scope: this,
+				change: function(select, value) {
+					this.store.proxy.extraParams.sSort = parseInt(value);
+				}
+			},
 			options: [
 				{text: 'Erscheinungsdatum',  value: '1'},
 				{text: 'Beliebtheit', value: '2'},
@@ -460,6 +475,12 @@ App.views.Shop.filterView = Ext.extend(Ext.form.FormPanel, {
 			label: 'Hersteller',
 			name: 'sSupplier',
 			labelWidth: '40%',
+			listeners: {
+				scope: this,
+				change: function(select, value) {
+					this.store.proxy.extraParams.sSupplier = parseInt(value);
+				}
+			},
 			options: itms
 		});
 
@@ -477,6 +498,7 @@ App.views.Shop.filterView = Ext.extend(Ext.form.FormPanel, {
 	},
 
 	onBackBtn: function() {
+		this.store.load();
 		var shopView = Ext.getCmp('shop');
 		shopView.setActiveItem(this.prev(), 'flip');
 	}

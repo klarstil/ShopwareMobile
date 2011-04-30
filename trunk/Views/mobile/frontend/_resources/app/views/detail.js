@@ -24,8 +24,10 @@ App.views.Shop.detail = Ext.extend(Ext.Panel, {
 			var shopView   = Ext.getCmp('shop'),
 				artListing = Ext.getCmp('artListing');
 
-			artListing.filterBtn.hide();
-			shopView.toolBar.doLayout();
+			if(Ext.getCmp('filterBtn')) {
+				Ext.getCmp('filterBtn').hide();
+				shopView.toolBar.doLayout();
+			}
 			shopView.backBtn.setHandler(me.onBackBtn);
 
 		},
@@ -38,8 +40,10 @@ App.views.Shop.detail = Ext.extend(Ext.Panel, {
 			var shopView   = Ext.getCmp('shop'),
 				artListing = Ext.getCmp('artListing');
 
-			artListing.filterBtn.show();
-			shopView.toolBar.doLayout();
+			if(Ext.getCmp('filterBtn')) {
+				Ext.getCmp('filterBtn').show();
+				shopView.toolBar.doLayout();
+			}
 			me.destroy();
 		}
 	},

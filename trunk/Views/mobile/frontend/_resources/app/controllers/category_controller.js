@@ -98,6 +98,7 @@ Ext.regController('category', {
 
 		/* TODO - Needs a better workaround */
 		list.setLoading(true);
+		store.proxy.extraParams = {};
 		window.setTimeout(function () {
 			store.load({
 				params: { categoryID: options.categoryID },
@@ -135,7 +136,7 @@ Ext.regController('category', {
 		direction = (Ext.isDefined(options.direction)) ? options.direction : 'left';
 		
 		this.view.setActiveItem(list, {type: type, direction: direction});
-		
+		store.proxy.extraParams = {};
 		store.load({ params: { categoryID: options.categoryID } });
 		store.proxy.extraParams = { categoryID: options.categoryID };
 
