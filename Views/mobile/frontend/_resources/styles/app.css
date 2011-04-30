@@ -147,6 +147,8 @@
 #banner img {
     display: block;
     width: 100%;
+    -webkit-user-select: none;
+    margin-bottom: 0.5em;
 }
 #banner + #articleListingList {
     border-top: 1px solid #D1D1D1;
