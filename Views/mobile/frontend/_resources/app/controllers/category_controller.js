@@ -137,8 +137,13 @@ Ext.regController('category', {
 		
 		this.view.setActiveItem(list, {type: type, direction: direction});
 		store.proxy.extraParams = {};
-		store.load({ params: { categoryID: options.categoryID } });
 		store.proxy.extraParams = { categoryID: options.categoryID };
+		store.load({
+			params: { categoryID: options.categoryID},
+			callback: function() {
+				store.fireEvent('checkBanner');
+			}
+		});
 
 		this.view.backBtn.show();
 	    this.view.toolBar.show();
