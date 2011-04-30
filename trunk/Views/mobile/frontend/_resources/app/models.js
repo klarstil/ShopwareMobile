@@ -136,9 +136,9 @@ Ext.regModel('Search', {
 		{ name: 'price', type: 'string' },
 		{ name: 'datum', type: 'string' },
 		{ name: 'sales', type: 'string' },
-		{ name: 'name', type: 'string' },
+		{ name: 'articleName', type: 'string' },
 		{ name: 'description', type: 'string' },
-		{ name: 'image', type: 'string'},
+		{ name: 'img', type: 'string'},
 		{ name: 'type', type: 'string' }
 	],
 	proxy: {

@@ -3,6 +3,9 @@
  * shop.js
  *
  * Views fuer das Kategorielisting und die Startseite
+ *
+ * @link http://www.shopware.de
+ * @author S.Pohl <stp@shopware.de>
  * ----------------------------------------------------------------------
  */
 Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Cart', 'App.views.Account', 'App.views.Info');

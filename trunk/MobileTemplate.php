@@ -325,6 +325,78 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 		
 		$this->jsonOutput(array('sArticle' => array($article)));
 	}
+
+	/**
+	 * searchAction()
+	 *
+	 * Fuehrt eine Suche aus und gibt das Ergebnis als JSON String zurueck
+	 *
+	 * @return void
+	 */
+	public function searchAction() {
+
+		// Handle page
+		$page = $this->Request()->getParam('page');
+		if(!empty($page)) {
+			$this->system->_GET['sPage'] = $page;
+		}
+
+		// Handle article per page
+		$limit = $this->Request()->getParam('limit');
+		if(!empty($limit)) {
+			$this->system->_GET['sPerPage'] = $limit;
+		}
+
+		if ($this->Request()->sSearchMode=="supplier"){
+			$variables = Shopware()->Modules()->Articles()->sGetArticlesByName("a.name ASC","","supplier",urldecode($this->Request()->sSearch));
+			$this->Request()->setParam('sSearch',urldecode($this->Request()->sSearchText));
+		} elseif ($this->Request()->sSearchMode=="newest"){
+			$variables = Shopware()->Modules()->Articles()->sGetArticlesByName("a.datum DESC","","newest",urldecode($this->Request()->sSearch));
+			$this->Request()->setParam('sSearch',urldecode($this->Request()->sSearchText));
+		} else {
+			$variables = Shopware()->Modules()->Articles()->sGetArticlesByName("a.topseller DESC","","",urldecode($this->Request()->sSearch));
+		}
+		foreach ($variables["sPerPage"] as $perPageKey => &$perPage){
+			$perPage["link"] = str_replace("sPage=".$this->Request()->sPage,"sPage=1",$perPage["link"]);
+		}
+		if (!empty($variables["sArticles"])){
+			$searchResults = $variables["sArticles"];
+		}else {
+			$searchResults = $variables;
+		}
+
+		foreach ($searchResults as $searchResult){
+			if (is_array($searchResult)) $searchResult = $searchResult["id"];
+			$article = Shopware()->Modules()->Articles()->sGetPromotionById ('fix',0,$searchResult);
+
+			if (!empty($article["articleID"])){
+				$article['articleName'] = utf8_encode($article['articleName']);
+				if(!empty($article['description'])) {
+					$article['description'] = utf8_encode(strip_tags($article['description']));
+				} else {
+					$article['description'] = $this->truncate(utf8_encode(strip_tags($article['description_long'])), 100);
+				}
+				if(!empty($article['image']['src'])) {
+					$article['img'] = $this->stripBasePath($article['image']['src'][1]);
+				}
+				$articles[] = $article;
+			}
+		}
+		$output = array(
+			'sResults'     => $articles,
+			'resultNum'    => empty($variables["sNumberArticles"]) ? count($articles) : $variables["sNumberArticles"],
+			'sNumberPages' => $variables["sNumberPages"]
+		);
+
+		$this->jsonOutput($output);
+		
+		$this->View()->sSearchResults = $articles;
+		$this->View()->sSearchResultsNum = empty($variables["sNumberArticles"]) ? count($articles) : $variables["sNumberArticles"];
+		$this->View()->sSearchTerm = urldecode($this->Request()->sSearch);
+		$this->View()->sPages = $variables["sPages"];
+		$this->View()->sPerPage = $variables["sPerPage"];
+		$this->View()->sNumberPages = $variables["sNumberPages"];
+	}
 	
 	/**
 	 * getArticleImagesAction()
