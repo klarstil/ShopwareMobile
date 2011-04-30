@@ -29,7 +29,6 @@ App.stores.Listing = new Ext.data.Store({
 	model: 'Articles',
 	remoteSort: true,
 	remoteFilter: true,
-	currentPage: true,
 	pageSize: 12
 });
 

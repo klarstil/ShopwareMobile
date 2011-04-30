@@ -214,19 +214,6 @@ App.views.Shop.artListing = Ext.extend(Ext.Panel, {
 	},
 	
 	initComponent: function() {
-		/*
-		this.pagination = new Ext.plugins.ListPagingPlugin({
-			onPagingTap : function(e) {
-				if (!this.loading) {
-					this.loading = true;
-					this.list.setLoading(true);
-					this.list.scroller.setOffset({x: 0, y: 0}, 200);
-					this.list.store.nextPage();
-					this.el.addCls('x-loading');
-					this.list.store.fireEvent('changePage');
-				}
-			}
-		}); */
 
 		this.list = new Ext.List({
 			id: 'articleListingList',
@@ -234,6 +221,7 @@ App.views.Shop.artListing = Ext.extend(Ext.Panel, {
 			itemTpl: '<div class="image"<tpl if="image_url"> style="background-image:url({image_url})"</tpl>></div><strong>{articleName}</strong><span class="price">{price} &euro;</span><div class="desc">{description_long}</div>',
 			scroll: false,
 			height: '100%',
+			plugins: [new Ext.ux.touch.PagingToolbar],
 			listeners: {
 				scope: this,
 				datachanged: function(me) {
@@ -253,7 +241,7 @@ App.views.Shop.artListing = Ext.extend(Ext.Panel, {
 				}
 			}
 		});
-		this.list.store.on('changePage', this.onChangePage, this.list);
+
 		this.list.store.on('checkBanner', this.checkForBanner, this);
 
 		this.banner = new Ext.Panel({
@@ -279,14 +267,6 @@ App.views.Shop.artListing = Ext.extend(Ext.Panel, {
 		});
 
 		App.views.Shop.artListing.superclass.initComponent.call(this);
-	},
-	
-	onChangePage: function() {
-		var raw = this.store.proxy.reader.rawData, pagEl;
-		if(raw.sNumberPages <= this.store.currentPage) {
-			//.. remove plugin
-		}
-		this.setLoading(false);
 	},
 
 	onFilterBtn: function() {
