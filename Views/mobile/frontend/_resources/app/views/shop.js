@@ -70,11 +70,17 @@ App.views.Shop.index = Ext.extend(Ext.Panel, {
 		/* Link zur normalen View */
 		this.normalView = new Ext.Panel({
 			fullscreen: false,
+			id: 'normalView',
 			cls: 'normalView',
-			html: 'Zur normalen Ansicht wechseln',
+			items: [{
+				html: '<div id="clickNormal">Zur normalen Ansicht wechseln</div>'
+			}],
 			listeners: {
 				scope: this,
-				click: { el: 'body', fn: this.onNormalView }
+				el: {
+					tap: this.onNormalView,
+					delegate: '#clickNormal'
+				}
 			}
 		});
 

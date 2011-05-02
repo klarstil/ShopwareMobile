@@ -605,6 +605,27 @@
 #infoDetail h6 {font-size:1em;font-weight:bold;}
 #infoDetail h1 img, #infoDetail h2 img, #infoDetail h3 img, #infoDetail h4 img, #infoDetail h5 img, #infoDetail h6 img {margin:0;}
 
+/*  KUNDENKONTO
+    -------------------------------------------- */
+#account #new, #account #existing {
+    margin: 1em;
+}
+#account .startup .inner {
+    min-height: 2.6em;
+    padding: 0.5em 0.8em;
+    background: #fff;
+}
+#account .startup .inner strong {
+    font-weight: 700;
+    display: block;
+    margin-bottom: 8px;
+}
+#account .startup .inner p {
+    display: block;
+    font-size: 12px;
+    color: #666;
+}
+
 
 /*  TABPANEL ICONS
     -------------------------------------------- */

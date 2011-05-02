@@ -133,7 +133,7 @@ Ext.regController('category', {
 		}
 
 		if(Ext.isDefined(options.categoryName)) {
-			this.view.toolBar.setTitle(options.categoryName);
+			this.view.toolBar.setTitle(App.Helpers.truncate(options.categoryName, 10));
 			this.view.title = options.categoryName;
 			this.view.backBtn.show();
 			this.view.toolBar.doLayout();

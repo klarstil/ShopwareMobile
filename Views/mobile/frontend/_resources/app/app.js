@@ -5,6 +5,8 @@
  * Register the application, set up router for history support
  * and provides request urls
  *
+ * TODO - Change stores proyies to ScriptProxy for native application
+ *
  * @link http://www.shopware.de
  * @author S.Pohl <stp@shopware.de>
  * ----------------------------------------------------------------------
@@ -57,5 +59,6 @@ App.RequestURL = {
 	addBundle:     App.basePath + '/MobileTemplate/addBundleToCart',
 	removeArticle: App.basePath + '/MobileTemplate/removeArticleFromCart',
 	deleteBasket:  App.basePath + '/MobileTemplate/deleteBasket',
-	addComment:    App.basePath + '/MobileTemplate/addComment'
+	addComment:    App.basePath + '/MobileTemplate/addComment',
+	login:         App.basePath + '/MobileTemplate/login'
 };

@@ -664,20 +664,32 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	}
 	
 	/**
-	 * loginUserAction()
+	 * loginAction()
 	 *
 	 * Loggt einen Benutzer ein
 	 *
 	 * @access public
 	 * @return {string} Benutzerdaten
 	 */
-	public function loginUserAction() 
+	public function loginAction()
 	{
 		if($this->Request()->isPost()) {
-			$checkUser = Shopware()->Modules()->Admin()->sLogin();
+			$login = Shopware()->Modules()->Admin()->sLogin();
 		}
-		
-		$this->jsonOutput($checkUser);
+
+		$output = array();
+		if(!empty($login['sErrorMessages'])) {
+			$output = array(
+				'success' => false,
+				'msg'     => 'Ihre Zugangsdaten konnten keinem Benutzer zugeordnet werden.'
+			);
+		} else {
+			$output = array(
+				'success' => true,
+				'msg'     => 'Ihr Login war erfolgreich. Sie in wenigen Sekunden weitergeleitet.'
+			);
+		}
+		$this->jsonOutput($output);
 	}
 	
 	/**
