@@ -186,7 +186,6 @@ App.views.Account.login = Ext.extend(Ext.form.FormPanel, {
 	},
 
 	onLoginBtn: function() {
-		console.log('onLoginBtn');
 		this.submit();
 	}
 
@@ -197,6 +196,9 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel, {
 	scroll: 'vertical',
 	title: 'Registrierung',
 	width: '100%',
+	url: App.RequestURL.register,
+	method: 'post',
+	standardSubmit: false,
 	items: [
 		{
 			xtype: 'fieldset',
@@ -209,17 +211,17 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel, {
 					xtype: 'selectfield',
 					label: 'Ich bin',
 					required: true,
-					name: 'iam',
+					name: 'register[personal][customer_type]',
 					options: [
 						{ text: 'Privatkunde', value: 'private' },
-						{ text: 'Firma', value: 'company' }
+						{ text: 'Firma', value: 'buisness' }
 					]
 				},
 				{
 					xtype: 'selectfield',
 					label: 'Anrede',
 					required: true,
-					name: 'salutation',
+					name: 'register[personal][salutation]',
 					options: [
 						{ text: 'Herr', value: 'mr' },
 						{ text: 'Frau', value: 'mrs' }
@@ -228,30 +230,41 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel, {
 				{
 					xtype: 'textfield',
 					label: 'Vorname',
+					name: 'register[personal][firstname]',
 					required: true,
 					placeHolder: 'Max'
 				},
 				{
 					xtype: 'textfield',
 					label: 'Nachname',
+					name: 'register[personal][lastname]',
 					required: true,
 					placeHolder: 'Mustermann'
 				},
 				{
 					xtype: 'emailfield',
 					label: 'E-Mail',
+					name: 'register[personal][email]',
 					required: true,
 					placeHolder: 'me@shopware.de'
 				},
 				{
 					xtype: 'passwordfield',
 					label: 'Passwort',
+					name: 'register[personal][password]',
+					required: true
+				},
+				{
+					xtype: 'passwordfield',
+					label: 'Passwort Wdh.',
+					name: 'register[personal][passwordConfirmation]',
 					required: true
 				},
 				{
 					xtype: 'textfield',
 					label: 'Telefon',
 					required: true,
+					name: 'register[personal][phone]',
 					placeHolder: '02555997500'
 				},
 				{
@@ -279,30 +292,34 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel, {
 				{
 					xtype: 'textfield',
 					label: 'Stra&szlig;e',
+					name: 'register[billing][street]',
 					required: true
 				},
 				{
 					xtype: 'textfield',
 					label: 'Hausnr.',
+					name: 'register[billing][streetnumber]',
 					required: true
 				},
 				{
 					xtype: 'textfield',
 					label: 'PLZ',
+					name: 'register[billing][zipcode]',
 					required: true
 				},
 				{
 					xtype: 'textfield',
-					label: 'Ort',
+					label: 'Stadt',
+					name: 'register[billing][city]',
 					required: true
 				},
 				{
 					xtype: 'selectfield',
 					label: 'Land',
 					required: true,
-					name: 'country',
+					name: 'register[billing][country]',
 					options: [
-						{text: 'Deutschland', value: 'germany'},
+						{text: 'Deutschland', value: '2'},
 						{text: '&Ouml;sterreich', value: 'austria'},
 						{text: 'Schweiz', value: 'swiss'}
 					]
@@ -317,6 +334,14 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel, {
 			//disabled: true
 		}
 	],
+	listeners: {
+		submit: function(form, response) {
+			console.log(response);
+		},
+		exception: function(form, response) {
+			console.log(response);
+		}
+	},
 	initComponent: function() {
 		App.views.Account.register.superclass.initComponent.call(this);
 	}
