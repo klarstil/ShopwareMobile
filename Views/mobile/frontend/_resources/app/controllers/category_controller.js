@@ -18,7 +18,14 @@ Ext.regController('category', {
 	    }
 
 	    if(!Ext.isDefined(options.index) && !this.lastRecord) {
-		    throw new Error("No index set in dispatch options");
+		    this.view.setActiveItem(Ext.getCmp('home'), {
+				type: 'slide',
+				reverse: true,
+				scope: this
+			});
+		    this.view.toolBar.hide();
+		    this.view.doComponentLayout();
+		    return;
 	    }
 
 	    if(Ext.isDefined(options.store)) {
