@@ -14,6 +14,8 @@
 
 Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Cart', 'App.views.Account', 'App.views.Info');
 
+var userLoggedIn = false;
+
 /* Register application */
 Ext.regApplication({
 

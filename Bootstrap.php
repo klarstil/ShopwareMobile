@@ -120,13 +120,13 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 			$dirs = Shopware()->Template()->getTemplateDir();
 			$newdirs = array_merge(array(dirname(__FILE__) . '/Views/mobile/'), $dirs);
 			Shopware()->Template()->setTemplateDir($newdirs);
+
 		} else {
 			if(!empty($mobileSession) && $mobileSession == 0) { $active = 1; } else { $active = 0; }
 
 			$view->addTemplateDir(dirname(__FILE__). '/Views/');
 			$view->assign('shopwareMobile', array(
-				'active' => $active,
-				'isLoggedIn' => Shopware()->Modules()->Admin()->sCheckUser()
+				'active' => $active
 			));
 
 			$view->extendsTemplate('mobile/frontend/plugins/swag_mobiletemplate/index.tpl');

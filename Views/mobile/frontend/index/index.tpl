@@ -32,7 +32,7 @@
     <script type="text/javascript" src="{link file='frontend/_resources/app/_sencha/Ext.ux.touch.PagingToolbar.js'}"></script>
     
     <div id="sencha-app">
-    
+
 		<!-- Initialize Application -->
         <script type="text/javascript" src="{link file='frontend/_resources/app/app.js'}"></script>
         
@@ -53,6 +53,7 @@
         <script type="text/javascript" src="{link file='frontend/_resources/app/controllers/category_controller.js'}"></script>
         <script type="text/javascript" src="{link file='frontend/_resources/app/controllers/detail_controller.js'}"></script>
         <script type="text/javascript" src="{link file='frontend/_resources/app/controllers/account_controller.js'}"></script>
+        <script type="text/javascript" src="{link file='frontend/_resources/app/controllers/checkout_controller.js'}"></script>
         
         <!-- Views -->
         <script type="text/javascript" src="{link file='frontend/_resources/app/views/main.js'}"></script>
