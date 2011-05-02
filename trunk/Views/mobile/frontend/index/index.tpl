@@ -18,7 +18,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
     
-    <link rel="stylesheet" href="{link file='frontend/_resources/app/_sencha/sencha-touch.css'}" type="text/css">
+    <link rel="stylesheet" href="{link file='frontend/_resources/styles/blackberry.css'}" type="text/css">
     <link rel="stylesheet" href="{link file='frontend/_resources/styles/app.css'}" type="text/css">
 
     <script type="text/javascript">
