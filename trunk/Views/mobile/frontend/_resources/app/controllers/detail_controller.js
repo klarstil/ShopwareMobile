@@ -34,12 +34,6 @@ Ext.regController('detail', {
 
         if(!this.view || !this.view.isComponent) {
             this.view = new App.views.Shop.detail;
-	        if(Ext.isDefined(options.parent)) {
-				this.shopView = options.parent;
-		        options.parent.add(this.view);
-		    } else {
-		        this.shopView.add(this.view);
-	        }
         }
 
 		if(!Ext.isDefined(options.articleID)) {
@@ -60,6 +54,13 @@ Ext.regController('detail', {
             controller: 'detail',
             action: 'showInfo'
         });
+
+		if(Ext.isDefined(options.parent)) {
+			Ext.getCmp('viewport').setActiveItem(0, { type: 'slide', reverse: true });
+			this.shopView.toolBar.show();
+			this.shopView.backBtn.show();
+			this.shopView.doComponentLayout();
+		}
 
         this.shopView.setActiveItem(this.view, 'slide');
     },

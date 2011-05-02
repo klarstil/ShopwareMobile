@@ -14,6 +14,14 @@ App.views.Search.index = Ext.extend(Ext.Panel, {
 	title: 'Suche',
 	iconCls: 'search',
 	layout: 'card',
+	listeners: {
+		beforeactivate: function(me) {
+			if(me.toolbar.isHidden()) {
+				me.toolbar.show();
+				me.show();
+			}
+		}
+	},
 	initComponent: function() {
 
 		this.toolbar = new Ext.Toolbar({
@@ -83,6 +91,10 @@ App.views.Search.index = Ext.extend(Ext.Panel, {
 					sSearch: val
 				}
 			});
+
+			App.stores.Search.proxy.extraParams = {
+				sSearch: val
+			};
 		} else {
 			list.destroy();
 			this.update(this.emptyHtml);
@@ -111,16 +123,14 @@ App.views.Search.list = Ext.extend(Ext.List, {
 	},
 
 	onItemTap: function(view, idx, item, event) {
-		/*
+		var tmpRec = this.store.getAt(idx);
 		Ext.dispatch({
 			controller: 'detail',
 			action: 'show',
-			articleID: idx,
+			articleID: tmpRec.data.articleID,
 			parent: this.ownerCt
 		})
 
 		this.ownerCt.toolbar.hide();
-		*/
 	}
-
 });
