@@ -14,9 +14,15 @@ App.views.Cart.index = Ext.extend(Ext.Panel, {
 	scroll: 'vertical',
 	initComponent: function() {
 
+		this.checkout = new Ext.Button({
+			ui: 'forward action',
+			text: 'Checkout'
+		});
+
 		this.toolbar = new Ext.Toolbar({
 			dock: 'top',
-			title: this.title
+			title: this.title,
+			items: [{ xtype: 'spacer' }, this.checkout]
 		});
 
 		this.checkoutBtn = new Ext.Button({
@@ -32,6 +38,10 @@ App.views.Cart.index = Ext.extend(Ext.Panel, {
 			items: [new App.views.Cart.list, this.checkoutBtn]
 		});
 		App.views.Cart.index.superclass.initComponent.call(this);
+
+		if(App.stores.Cart.articleCount < 1) {
+			this.checkout.hide();
+		}
 	}
 });
 
@@ -74,9 +84,11 @@ App.views.Cart.list = Ext.extend(Ext.Panel, {
 	update: function (store) {
 		if (store.items.length) {
 			this.tpl = App.views.Cart.indexTpl;
+			this.ownerCt.checkout.show();
 			this.hideCheckoutBtn(false);
 		} else {
 			this.tpl = App.views.Cart.emptyTpl;
+			this.ownerCt.checkout.hide();
 			this.hideCheckoutBtn(true);
 		}
 		App.views.Cart.list.superclass.update.apply(this, arguments);

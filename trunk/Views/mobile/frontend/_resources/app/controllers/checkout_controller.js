@@ -1,0 +1,3 @@
+Ext.regController('checkout', {
+
+});
