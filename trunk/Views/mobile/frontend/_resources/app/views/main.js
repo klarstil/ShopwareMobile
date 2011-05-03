@@ -5,7 +5,8 @@
  * Views fuer den Main Viewport
  * ----------------------------------------------------------------------
  */
-Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Cart', 'App.views.Account', 'App.views.Info');
+Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Cart', 'App.views.Account', 'App.views.Info', 'App.views.Checkout');
+
 App.views.Viewport = Ext.extend(Ext.TabPanel, {
 	fullscreen: true,
 	id: 'viewport',

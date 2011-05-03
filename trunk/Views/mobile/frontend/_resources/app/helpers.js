@@ -48,6 +48,18 @@ App.Helpers = {
 		});
 	},
 
+	// Checks if the user is logged in
+	isUserLoggedIn: function() {
+		this.getRequest(App.RequestURL.userLoggedIn, '', function(data) {
+			if(data == true) {
+				isUserLoggedIn = '1';
+			} else {
+				isUserLoggedIn = '';
+			}
+			return data;
+		});
+	},
+
 	server: {
 		dataObj: {},
 

@@ -8,7 +8,8 @@
  * @author S.Pohl <stp@shopware.de>
  * ----------------------------------------------------------------------
  */
-Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Cart', 'App.views.Account', 'App.views.Info');
+Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Cart', 'App.views.Account', 'App.views.Info', 'App.views.Checkout');
+
 App.views.Shop.index = Ext.extend(Ext.Panel, {
 	id: 'shop',
 	title: 'Shop',

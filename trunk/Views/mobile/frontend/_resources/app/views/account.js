@@ -5,7 +5,8 @@
  * Views fuer die Registrierung/Login
  * ----------------------------------------------------------------------
  */
-Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Cart', 'App.views.Account', 'App.views.Info');
+Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Cart', 'App.views.Account', 'App.views.Info', 'App.views.Checkout');
+
 App.views.Account.index = Ext.extend(Ext.Panel, {
 	id: 'account',
 	title: 'Kundenkonto',
@@ -14,6 +15,7 @@ App.views.Account.index = Ext.extend(Ext.Panel, {
 	scroll: false,
 
 	initComponent: function() {
+
 
 		this.backBtn = new Ext.Button({
 			text: this.title,
@@ -86,6 +88,7 @@ App.views.Account.index = Ext.extend(Ext.Panel, {
 			cls: 'startup',
 			height: '100%',
 			scroll: 'vertical',
+			hidden: (!App.Helpers.isUserLoggedIn()) ? true : false,
 			items: [this.newPnl, this.existingPnl]
 		});
 
@@ -342,8 +345,7 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel, {
 			style: 'margin: 0.5em',
 			ui: 'confirm',
 			scope: this,
-			handler: this.onRegisterBtn
-			//disabled: true
+			handler: function() { Ext.getCmp('register').submit(); }
 		}
 	],
 	listeners: {
@@ -362,9 +364,5 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel, {
 
 	initComponent: function() {
 		App.views.Account.register.superclass.initComponent.call(this);
-	},
-	
-	onRegisterBtn: function() {
-		this.submit();
 	}
 });

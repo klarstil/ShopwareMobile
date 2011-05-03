@@ -5,18 +5,22 @@
  * Views fuer den Warenkorb
  * ----------------------------------------------------------------------
  */
-Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Cart', 'App.views.Account', 'App.views.Info');
+Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Cart', 'App.views.Account', 'App.views.Info', 'App.views.Checkout');
+
 App.views.Cart.index = Ext.extend(Ext.Panel, {
 	id: 'cart',
 	title: 'Warenkorb',
 	iconCls: 'cart',
+	layout: 'card',
 	autoHeight: true,
 	scroll: 'vertical',
 	initComponent: function() {
 
 		this.checkout = new Ext.Button({
 			ui: 'forward action',
-			text: 'Checkout'
+			text: 'Checkout',
+			scope: this,
+			handler: this.onCheckoutBtn
 		});
 
 		this.toolbar = new Ext.Toolbar({
@@ -33,15 +37,29 @@ App.views.Cart.index = Ext.extend(Ext.Panel, {
 			style: 'margin: 0.5em'
 		});
 
+		this.pnl = new Ext.Panel({
+			items: [new App.views.Cart.list, this.checkoutBtn]
+		});
+
 		Ext.apply(this, {
 			dockedItems: [this.toolbar],
-			items: [new App.views.Cart.list, this.checkoutBtn]
+			items: [this.pnl]
 		});
 		App.views.Cart.index.superclass.initComponent.call(this);
 
 		if(App.stores.Cart.articleCount < 1) {
 			this.checkout.hide();
 		}
+	},
+
+	onCheckoutBtn: function() {
+		var view = this;
+
+		Ext.dispatch({
+			controller: 'checkout',
+			action: 'show',
+			parentView: view
+		});
 	}
 });
 
@@ -84,7 +102,7 @@ App.views.Cart.list = Ext.extend(Ext.Panel, {
 	update: function (store) {
 		if (store.items.length) {
 			this.tpl = App.views.Cart.indexTpl;
-			this.ownerCt.checkout.show();
+			this.ownerCt.ownerCt.checkout.show();
 			this.hideCheckoutBtn(false);
 		} else {
 			this.tpl = App.views.Cart.emptyTpl;

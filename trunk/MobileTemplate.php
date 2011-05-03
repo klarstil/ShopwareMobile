@@ -666,8 +666,8 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	public function isUserLoggedInAction()
 	{
-		$userloggedin = Shopware()->Modules()->Admin()->sCheckUser();
-		$this->jsonOutput($userloggedin);
+		$userLoggedIn = Shopware()->Modules()->Admin()->sCheckUser();
+		$this->jsonOutput($userLoggedIn);
 	}
 	
 	/**
