@@ -24,6 +24,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 	 */
 	public function install()
 	{
+		/* Subscribe events */
 		$event = $this->createEvent(
 	 		'Enlight_Controller_Dispatcher_ControllerPath_Frontend_MobileTemplate',
 	 		'onGetControllerPath'
@@ -41,7 +42,17 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 			'onPostDispatch'
 		);
 		$this->subscribeEvent($event);
-	 	
+
+		$hook = $this->createHook(
+			'Shopware_Controllers_Frontend_Register',
+			'saveRegisterAction',
+			'onSaveRegisterAction',
+			Enlight_Hook_HookHandler::TypeAfter,
+			0
+		);
+		$this->subscribeHook($hook);
+
+		/* Add menu entry */
 		$parent = $this->Menu()->findOneBy('label', 'Marketing');
         $item = $this->createMenuItem(array(
 		        'label' => 'Shopware Mobile',
@@ -55,12 +66,14 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 		$this->Menu()->save();
 
 		$form = $this->Form();
-		$form->setElement('text', 'supportedDevices', array('label'=>'Unterst&uuml;tzte Ger&auml;te (mit Pipe getrennt)','value'=>'Android|BlackBerry|iPhone|iPod', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
-		$form->setElement('text', 'requestText', array('label'=>'Aufforderungstext','value'=>'Möchten Sie die für mobile Endgeräte optimierte Version dieser Seite aufrufen?', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
-		$form->setElement('text', 'staticGroup', array('label'=>'Shopseiten-Gruppe','value'=>'gLeft', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
-		$form->setElement('checkbox', 'normalSite', array('label'=>'Link zur normalen Ansicht anzeigen','value'=>'1', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
-		$form->setElement('checkbox', 'activeBlog', array('label'=>'Blogartikel auf Startseite anzeigen','value'=>'0', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
-		$form->setElement('textarea', 'additionalCSS', array('label'=>'Zusätzliches CSS','value'=>'', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
+		$form->setElement('checkbox', 'useSubshop', array('label'=>'Shopware Mobile als Subshop verwenden','value'=>'1'));
+		$form->setElement('text', 'subshopId', array('label'=>'Subshop ID','value'=>'1'));
+		$form->setElement('text', 'supportedDevices', array('label'=>'Unterstützte Geräte (mit Pipe getrennt)','value'=>'Android|BlackBerry|iPhone|iPod'));
+		$form->setElement('text', 'staticGroup', array('label'=>'Shopseiten-Gruppe, die für den Informations-Bereich genutzt werden soll','value'=>'gLeft'));
+		$form->setElement('checkbox', 'useNormalSite', array('label'=>'Link zur normalen Ansicht anzeigen','value'=>'1'));
+		$form->setElement('text', 'logoPath', array('label'=> 'Logo-Pfad (bitte achten Sie darauf, dass das Logo nicht breiter als 320px ist)','value'=>''));
+		$form->setElement('text', 'colorTemplate', array('label'=> 'Farbtemplate (wählbar: android, blue, brown, default, green, grey, ios, orange, pink, red, turquoise)','value'=>'default'));
+		$form->setElement('textarea', 'additionalCSS', array('label'=>'Zusätzliche CSS-Eigenschaften','value'=>''));
 		$form->save();
 
 		return true;
@@ -101,11 +114,19 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 		}
 
 	    // Set session value
-		if($request->sViewport == 'mobile' && $request->sAction == 'useNormalSite') {
-			Shopware()->Session()->offsetSet('Mobile', 0);
-		} else if($request->sViewport == 'mobile') {
-			Shopware()->Session()->offsetSet('Mobile', 1);
-		}
+	    if($config->useSubshop == 1) {
+		    if(Shopware()->System()->sLanguage == $config->subshopId) {
+			    Shopware()->Session()->Mobile = 1;
+		    } else {
+			    Shopware()->Session()->Mobile = 0;
+		    }
+	    } else {
+			if($request->sViewport == 'mobile' && $request->sAction == 'useNormal') {
+				Shopware()->Session()->Mobile = 0;
+			} else if($request->sViewport == 'mobile') {
+				Shopware()->Session()->Mobile = 1;
+			}
+	    }
 
 	    // Add icon for Backend module
 		if($request->getModuleName() != 'frontend') {
@@ -113,20 +134,31 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 			return;
 		}
 
-	    $mobileSession = Shopware()->Session()->offsetGet('Mobile');
-
+	    $mobileSession = Shopware()->Session()->Mobile;
+	    
 	    // Merge template directories
-		if($version === 'mobile' && $mobileSession == 1) {
+		if($version === 'mobile' && $mobileSession === 1) {
 			$dirs = Shopware()->Template()->getTemplateDir();
 			$newdirs = array_merge(array(dirname(__FILE__) . '/Views/mobile/'), $dirs);
 			Shopware()->Template()->setTemplateDir($newdirs);
+
+			$view->assign('shopwareMobile', array(
+				'additionalCSS'  => $config->additionalCSS,
+				'isUserLoggedIn' => Shopware()->Modules()->sAdmin()->sCheckUser(),
+				'useNormalSite'  => $config->useNormalSite,
+				'colorTemplate'  => $config->colorTemplate
+			));
 
 		} else {
 			if(!empty($mobileSession) && $mobileSession == 0) { $active = 1; } else { $active = 0; }
 
 			$view->addTemplateDir(dirname(__FILE__). '/Views/');
 			$view->assign('shopwareMobile', array(
-				'active' => $active
+				'active'     => $active,
+				'useSubShop' => $config->useSubshop,
+				'subShopId'  => $config->subshopId,
+				'userAgents' => $config->supportedDevices,
+				'basePath'   => $request->getBasePath()
 			));
 
 			$view->extendsTemplate('mobile/frontend/plugins/swag_mobiletemplate/index.tpl');
@@ -158,6 +190,43 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
     {
     	return dirname(__FILE__) . '/MobileTemplateAdmin.php';
     }
+
+
+	/**
+	 * onSaveRegisterAction()
+	 *
+	 * Gibt das Ergebnis der Registrierung in einen JSON String wieder
+	 *
+	 * @static
+	 * @param Enlight_Hook_HookArgs $args
+	 * @return void
+	 */
+	public static function onSaveRegisterAction(Enlight_Hook_HookArgs $args) {
+		$subject = $args->getSubject();
+		$view = $subject->View();
+
+		$errors = 0;
+		foreach($view->register as $steps) {
+			if(isset($steps['error_flags'])) {
+				$errors++;
+			}
+		}
+
+		if($errors > 0) {
+			$return = array(
+				'success' => false,
+				'msg'     => 'Es ist ein Fehler aufgetreten, pr&uuml;fen Sie bitte Ihre Eingaben'
+			);
+		} else {
+			$return = array(
+				'success' => true,
+				'msg'     => 'Hallo ' . $view->register['form_data']['firstname'] . ' ' . $view->register['form_data']['lastname'] .
+							 '. Danke f&uuml;r Ihr Registierung bei' . Shopware()->Config()->Shopname
+			);
+		}
+
+		die(json_encode($return));
+	}
     
     /**
      * checkForMobileDevice()
@@ -168,10 +237,11 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
      * @return {string} $device
      */
     private function checkForMobileDevice() {
+	    $config = Shopware()->Plugins()->Frontend()->SwagMobileTemplate()->Config();
     	$agent = $_SERVER['HTTP_USER_AGENT'];
     	$device = 'desktop';
 
-    	if(preg_match('/(Android|BlackBerry|iPhone|iPod)/i', $agent)) {
+    	if(preg_match('/(' . $config->supportedDevices . ')/i', $agent)) {
     		$device = 'mobile';
     	}
 

@@ -21,9 +21,17 @@
     <link rel="stylesheet" href="{link file='frontend/_resources/styles/default.css'}" type="text/css">
     <link rel="stylesheet" href="{link file='frontend/_resources/styles/app.css'}" type="text/css">
 
+    {if $shopwareMobile.additionalCSS}
+        <style type="text/css">
+            {$shopwareMobile.additionalCSS}
+        </style>
+    {/if}
+
     <script type="text/javascript">
     //<![CDATA[
-        var timeNow = {time() nocache};
+        var timeNow        = {time() nocache},
+            isUserLoggedIn = '{$shopwareMobile.isUserLoggedIn}',
+            showNormalSite = '{$shopwareMobile.useNormalSite}';
     //]]>
     </script>
 </head>
