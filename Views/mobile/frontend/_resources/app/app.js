@@ -12,7 +12,7 @@
  * ----------------------------------------------------------------------
  */
 
-Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Cart', 'App.views.Account', 'App.views.Info');
+Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Cart', 'App.views.Account', 'App.views.Info', 'App.views.Checkout');
 
 var userLoggedIn = false;
 
@@ -64,5 +64,6 @@ App.RequestURL = {
 	addComment:    App.basePath + '/MobileTemplate/addComment',
 	login:         App.basePath + '/MobileTemplate/login',
 	register:      App.basePath + '/register/saveRegister',
-	useNormalSite: App.basePath + '/useNormal'
+	useNormalSite: App.basePath + '/useNormal',
+	userLoggedIn:  App.basePath + '/MobileTemplate/isUserLoggedIn'
 };

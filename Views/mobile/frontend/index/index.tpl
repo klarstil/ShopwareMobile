@@ -71,6 +71,7 @@
         <script type="text/javascript" src="{link file='frontend/_resources/app/views/cart.js'}"></script>
         <script type="text/javascript" src="{link file='frontend/_resources/app/views/account.js'}"></script>
         <script type="text/javascript" src="{link file='frontend/_resources/app/views/info.js'}"></script>
+        <script type="text/javascript" src="{link file='frontend/_resources/app/views/checkout.js'}"></script>
     </div>
 </body>
 </html>

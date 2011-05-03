@@ -43,6 +43,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 		);
 		$this->subscribeEvent($event);
 
+		/* Subscribe hooks */
 		$hook = $this->createHook(
 			'Shopware_Controllers_Frontend_Register',
 			'saveRegisterAction',
@@ -146,7 +147,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 				'additionalCSS'  => $config->additionalCSS,
 				'isUserLoggedIn' => Shopware()->Modules()->sAdmin()->sCheckUser(),
 				'useNormalSite'  => $config->useNormalSite,
-				'colorTemplate'  => $config->colorTemplate
+				'colorTemplate'  => trim($config->colorTemplate)
 			));
 
 		} else {
@@ -190,7 +191,6 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
     {
     	return dirname(__FILE__) . '/MobileTemplateAdmin.php';
     }
-
 
 	/**
 	 * onSaveRegisterAction()
@@ -247,5 +247,4 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 
 		return $device;
     }
- 
 }
