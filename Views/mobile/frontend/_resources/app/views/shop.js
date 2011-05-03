@@ -48,8 +48,7 @@ App.views.Shop.index = Ext.extend(Ext.Panel, {
 			store: App.stores.Promotions,
 			height: 150,
 			width: '100%',
-			direction: 'horizontal',
-			style: 'border-bottom: 1px solid #c7c7c7'
+			direction: 'horizontal'
 		});
 
 		/* Hauptkategorien */
@@ -59,6 +58,7 @@ App.views.Shop.index = Ext.extend(Ext.Panel, {
 			scroll: false,
 			height: '100%',
 			width: '100%',
+			style: 'border-top: 1px solid #c7c7c7',
 			itemTpl: '<strong>{name}</strong><tpl if="desc"><div class="desc">{desc}</div></tpl>',
 			listeners: {
 				scope: this,
@@ -72,6 +72,7 @@ App.views.Shop.index = Ext.extend(Ext.Panel, {
 			fullscreen: false,
 			id: 'normalView',
 			cls: 'normalView',
+			hidden: (Ext.isEmpty(showNormalSite)) ? true : false,
 			items: [{
 				html: '<div id="clickNormal">Zur normalen Ansicht wechseln</div>'
 			}],
@@ -92,7 +93,11 @@ App.views.Shop.index = Ext.extend(Ext.Panel, {
 
 		/* Einkaufswelten auslesen */
 		items = this.getPromotionItems(this.promotions.store);
-		this.promotions.add(items);
+		if(items.length) {
+			this.promotions.add(items);
+		} else {
+			this.promotions.hide();
+		}
 
 		this.itms = [
 			this.logo,
@@ -285,11 +290,17 @@ App.views.Shop.artListing = Ext.extend(Ext.Panel, {
 	},
 
 	checkForBanner: function() {
-		var raw = App.stores.Listing.proxy.reader.rawData, html;
-		if(raw.sBanner && Ext.getCmp('banner')) {
+		var raw    = App.stores.Listing.proxy.reader.rawData,
+			banner = Ext.getCmp('banner'),
+			html;
+		
+		if(raw.sBanner && banner) {
 			html = '<img src="'+raw.sBanner.img+'" alt="'+raw.sBanner.description+'"/>';
-			Ext.getCmp('banner').update(html);
+			banner.update(html);
 			this.doLayout();
+		} else {
+			banner.destroy();
+			this.doComponentLayout();
 		}
 	}
 

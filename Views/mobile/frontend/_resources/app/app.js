@@ -63,5 +63,6 @@ App.RequestURL = {
 	deleteBasket:  App.basePath + '/MobileTemplate/deleteBasket',
 	addComment:    App.basePath + '/MobileTemplate/addComment',
 	login:         App.basePath + '/MobileTemplate/login',
-	register:      App.basePath + '/register/saveRegister'
+	register:      App.basePath + '/register/saveRegister',
+	useNormalSite: App.basePath + '/useNormal'
 };

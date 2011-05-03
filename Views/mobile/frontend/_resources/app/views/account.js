@@ -26,7 +26,16 @@ App.views.Account.index = Ext.extend(Ext.Panel, {
 		this.toolbar = new Ext.Toolbar({
 			dock: 'top',
 			title: this.title,
-			items: [this.backBtn]
+			items: [this.backBtn, { xtype: 'spacer' }]
+		});
+
+		this.logoutBtn = new Ext.Button({
+			id: 'logoutBtn',
+			ui: 'action',
+			scope: this,
+			text: 'Logout',
+			hidden: (Ext.isEmpty(isUserLoggedIn)) ? true : false,
+			handler: function() { console.log('onLogout'); }
 		});
 
 		this.existingPnl = new Ext.Container({
@@ -163,7 +172,6 @@ App.views.Account.login = Ext.extend(Ext.form.FormPanel, {
 		text: 'Login absenden',
 		style: 'margin: 0.5em',
 		ui: 'confirm',
-		//disabled: true,
 		scope: this,
 		handler: this.onLoginBtn
 	}],
@@ -249,12 +257,14 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel, {
 					placeHolder: 'me@shopware.de'
 				},
 				{
+					id: 'passField',
 					xtype: 'passwordfield',
 					label: 'Passwort',
 					name: 'register[personal][password]',
 					required: true
 				},
 				{
+					id: 'passWdhField',
 					xtype: 'passwordfield',
 					label: 'Passwort Wdh.',
 					name: 'register[personal][passwordConfirmation]',
@@ -285,6 +295,7 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel, {
 		{
 			xtype: 'fieldset',
 			title: 'Ihre Adresse',
+			instructions: 'Die eingegebene Adresse fungiert als Rechnungsadresse und als Lieferadresse.',
 			defaults: {
 				labelWidth: '38%'
 			},
@@ -319,30 +330,41 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel, {
 					required: true,
 					name: 'register[billing][country]',
 					options: [
-						{text: 'Deutschland', value: '2'},
-						{text: '&Ouml;sterreich', value: 'austria'},
-						{text: 'Schweiz', value: 'swiss'}
+						{text: 'Deutschland', value: '2'}
 					]
 				}
 			]
 		},
 		{
+			id: 'registerBtn',
 			xtype: 'button',
 			text: 'Registierung absenden',
 			style: 'margin: 0.5em',
-			ui: 'confirm'
+			ui: 'confirm',
+			scope: this,
+			handler: this.onRegisterBtn
 			//disabled: true
 		}
 	],
 	listeners: {
 		submit: function(form, response) {
-			console.log(response);
+			if(response.success && response.msg) {
+				Ext.Msg.alert('Registrierung erfolgreich', response.msg);
+			}
 		},
+		
 		exception: function(form, response) {
-			console.log(response);
+			if(!response.success && response.msg) {
+				Ext.Msg.alert('Registrierung fehlgeschlagen', response.msg);
+			}
 		}
 	},
+
 	initComponent: function() {
 		App.views.Account.register.superclass.initComponent.call(this);
+	},
+	
+	onRegisterBtn: function() {
+		this.submit();
 	}
 });

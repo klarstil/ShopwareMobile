@@ -13,6 +13,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	protected $system;
 	protected $config;
 	protected $module;
+	protected $plugin;
 
 	/**
 	 * init()
@@ -27,6 +28,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 		$this->system = Shopware()->System();
 		$this->config = Shopware()->Config();
 		$this->module = Shopware()->Modules();
+		$this->plugin = Shopware()->Plugins()->Frontend()->SwagMobileTemplate();
 	}
 
 	/**
@@ -170,6 +172,11 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 				$i++;
 			}
 		}
+
+		if(!isset($retPromo) && empty($retPromo)) {
+			$retPromo['promotion'] = array();
+		}
+
 		$this->jsonOutput($retPromo);
 	}
 	
@@ -689,6 +696,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 				'msg'     => 'Ihr Login war erfolgreich. Sie in wenigen Sekunden weitergeleitet.'
 			);
 		}
+
 		$this->jsonOutput($output);
 	}
 	
@@ -733,7 +741,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
     	$agent = $_SERVER['HTTP_USER_AGENT'];
     	$device = 'desktop';
     	
-    	if(stristr($agent,'ipad') || stristr($agent,'iphone') || strstr($agent,'iphone') || stristr($agent,'android')) {
+    	if(preg_match()) {
     		$device = 'mobile';
     	}
 		return $device;
