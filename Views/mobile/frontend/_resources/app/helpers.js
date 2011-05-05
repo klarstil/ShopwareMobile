@@ -16,6 +16,7 @@ $$ = function(id) {
  * Beinhaltet diverse Helper Methoden
  */
 App.Helpers = {
+	
 	// Send post request
 	postRequest: function(url, params, callback, scope) {
 		this.request(url, 'POST', params, callback, scope);
@@ -52,12 +53,32 @@ App.Helpers = {
 	isUserLoggedIn: function() {
 		this.getRequest(App.RequestURL.userLoggedIn, '', function(data) {
 			if(data == true) {
+				this.getUserData();
 				isUserLoggedIn = '1';
 			} else {
 				isUserLoggedIn = '';
 			}
 			return data;
 		});
+	},
+
+	// Load user data from server
+	getUserData: function() {
+		App.stores.UserData.load();
+	},
+
+	// Load all payment methods from server
+	getPaymentMethods: function() {
+		if(!Ext.isEmpty(isUserLoggedIn)) {
+			this.getRequest(App.RequestURL.getPayment, '', function(data) {
+				if(data.length) {
+					data = Ext.util.JSON.decode(data)
+					return data;
+				}
+				return false;
+			});
+		}
+		return false;
 	},
 
 	server: {

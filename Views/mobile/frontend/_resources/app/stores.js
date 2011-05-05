@@ -55,6 +55,10 @@ App.stores.Info = new Ext.data.Store({
 	}
 });
 
+App.stores.UserData = new Ext.data.Store({
+	model: 'UserData'
+});
+
 /**
  * TODO: Konfigurator-Support einbauen
  * Bei Konfigurator-Artikel kommt es zur Zeit noch zu Konflikten bei der jetzigen Implementierung....
