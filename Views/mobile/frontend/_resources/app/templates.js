@@ -176,7 +176,7 @@ App.views.Cart.indexTpl = new Ext.XTemplate(
 		'<div class="item" rel="{ordernumber}">',
 			'<div class="image" style="background-image: url({image_url})"></div>',
 			'<div class="info">',
-				'<span class="supplier">{supplierName}</span>',
+			'<span class="supplier">{supplierName}</span>',
 				'<strong class="name">{articlename}</strong>',
 				'<span class="ordernumber"><strong>Bestell-Nr.:</strong> {ordernumber}</span>',
 				'<span class="quantity"><strong>Anzahl:</strong> {quantity}x {price} &euro;</span>',
@@ -189,7 +189,14 @@ App.views.Cart.indexTpl = new Ext.XTemplate(
 				'</div>',
 			'</div>',
 		'</div>',
-	'</tpl>'
+	'</tpl>',
+	{
+		compiled: true,
+		isBundle: function(mode) {
+			console.log(mode);
+			return (~~mode == 10) ? true : false;
+		}
+	}
 );
 
 App.views.Cart.emptyTpl = new Ext.XTemplate(
@@ -219,13 +226,16 @@ App.views.Checkout.cartTpl = new Ext.XTemplate(
 		'<div class="item" rel="{ordernumber}">',
 			'<div class="image" style="background-image: url({image_url})"></div>',
 			'<div class="info">',
-				'<span class="supplier">{supplierName}</span>',
 				'<strong class="name">{articlename}</strong>',
+				'<span class="supplier">{supplierName}</span>',
 				'<span class="ordernumber"><strong>Bestell-Nr.:</strong> {ordernumber}</span>',
 				'<span class="quantity"><strong>Anzahl:</strong> {quantity}x {price} &euro;</span>',
 				'<strong class="price">{amount} &euro;</strong>',
 			'</div>',
 			'<div class="clear">&nbsp;</div>',
 		'</div>',
-	'</tpl>'
+	'</tpl>',
+	{
+		compiled: true
+	}
 );

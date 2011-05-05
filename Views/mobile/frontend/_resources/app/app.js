@@ -21,6 +21,7 @@ Ext.regApplication({
 
 	/* Basic settings */
 	name: 'App',
+	icon: (!Ext.isEmpty(iconPath)) ? iconPath : false,
 	glossOnIcon: false,
 	autoInitViewport: true,
 	

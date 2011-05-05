@@ -18,28 +18,38 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
     
-    <link rel="stylesheet" href="{link file='frontend/_resources/styles/default.css'}" type="text/css">
+    <link rel="stylesheet" href="{link file={$shopwareMobile.template}}" type="text/css">
     <link rel="stylesheet" href="{link file='frontend/_resources/styles/_app.css'}" type="text/css">
 
-    {if $shopwareMobile.additionalCSS}
+    {if $shopwareMobile.additionalCSS|| $shopwareMobile.logoPath}
         <style type="text/css">
+
+            {* Add additional css properties *}
             {$shopwareMobile.additionalCSS}
+
+            {* Custom logo *}
+            {if $shopwareMobile.logoPath}
+                #logo, #logo div { background: url({$shopwareMobile.logoPath}) no-repeat center center }
+                #logo { height: {$shopwareMobile.logoHeight}px !important }
+            {/if}
         </style>
     {/if}
 
     <script type="text/javascript">
     //<![CDATA[
-        var timeNow        = {time() nocache},
-            isUserLoggedIn = '{$shopwareMobile.isUserLoggedIn}',
-            showNormalSite = '{$shopwareMobile.useNormalSite}',
-            shopName       = '{$sShopname}';
+        var timeNow = {time() nocache};
+
+        {* Loop through the available configuration options *}
+        {foreach $shopwareMobile as $key => $value}
+        var {$key} = '{$value}';
+        {/foreach}
     //]]>
     </script>
 </head>
 <body>
     <script type="text/javascript" src="{link file='frontend/_resources/app/_sencha/sencha-touch-debug.js'}"></script>
     <script type="text/javascript" src="{link file='frontend/_resources/app/_sencha/Ext.ux.touch.PagingToolbar.js'}"></script>
-    
+
     <div id="sencha-app">
 
 		<!-- Initialize Application -->
