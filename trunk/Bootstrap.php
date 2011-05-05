@@ -67,14 +67,29 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 		$this->Menu()->save();
 
 		$form = $this->Form();
-		$form->setElement('checkbox', 'useSubshop', array('label'=>'Shopware Mobile als Subshop verwenden','value'=>'1'));
-		$form->setElement('text', 'subshopId', array('label'=>'Subshop ID','value'=>'1'));
-		$form->setElement('text', 'supportedDevices', array('label'=>'Unterstützte Geräte (mit Pipe getrennt)','value'=>'Android|BlackBerry|iPhone|iPod'));
-		$form->setElement('text', 'staticGroup', array('label'=>'Shopseiten-Gruppe, die für den Informations-Bereich genutzt werden soll','value'=>'gLeft'));
-		$form->setElement('checkbox', 'useNormalSite', array('label'=>'Link zur normalen Ansicht anzeigen','value'=>'1'));
-		$form->setElement('text', 'logoPath', array('label'=> 'Logo-Pfad (bitte achten Sie darauf, dass das Logo nicht breiter als 320px ist)','value'=>''));
-		$form->setElement('text', 'colorTemplate', array('label'=> 'Farbtemplate (wählbar: android, blue, brown, default, green, grey, ios, orange, pink, red, turquoise)','value'=>'default'));
-		$form->setElement('textarea', 'additionalCSS', array('label'=>'Zusätzliche CSS-Eigenschaften','value'=>''));
+		/* Use Shopware Mobile as subshop */
+		$form->setElement('checkbox', 'useSubshop', array('label'=>'Shopware Mobile als Subshop verwenden','value'=>'1', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
+		$form->setElement('text', 'subshopId', array('label'=>'Subshop ID','value'=>'2', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
+
+		/* General settings */
+		$form->setElement('text', 'supportedDevices', array('label'=>'Unterstützte Geräte (mit Pipe getrennt)','value'=>'Android|BlackBerry|iPhone|iPod', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
+		$form->setElement('text', 'staticGroup', array('label'=>'Shopseiten-Gruppe, die für den Informations-Bereich genutzt werden soll','value'=>'gMobile', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
+
+		/* Order confirmation view settings */
+		$form->setElement('checkbox', 'useVoucher', array('label'=>'Gutscheineingabe auf der Bestellbest&auml;tigungsseite anzeigen','value'=>'0', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
+		$form->setElement('checkbox', 'useNewsletter', array('label'=>'Newsletteranmeldung auf der Bestellbest&auml;tigungsseite anzeigen','value'=>'0', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
+		$form->setElement('checkbox', 'useComment', array('label'=>'Kommentarfeld auf der Bestellbest&auml;tigungsseite anzeigen','value'=>'0', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
+
+		/* Template related settings */
+		$form->setElement('text', 'logoPath', array('label'=> 'Logo-Pfad (bitte achten Sie darauf, dass das Logo nicht breiter als 320px ist)','value'=>'', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
+		$form->setElement('text', 'logoHeight', array('label'=> 'Logo-H&ouml;he','value'=>'', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
+		$form->setElement('text', 'iconPath', array('label'=> 'Icon - nur iOS (Gr&ouml;&szlig;e: 57px x 57px, wird angezeigt wenn der Benutzer die Seite zum Home-Screen hinzuf&uuml;gt)','value'=>'', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
+		$form->setElement('checkbox', 'glossOnIcon', array('label'=>'Glanz &uuml;ber Icon anzeigen - nur iOS','value'=>'1', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
+		$form->setElement('text', 'startUpPath', array('label'=> 'Startup Screen - nur iOS (wird angezeigt wenn der Benutzer die Seite zum Home-Screen hinzuf&uuml;gt)','value'=>'', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
+		$form->setElement('checkbox', 'useNormalSite', array('label'=>'Link zur normalen Ansicht anzeigen','value'=>'1', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
+		$form->setElement('text', 'colorStyle', array('label'=> 'Farbtemplate (wählbar: android, blue, brown, default, green, grey, ios, orange, pink, red, turquoise)','value'=>'default', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
+		$form->setElement('textarea', 'additionalCSS', array('label'=>'Zusätzliche CSS-Eigenschaften','value'=>'', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
+
 		$form->save();
 
 		return true;
@@ -134,20 +149,27 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 			$view->extendsBlock('backend_index_css', '<style type="text/css">a.iphone { background-image: url("'. self::$icnBase64 .'"); background-repeat: no-repeat; }</style>', 'append');
 			return;
 		}
-
-	    $mobileSession = Shopware()->Session()->Mobile;
 	    
 	    // Merge template directories
+	    $mobileSession = 1; //Shopware()->Session()->Mobile;
 		if($version === 'mobile' && $mobileSession === 1) {
 			$dirs = Shopware()->Template()->getTemplateDir();
-			$newdirs = array_merge(array(dirname(__FILE__) . '/Views/mobile/'), $dirs);
-			Shopware()->Template()->setTemplateDir($newdirs);
+			$newDirs = array_merge(array(dirname(__FILE__) . '/Views/mobile/'), $dirs);
+			Shopware()->Template()->setTemplateDir($newDirs);
 
-			$view->assign('shopwareMobile', array(
+			$view->assign('shopwareMobile',array(
 				'additionalCSS'  => $config->additionalCSS,
 				'isUserLoggedIn' => Shopware()->Modules()->sAdmin()->sCheckUser(),
 				'useNormalSite'  => $config->useNormalSite,
-				'colorTemplate'  => trim($config->colorTemplate)
+				'template'       => 'frontend/_resources/styles/' . trim($config->colorStyle) . '.css',
+				'useVoucer'      => $config->useVoucher,
+				'useNewsletter'  => $config->useNewsletter,
+				'useComment'     => $config->useComment,
+				'logoPath'       => $config->logoPath,
+				'logoHeight'     => $config->logoHeight,
+				'iconPath'       => $config->iconPath,
+				'glossOnIcon'    => $config->glossOnIcon,
+				'startUpPath'    => $config->startUpPath
 			));
 
 		} else {

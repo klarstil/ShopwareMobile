@@ -85,14 +85,9 @@ App.CartClass = Ext.extend(Ext.util.Observable, {
 		if(me.items.length) {
 			me.items.clear();
 		}
+		
 		App.Helpers.postRequest(App.RequestURL.getBasket, {}, function(data) {
-			Ext.each(data.content, function(rec) {
-				me.amount = (rec.priceNumeric * rec.quantity) + me.amount;
-				me.articleCount++;
-				items.add(rec);
-			});
-			me.changeBadgeText(me.articleCount);
-			me.fireEvent('datachanged', this);
+			me.loopArticles(data.content);
 		});
 	},
 	
@@ -112,16 +107,10 @@ App.CartClass = Ext.extend(Ext.util.Observable, {
 				}
 			}, me);
 
-			if(item) {
-				item.quantity = parseInt(item.quantity) + 1;
-				item.amount = App.Helpers.number_format(Math.round((parseFloat(item.priceNumeric) * parseInt(item.quantity)) * 100) / 100, 2, ',', '.');
-			} else {
-				data.sArticle.amount = App.Helpers.number_format(data.sArticle.amount, 2, ',', '.');
-				me.items.add(data.sArticle);
-				me.articleCount++;
-				me.changeBadgeText(me.articleCount);
-			}
-			me.fireEvent('datachanged', me);
+			// Fire event to refresh card list
+			App.Helpers.postRequest(App.RequestURL.getBasket, {}, function(data) {
+				me.loopArticles(data.content);
+			});
 		});
 		this.fireEvent('datachanged', this);
 	},
@@ -176,6 +165,23 @@ App.CartClass = Ext.extend(Ext.util.Observable, {
 			}
 		});
 
+	},
+
+	loopArticles: function(data) {
+		var me = this, items = me.items;
+
+		/* Clear cart */
+		if(me.items.length) { me.items.clear(); }
+		me.articleCount = 0;
+
+		/* Loop through the articles */
+		Ext.each(data, function(rec) {
+			me.articleCount++;
+			items.add(rec);
+		});
+		this.fireEvent('datachanged', this);
+		this.changeBadgeText(me.articleCount);
+		return true;
 	},
 	
 	getCount: function() {

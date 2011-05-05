@@ -73,7 +73,7 @@ App.views.Shop.index = Ext.extend(Ext.Panel, {
 			fullscreen: false,
 			id: 'normalView',
 			cls: 'normalView',
-			hidden: (Ext.isEmpty(showNormalSite)) ? true : false,
+			hidden: (Ext.isEmpty(useNormalSite)) ? true : false,
 			items: [{
 				html: '<div id="clickNormal">Zur normalen Ansicht wechseln</div>'
 			}],
@@ -297,10 +297,10 @@ App.views.Shop.artListing = Ext.extend(Ext.Panel, {
 		
 		if(raw.sBanner && banner) {
 			html = '<img src="'+raw.sBanner.img+'" alt="'+raw.sBanner.description+'"/>';
-			banner.update(html);
+			if(banner) { banner.update(html); }
 			this.doLayout();
 		} else {
-			banner.destroy();
+			if(banner) { banner.destroy(); }
 			this.doComponentLayout();
 		}
 	}
@@ -326,6 +326,7 @@ App.views.Shop.subListing = Ext.extend(Ext.NestedList, {
 	listeners: {
 		scope: this,
 		beforeactivate: function(me) {
+			
 			// Hide Shop toolbar
 			var shopView = Ext.getCmp('shop');
 			shopView.toolBar.hide();
