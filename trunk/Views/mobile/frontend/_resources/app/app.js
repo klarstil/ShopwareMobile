@@ -5,7 +5,7 @@
  * Register the application, set up router for history support
  * and provides request urls
  *
- * TODO - Change stores proyies to ScriptProxy for native application
+ * TODO - Change stores proxies to ScriptProxy for native application
  *
  * @link http://www.shopware.de
  * @author S.Pohl <stp@shopware.de>
@@ -30,7 +30,11 @@ Ext.regApplication({
 	useHistory: true,
 
     launch: function () {
+
+	    /* Basic viewport */
     	this.viewport = new App.views.Viewport;
+
+	    /* Load cart from server */
     	App.stores.Cart.load();
     }
 });
@@ -65,5 +69,8 @@ App.RequestURL = {
 	login:         App.basePath + '/MobileTemplate/login',
 	register:      App.basePath + '/register/saveRegister',
 	useNormalSite: App.basePath + '/useNormal',
-	userLoggedIn:  App.basePath + '/MobileTemplate/isUserLoggedIn'
+	userLoggedIn:  App.basePath + '/MobileTemplate/isUserLoggedIn',
+	getUserData:   App.basePath + '/MobileTemplate/getUserData',
+	getPayment:    App.basePath + '/MobileTemplate/getPaymentMethods',
+	saveOrder:     App.basePath + '/checkout/finish'
 };

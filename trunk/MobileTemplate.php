@@ -627,33 +627,48 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	}
 
 	/**
-	 * processFormAction
+	 * getPaymentMethodsAction()
 	 *
-	 * Verarbeitet Formulare
+	 * Liest alle verfuegbaren Zahlungsarten aus und gibt diese per
+	 * JSON zurueck
 	 *
 	 * @return void
 	 */
-	public function processFormAction() {
-		if(!empty($this->Request()->Submit)) {
-			die('Form submitted');
-		} else {
-			die('Form NOT submitted');
-		}
+	public function getPaymentMethodsAction() {
+		$paymentMethods = Shopware()->Modules()->Admin()->sGetPaymentMeans();
+		$this->jsonOutput(array('sPaymentMethods' => $paymentMethods));
 	}
-	
+
 	/**
-	 * getUserDataAction()
+	 * getActiveDispatchMethod
 	 *
-	 * Gibt die Benuterdaten eines eingeloggten Benutzers per JSON
-	 * zurueck
+	 * Gibt die aktuelle Versandart zurueck
 	 *
-	 * @access public
-	 * @return {string} Benutzerdaten   
-	 */	
-	public function getUserDataAction()
+	 * @return bool|mixed
+	 */
+	private function getActiveDispatchMethod()
 	{
-		$userData = Shopware()->Modules()->Admin()->sGetUserData();
-		$this->jsonOutput($userData);
+		if(empty(Shopware()->Session()->sCountry)) {
+			return false;
+		}
+
+		$dispatches = Shopware()->Modules()->Admin()->sGetDispatches(Shopware()->Session()->sCountry);
+		if(empty($dispatches))
+		{
+			unset(Shopware()->Session()->sDispatch);
+			return false;
+		}
+
+		foreach ($dispatches as $dispatch)
+		{
+			if($dispatch['id'] == Shopware()->Session()->sDispatch)
+			{
+				return $dispatch;
+			}
+		}
+		$dispatch = reset($dispatches);
+		Shopware()->Session()->sDispatch = (int) $dispatch['id'];
+		return $dispatch;
 	}
 	
 	/**
@@ -667,7 +682,42 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	public function isUserLoggedInAction()
 	{
 		$userLoggedIn = Shopware()->Modules()->Admin()->sCheckUser();
+
+		if($userLoggedIn) {
+			$userData = Shopware()->Modules()->Admin()->sGetUserData();
+			if(isset($userData['additional']) && !empty($userData['additional'])) {
+				Shopware()->Session()->sCountry = $userData['additional']['country']['id'];
+			}
+		}
+
 		$this->jsonOutput($userLoggedIn);
+	}
+	
+	/**
+	 * getUserDataAction()
+	 *
+	 * Gibt die Benuterdaten eines eingeloggten Benutzers per JSON
+	 * zurueck
+	 *
+	 * @access public
+	 * @return {string} Benutzerdaten
+	 */
+	public function getUserDataAction()
+	{
+		$userData = Shopware()->Modules()->Admin()->sGetUserData();
+
+		foreach($userData as $group => $values) {
+			if($group !== 'additional') {
+				foreach($values as $k => $v) { $return[$group][$k] = htmlentities($v); }
+			} else { $return[$group] = $values; }
+		}
+
+		if(isset($userData['additional']) && !empty($userData['additional'])) {
+			Shopware()->Session()->sCountry = $userData['additional']['country']['id'];
+		}
+
+		$return['activeDispatch'] = $this->getActiveDispatchMethod();
+		$this->jsonOutput(array('sUserData' => $return));
 	}
 	
 	/**
@@ -725,27 +775,9 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	private function jsonOutput($json_str)
 	{
-		die(json_encode($json_str));
+		$json = utf8_encode(json_encode($json_str));
+		die($json);
 	}
-	
-	/**
-     * checkForMobileDevice()
-     *
-     * Untersucht den User Agent nach Mobilen Endgeraeten
-     *
-     * @access private
-     * @return {string} $device - mobile oder desktop
-     */
-    private function checkForMobileDevice() 
-    {
-    	$agent = $_SERVER['HTTP_USER_AGENT'];
-    	$device = 'desktop';
-    	
-    	if(preg_match()) {
-    		$device = 'mobile';
-    	}
-		return $device;
-    }
     
     /**
      * truncate()

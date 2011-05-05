@@ -19,7 +19,7 @@
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
     
     <link rel="stylesheet" href="{link file='frontend/_resources/styles/default.css'}" type="text/css">
-    <link rel="stylesheet" href="{link file='frontend/_resources/styles/app.css'}" type="text/css">
+    <link rel="stylesheet" href="{link file='frontend/_resources/styles/_app.css'}" type="text/css">
 
     {if $shopwareMobile.additionalCSS}
         <style type="text/css">
@@ -31,7 +31,8 @@
     //<![CDATA[
         var timeNow        = {time() nocache},
             isUserLoggedIn = '{$shopwareMobile.isUserLoggedIn}',
-            showNormalSite = '{$shopwareMobile.useNormalSite}';
+            showNormalSite = '{$shopwareMobile.useNormalSite}',
+            shopName       = '{$sShopname}';
     //]]>
     </script>
 </head>

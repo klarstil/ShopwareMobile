@@ -169,7 +169,7 @@ App.views.Shop.picturesTpl = new Ext.XTemplate(
 	{
 		compiled: true
 	}
-)
+);
 
 App.views.Cart.indexTpl = new Ext.XTemplate(
 	'<tpl for="items.items">',
@@ -212,4 +212,20 @@ App.views.Search.itemTpl = new Ext.XTemplate(
 		'<strong class="name">{articleName}</strong><span class="price">{price} &euro;</span>',
 		'<div class="desc">{description}</div>',
 	'</div>'
+);
+
+App.views.Checkout.cartTpl = new Ext.XTemplate(
+	'<tpl for="items.items">',
+		'<div class="item" rel="{ordernumber}">',
+			'<div class="image" style="background-image: url({image_url})"></div>',
+			'<div class="info">',
+				'<span class="supplier">{supplierName}</span>',
+				'<strong class="name">{articlename}</strong>',
+				'<span class="ordernumber"><strong>Bestell-Nr.:</strong> {ordernumber}</span>',
+				'<span class="quantity"><strong>Anzahl:</strong> {quantity}x {price} &euro;</span>',
+				'<strong class="price">{amount} &euro;</strong>',
+			'</div>',
+			'<div class="clear">&nbsp;</div>',
+		'</div>',
+	'</tpl>'
 );

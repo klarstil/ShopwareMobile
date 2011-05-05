@@ -13,10 +13,11 @@ App.views.Cart.index = Ext.extend(Ext.Panel, {
 	iconCls: 'cart',
 	layout: 'card',
 	autoHeight: true,
-	scroll: 'vertical',
+	scroll: false,
 	initComponent: function() {
 
-		this.checkout = new Ext.Button({
+		this.checkoutBtn = new Ext.Button({
+			id: 'checkoutBtn',
 			ui: 'forward action',
 			text: 'Checkout',
 			scope: this,
@@ -26,19 +27,12 @@ App.views.Cart.index = Ext.extend(Ext.Panel, {
 		this.toolbar = new Ext.Toolbar({
 			dock: 'top',
 			title: this.title,
-			items: [{ xtype: 'spacer' }, this.checkout]
-		});
-
-		this.checkoutBtn = new Ext.Button({
-			id: 'checkout',
-			ui: 'confirm',
-			text: 'Zur Kasse gehen',
-			disabled: true,
-			style: 'margin: 0.5em'
+			items: [{ xtype: 'spacer' }, this.checkoutBtn]
 		});
 
 		this.pnl = new Ext.Panel({
-			items: [new App.views.Cart.list, this.checkoutBtn]
+			scroll: 'vertical',
+			items: [new App.views.Cart.list]
 		});
 
 		Ext.apply(this, {
@@ -48,7 +42,7 @@ App.views.Cart.index = Ext.extend(Ext.Panel, {
 		App.views.Cart.index.superclass.initComponent.call(this);
 
 		if(App.stores.Cart.articleCount < 1) {
-			this.checkout.hide();
+			this.checkoutBtn.hide();
 		}
 	},
 
@@ -102,11 +96,11 @@ App.views.Cart.list = Ext.extend(Ext.Panel, {
 	update: function (store) {
 		if (store.items.length) {
 			this.tpl = App.views.Cart.indexTpl;
-			this.ownerCt.ownerCt.checkout.show();
+			this.ownerCt.ownerCt.checkoutBtn.show();
 			this.hideCheckoutBtn(false);
 		} else {
 			this.tpl = App.views.Cart.emptyTpl;
-			this.ownerCt.checkout.hide();
+			this.ownerCt.ownerCt.checkoutBtn.hide();
 			this.hideCheckoutBtn(true);
 		}
 		App.views.Cart.list.superclass.update.apply(this, arguments);
@@ -120,11 +114,7 @@ App.views.Cart.list = Ext.extend(Ext.Panel, {
 	},
 
 	hideCheckoutBtn: function(state) {
-		var btn = Ext.getCmp('checkout');
-		if (state === true) {
-			btn.hide()
-		} else {
-			btn.show();
-		}
+		var btn = Ext.getCmp('checkoutBtn');
+		if (state === true) { btn.hide(); } else { btn.show(); }
 	}
 });

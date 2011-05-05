@@ -11,7 +11,7 @@ Ext.regController('checkout', {
 		var view;
 
 		if(!Ext.isDefined(options.parentView)) {
-			throw Error('Checkout needs parentView to add checkout view');
+			throw Error('Checkout Controller needs parentView to add checkout view');
 		}
 
 		if(Ext.isEmpty(isUserLoggedIn)) {
@@ -44,8 +44,8 @@ Ext.regController('checkout', {
 			options.parentView.toolbar.hide();
 			options.parentView.doComponentLayout();
 
-			//options.parentView.setActiveItem(view, 'slide');
-			alert('User is logged in, show order confirmation view ...but wait you need to create one yourself ;)');
+			options.parentView.setActiveItem(view, 'slide');
+			//alert('User is logged in, show order confirmation view ...but wait you need to create one yourself ;)');
 		}
 	}
 });

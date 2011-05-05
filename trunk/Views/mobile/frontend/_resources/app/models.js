@@ -169,3 +169,19 @@ Ext.regModel('Static', {
 		}
 	}
 });
+
+Ext.regModel('UserData', {
+	fields: [
+		{ name: 'billingaddress', type: 'array' },
+		{ name: 'additional', type: 'array' },
+		{ name: 'shippingaddress', type: 'array'}
+	],
+	proxy: {
+		type: 'ajax',
+		url: App.RequestURL.getUserData,
+		reader: {
+			type: 'json',
+			root: 'sUserData'
+		}
+	}
+});

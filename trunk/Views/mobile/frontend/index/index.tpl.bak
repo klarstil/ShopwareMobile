@@ -19,7 +19,7 @@
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
     
     <link rel="stylesheet" href="{link file='frontend/_resources/sencha/default.css'}" type="text/css">
-    <link rel="stylesheet" href="{link file='frontend/_resources/styles/app.css'}" type="text/css">
+    <link rel="stylesheet" href="{link file='frontend/_resources/styles/_app.css'}" type="text/css">
 </head>
 <body>
     <script type="text/javascript" src="{link file='frontend/_resources/sencha/sencha-touch.js'}"></script>
