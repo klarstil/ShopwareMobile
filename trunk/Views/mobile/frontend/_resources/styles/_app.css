@@ -543,6 +543,20 @@ strong { font-weight: 700 }
     height: 16px;
     width: 16px;
 }
+.amount {
+    margin: 1em;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: .4em;
+    padding: .5em;
+    position: relative;
+}
+.amount #amount-display {
+    position: absolute;
+    right: .5em;
+    font-weight: 700;
+}
+
 
 /*  CHECKOUT VIEW
 	------------------------------------------------------------------ */

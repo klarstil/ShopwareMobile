@@ -151,7 +151,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 		}
 	    
 	    // Merge template directories
-	    $mobileSession = 1; //Shopware()->Session()->Mobile;
+	    $mobileSession = Shopware()->Session()->Mobile;
 		if($version === 'mobile' && $mobileSession === 1) {
 			$dirs = Shopware()->Template()->getTemplateDir();
 			$newDirs = array_merge(array(dirname(__FILE__) . '/Views/mobile/'), $dirs);
@@ -162,7 +162,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 				'isUserLoggedIn' => Shopware()->Modules()->sAdmin()->sCheckUser(),
 				'useNormalSite'  => $config->useNormalSite,
 				'template'       => 'frontend/_resources/styles/' . trim($config->colorStyle) . '.css',
-				'useVoucer'      => $config->useVoucher,
+				'useVoucher'     => $config->useVoucher,
 				'useNewsletter'  => $config->useNewsletter,
 				'useComment'     => $config->useComment,
 				'logoPath'       => $config->logoPath,

@@ -38,7 +38,8 @@
     <script type="text/javascript">
     //<![CDATA[
         var timeNow = {time() nocache};
-
+        var shopName = '{$sShopname}';
+    
         {* Loop through the available configuration options *}
         {foreach $shopwareMobile as $key => $value}
         var {$key} = '{$value}';

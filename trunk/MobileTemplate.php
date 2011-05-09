@@ -545,6 +545,19 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 		}	
 		$this->jsonOutput($basket);
 	}
+
+	/**
+	 * getBasketAmountAction()
+	 *
+	 * Gibt den gesamten Warenkorbwert als JSON String zurueck
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function getBasketAmountAction() {
+		$amount = Shopware()->Modules()->Basket()->sGetAmountArticles();
+		$this->jsonOutput($amount);
+	}
 	
 	/**
 	 * removeArticleFromCartAction()
@@ -558,8 +571,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	public function removeArticleFromCartAction()
 	{
 		$id = $this->Request()->getParam('articleId');
-		
-		$remove = Shopware()->Modules()->Basket()->sDeleteArticle($id);
+		Shopware()->Modules()->Basket()->sDeleteArticle($id);
 		
 		$this->jsonOutput(array('success' => true));
 	}
