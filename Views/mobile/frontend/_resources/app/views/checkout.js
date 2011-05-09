@@ -99,43 +99,71 @@ App.views.Checkout.index = Ext.extend(Ext.Panel, {
 				  '</div>'
 		});
 
-		/* Order comment */
-		this.commentField = new Ext.form.FieldSet({
-			id: 'commentFieldset',
-			title: 'Ihr Kommentar',
-			instructions: 'Bitte geben Sie hier Ihr Kommentar zu Ihrer Bestellung ein.',
-			items: [{
-				xtype: 'textareafield',
-				name: 'sComment',
-				label: 'Kommentar',
-				value: ''
-			}]
+		/* Handles all neccessary  */
+		this.orderPnl = new Ext.form.FormPanel({
+			id: 'orderPnl',
+			url: App.RequestURL.saveOrder,
+			listeners: {
+				submit: function(form, response) {
+					if(response.success && response.msg) {
+						Ext.Msg.alert('Bestellung erfolgreich', response.msg);
+					}
+				},
+
+				exception: function(form, response) {
+					if(!response.success && response.msg) {
+						Ext.Msg.alert('Bestellung fehlgeschlagen', response.msg);
+					}
+				}
+			}
 		});
+
+		/* Order comment */
+		if(~~useComment) {
+			this.commentField = new Ext.form.FieldSet({
+				id: 'commentFieldset',
+				title: 'Ihr Kommentar',
+				instructions: 'Bitte geben Sie hier Ihr Kommentar zu Ihrer Bestellung ein.',
+				items: [{
+					xtype: 'textareafield',
+					name: 'sComment',
+					label: 'Kommentar',
+					value: ''
+				}]
+			});
+			this.orderPnl.add(this.commentField);
+		}
 
 		/* Voucher field */
-		this.voucherField = new Ext.form.FieldSet({
-			title: 'Gutschein hinzuf&uuml;gen',
-			instructions: 'M&ouml;chten Sie einen Gutschein zu Ihrer Bestellung hinzuf&uuml;gen?',
-			items: [{
-				xtype: 'textfield',
-				label: 'Gutschein',
-				name: 'sVoucher'
-			}]
-		});
+		if(~~useVoucher) {
+			this.voucherField = new Ext.form.FieldSet({
+				title: 'Gutschein hinzuf&uuml;gen',
+				instructions: 'M&ouml;chten Sie einen Gutschein zu Ihrer Bestellung hinzuf&uuml;gen?',
+				items: [{
+					xtype: 'textfield',
+					label: 'Gutschein',
+					name: 'sVoucher'
+				}]
+			});
+			this.orderPnl.add(this.voucherField);
+		}
 
 		/* Subscribe to newsletter */
-		this.newsletterField = new Ext.form.FieldSet({
-			id: 'newsletterFieldset',
-			title: 'Newsletter abonnieren',
-			instructions: 'Möchten Sie den kostenlosen ' + shopName + ' Newsletter erhalten? Sie können sich jederzeit wieder abmelden! ',
-			items: [{
-				xtype: 'checkboxfield',
-				name: 'sNewsletter',
-				label: 'Newsletter',
-				checked: false,
-				value: 'active'
-			}]
-		});
+		if(~~useNewsletter) {
+			this.newsletterField = new Ext.form.FieldSet({
+				id: 'newsletterFieldset',
+				title: 'Newsletter abonnieren',
+				instructions: 'Möchten Sie den kostenlosen ' + shopName + ' Newsletter erhalten? Sie können sich jederzeit wieder abmelden! ',
+				items: [{
+					xtype: 'checkboxfield',
+					name: 'sNewsletter',
+					label: 'Newsletter',
+					checked: false,
+					value: 'active'
+				}]
+			});
+			this.orderPnl.add(this.newsletterField);
+		}
 
 		/* AGB checkbox */
 		this.agbField = new Ext.form.FieldSet({
@@ -161,25 +189,8 @@ App.views.Checkout.index = Ext.extend(Ext.Panel, {
 			handler: this.onSubmitOrderBtn
 		});
 
-		/* Handles all neccessary  */
-		this.orderPnl = new Ext.form.FormPanel({
-			id: 'orderPnl',
-			url: App.RequestURL.saveOrder,
-			items: [this.voucherField, this.commentField, this.newsletterField, this.agbField, this.submitOrderBtn],
-			listeners: {
-				submit: function(form, response) {
-					if(response.success && response.msg) {
-						Ext.Msg.alert('Bestellung erfolgreich', response.msg);
-					}
-				},
-
-				exception: function(form, response) {
-					if(!response.success && response.msg) {
-						Ext.Msg.alert('Bestellung fehlgeschlagen', response.msg);
-					}
-				}
-			}
-		});
+		this.orderPnl.add(this.agbField);
+		this.orderPnl.add(this.submitOrderBtn);
 
 		/* Main Pnl */
 		this.pnl = new Ext.Panel({

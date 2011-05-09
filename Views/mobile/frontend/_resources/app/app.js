@@ -73,5 +73,6 @@ App.RequestURL = {
 	userLoggedIn:  App.basePath + '/MobileTemplate/isUserLoggedIn',
 	getUserData:   App.basePath + '/MobileTemplate/getUserData',
 	getPayment:    App.basePath + '/MobileTemplate/getPaymentMethods',
-	saveOrder:     App.basePath + '/checkout/finish'
+	saveOrder:     App.basePath + '/checkout/finish',
+	basketAmount:  App.basePath + '/MobileTemplate/getBasketAmount'
 };

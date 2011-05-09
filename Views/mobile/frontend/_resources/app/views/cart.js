@@ -14,6 +14,15 @@ App.views.Cart.index = Ext.extend(Ext.Panel, {
 	layout: 'card',
 	autoHeight: true,
 	scroll: false,
+	listeners: {
+		scope: this,
+		activate: function() {
+			var amountEl = Ext.get('amount-display');
+			if(amountEl) {
+				amountEl.setHTML((Math.round(App.stores.Cart.amount*100) / 100) + '&nbsp;&euro;*');
+			}
+		}
+	},
 	initComponent: function() {
 
 		this.checkoutBtn = new Ext.Button({
@@ -32,6 +41,7 @@ App.views.Cart.index = Ext.extend(Ext.Panel, {
 
 		this.pnl = new Ext.Panel({
 			scroll: 'vertical',
+			height: '100%',
 			items: [new App.views.Cart.list]
 		});
 
@@ -59,7 +69,7 @@ App.views.Cart.index = Ext.extend(Ext.Panel, {
 
 App.views.Cart.list = Ext.extend(Ext.Panel, {
 	id: 'cartlist',
-	scroll: 'vertical',
+	scroll: false,
 	layout: 'fit',
 	autoHeight: true,
 	flex: 1,
@@ -85,7 +95,6 @@ App.views.Cart.list = Ext.extend(Ext.Panel, {
 			datachanged: this.onDataChanged,
 			scope: this
 		});
-
 		App.views.Cart.list.superclass.initComponent.call(this);
 	},
 
@@ -96,11 +105,18 @@ App.views.Cart.list = Ext.extend(Ext.Panel, {
 	update: function (store) {
 		if (store.items.length) {
 			this.tpl = App.views.Cart.indexTpl;
-			this.ownerCt.ownerCt.checkoutBtn.show();
+
+			if(this.ownerCt.ownerCt.checkoutBtn) { 
+				this.ownerCt.ownerCt.checkoutBtn.show();
+			}
+
 			this.hideCheckoutBtn(false);
 		} else {
 			this.tpl = App.views.Cart.emptyTpl;
-			this.ownerCt.ownerCt.checkoutBtn.hide();
+			
+			if(this.ownerCt.ownerCt.checkoutBtn) {
+				this.ownerCt.ownerCt.checkoutBtn.hide();
+			}
 			this.hideCheckoutBtn(true);
 		}
 		App.views.Cart.list.superclass.update.apply(this, arguments);
