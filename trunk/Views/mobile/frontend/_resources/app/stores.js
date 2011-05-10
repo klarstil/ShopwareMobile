@@ -214,7 +214,7 @@ App.CartClass = Ext.extend(Ext.util.Observable, {
 	_debugAddExampleArticles: function() {
 		var me = this;
 		var articles = [
-			'SW10009',
+			'SW10009'/*,
 			'SW10010',
 			'SW10011',
 			'SW10012',
@@ -251,7 +251,7 @@ App.CartClass = Ext.extend(Ext.util.Observable, {
 			'SW10045',
 			'SW10046',
 			'SW10047',
-			'SW10048'
+			'SW10048' */
 		];
 
 		Ext.each(articles, function(article) {

@@ -16,13 +16,40 @@ App.views.Cart.index = Ext.extend(Ext.Panel, {
 	scroll: false,
 	listeners: {
 		scope: this,
+		
 		activate: function() {
 			var amountEl = Ext.get('amount-display');
 			if(amountEl) {
 				amountEl.setHTML((Math.round(App.stores.Cart.amount*100) / 100) + '&nbsp;&euro;*');
 			}
+		},
+
+		deactivate: function(me) {
+			var active = me.getActiveItem(), view;
+
+			if(active && active.id == 'orderConfirmation') {
+				active.setActiveItem(me.pnl, {
+					type: 'slide',
+					reverse: true,
+					scope: this
+				});
+
+				me.toolbar.setTitle(me.title);
+				me.toolbar.show();
+
+				Ext.getCmp('cartlist').destroy();
+				active.destroy();
+				
+				if(!Ext.getCmp('cartlist')) {
+					view = new App.views.Cart.list;
+					view.tpl = App.views.Cart.emptyTpl;
+					Ext.getCmp('cart').add(view);
+					me.doComponentLayout();
+				}
+			}
 		}
 	},
+	
 	initComponent: function() {
 
 		this.checkoutBtn = new Ext.Button({
@@ -69,18 +96,21 @@ App.views.Cart.index = Ext.extend(Ext.Panel, {
 
 App.views.Cart.list = Ext.extend(Ext.Panel, {
 	id: 'cartlist',
-	scroll: false,
 	layout: 'fit',
-	autoHeight: true,
 	flex: 1,
+	tpl: App.views.Cart.indexTpl,
+	data: App.stores.Cart,
+	store: App.stores.Cart,
+	autoHeight: true,
+	scroll: false,
 	initComponent: function() {
+		this.store.on({
+			datachanged: this.onDataChanged,
+			scope: this
+		});
+		App.views.Cart.list.superclass.initComponent.call(this);
 
 		Ext.apply(this, {
-			tpl: App.views.Cart.indexTpl,
-			data: App.stores.Cart,
-			store: App.stores.Cart,
-			autoHeight: true,
-			scroll: false,
 			listeners: {
 				el: {
 					tap: this.onDeleteBtn,
@@ -89,13 +119,7 @@ App.views.Cart.list = Ext.extend(Ext.Panel, {
 				},
 				scope: this
 			}
-		});
-
-		this.store.on({
-			datachanged: this.onDataChanged,
-			scope: this
-		});
-		App.views.Cart.list.superclass.initComponent.call(this);
+		})
 	},
 
 	onDataChanged: function(store) {

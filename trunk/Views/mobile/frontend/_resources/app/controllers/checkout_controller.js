@@ -10,10 +10,12 @@ Ext.regController('checkout', {
 	show: function(options) {
 		var view;
 
+		/* Checkout needs parent view */
 		if(!Ext.isDefined(options.parentView)) {
 			throw Error('Checkout Controller needs parentView to add checkout view');
 		}
 
+		/* Check if the user is logged in */
 		if(Ext.isEmpty(isUserLoggedIn)) {
 			view = new App.views.Account.index;
 			view.toolbar.setTitle('Checkout');
@@ -21,7 +23,7 @@ Ext.regController('checkout', {
 			options.parentView.add(view);
 			options.parentView.toolbar.hide();
 			options.parentView.doComponentLayout();
-
+			
 			view.backBtn.setHandler(function() {
 				options.parentView.setActiveItem(0, {
 					type: 'slide',

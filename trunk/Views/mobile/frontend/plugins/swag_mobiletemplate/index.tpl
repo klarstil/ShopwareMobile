@@ -9,7 +9,7 @@ if(navigator.userAgent.match(/{$shopwareMobile.userAgents}/i) && !request) {
 
     if(quest == true && useSubShop == 0) {
 		window.location.href = '/mobile';
-        return;
+        return false;
 	}
 
     if(quest == true && useSubShop == 1) {
