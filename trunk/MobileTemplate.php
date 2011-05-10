@@ -10,6 +10,7 @@
  */
 class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Action
 {
+	protected $senchaIo;
 	protected $system;
 	protected $config;
 	protected $module;
@@ -26,11 +27,24 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	public function init()
 	{
+		$this->senchaIo = 'http://src.sencha.io/';
 		$this->system = Shopware()->System();
 		$this->config = Shopware()->Config();
 		$this->module = Shopware()->Modules();
 		$this->session = Shopware()->Session();
 		$this->plugin = Shopware()->Plugins()->Frontend()->SwagMobileTemplate();
+	}
+
+	/**
+	 * preDispatch()
+	 *
+	 * Wird bei jedem Request aufgerufen
+	 *
+	 * @return void
+	 */
+	public function preDispatch()
+	{
+		Shopware()->Plugins()->Controller()->ViewRenderer()->setNoRender();
 	}
 
 	/**
@@ -775,7 +789,12 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	private function stripBasePath($url)
 	{
-		return $url = preg_replace("/http:\/\/".Shopware()->Config()->BasePath."/i", '', $url);
+		/* Sencha.io "Src" service */
+		if($this->plugin->Config()->useSrc) {
+			$url = $this->senchaIo . $url;
+		}
+		return $url;
+		//return $url = preg_replace("/http:\/\/".Shopware()->Config()->BasePath."/i", '', $url);
 	}
 	
 	/**
@@ -789,8 +808,13 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	private function jsonOutput($json_str)
 	{
-		$json = utf8_encode(json_encode($json_str));
-		die($json);
+		$callback = $this->Request()->getParam('callback');
+		$callback = preg_replace('#[^0-9a-z]+#i', '', (string) $callback);
+		if(!empty($callback)) {
+			echo $callback."(" . json_encode($json_str) . ");";
+		} else {
+			echo json_encode($json_str);
+		}
 	}
     
     /**
