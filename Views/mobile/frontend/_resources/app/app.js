@@ -31,13 +31,18 @@ Ext.regApplication({
 	useHistory: true,
 
     launch: function () {
+		this.launched = true;
+	    this.mainLaunch();
+    },
 
-	    /* Basic viewport */
+	mainLaunch: function() {
+
+		/* Basic viewport */
     	this.viewport = new App.views.Viewport;
 
 	    /* Load cart from server */
     	App.stores.Cart.load();
-    }
+	}
 });
 
 /* Set up router for history support */
