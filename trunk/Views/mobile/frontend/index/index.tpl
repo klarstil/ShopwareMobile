@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html mainfest="{link file='frontend/_resources/cache.manifest'}">
+<html lang="de">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">	
+    <meta charset="utf-8">
     <title>{$sShopname}</title>
     
     {block name='frontend_index_header_meta_tags'}
@@ -15,8 +15,6 @@
 	{/block}
     
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
     
     <link rel="stylesheet" href="{link file={$shopwareMobile.template}}" type="text/css">
     <link rel="stylesheet" href="{link file='frontend/_resources/styles/_app.css'}" type="text/css">

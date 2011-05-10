@@ -62,6 +62,12 @@ Ext.regController('detail', {
 			this.shopView.doComponentLayout();
 		}
 
+		if(!this.shopView.toolBar.isVisible()) {
+			this.shopView.backBtn.show();
+			this.shopView.toolBar.show();
+			this.shopView.doComponentLayout();
+		}
+
         this.shopView.setActiveItem(this.view, 'slide');
     },
 
