@@ -15,6 +15,14 @@ App.views.Checkout.index = Ext.extend(Ext.Panel, {
 	title: 'Bestellbest&auml;tigung',
 	scroll: 'vertical',
 	layout: 'card',
+	listeners: {
+		scope: this,
+		deactivate: function(me) {
+			console.log('destroy orderConfirmation');
+			me.destroy();
+		}
+	},
+	
 	initComponent: function() {
 		var me = this,
 			userData = App.stores.UserData.proxy.reader.rawData.sUserData,
@@ -99,14 +107,30 @@ App.views.Checkout.index = Ext.extend(Ext.Panel, {
 				  '</div>'
 		});
 
-		/* Handles all neccessary  */
+		/* Handles all neccessary order informations */
 		this.orderPnl = new Ext.form.FormPanel({
 			id: 'orderPnl',
 			url: App.RequestURL.saveOrder,
 			listeners: {
+				beforesubmit: function() {
+					this.ownerCt.setLoading(true);
+				},
 				submit: function(form, response) {
+					this.ownerCt.setLoading(false);
 					if(response.success && response.msg) {
-						Ext.Msg.alert('Bestellung erfolgreich', response.msg);
+						Ext.Msg.alert('Bestellung erfolgreich', response.msg, function() {
+							App.stores.Cart.removeAll();
+
+							/* Could be cleaner... */
+							me.setActiveItem(0);
+							me.toolbar.show();
+							me.doComponentLayout();
+							Ext.getCmp('viewport').setActiveItem(0, {
+								type: 'slide',
+								reverse: true,
+								scope: this
+							})
+						});
 					}
 				},
 

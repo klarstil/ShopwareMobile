@@ -46,8 +46,8 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 		/* Subscribe hooks */
 		$hook = $this->createHook(
 			'Shopware_Controllers_Frontend_Register',
-			'saveRegisterAction',
-			'onSaveRegisterAction',
+			'saveOrder',
+			'onSaveOrder',
 			Enlight_Hook_HookHandler::TypeAfter,
 			0
 		);
@@ -223,9 +223,12 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 	 * @param Enlight_Hook_HookArgs $args
 	 * @return void
 	 */
-	public static function onSaveRegisterAction(Enlight_Hook_HookArgs $args) {
+	public static function onSaveOrder(Enlight_Hook_HookArgs $args)
+	{
 		$subject = $args->getSubject();
 		$view = $subject->View();
+		$version = self::checkForMobileDevice();
+		$mobileSession = Shopware()->Session()->Mobile;
 
 		$errors = 0;
 		foreach($view->register as $steps) {
@@ -246,8 +249,31 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 							 '. Danke f&uuml;r Ihr Registierung bei' . Shopware()->Config()->Shopname
 			);
 		}
+		if($version === 'mobile' && $mobileSession === 1) {
+			die(json_encode($return));
+		}
+	}
 
-		die(json_encode($return));
+	/**
+	 * onFinishAction()
+	 *
+	 * Erweitert die Finish-Methode um das Ergebnis der Bestellung
+	 * als JSON-String zurueck
+	 *
+	 * @static
+	 * @param Enlight_Hook_HookArgs $args
+	 * @return void
+	 */
+	public static function onFinishAction(Enlight_Hook_HookArgs $args)
+	{
+		$subject = $args->getSubject();
+		$return = $args->getReturn();
+		$view = $subject->View();
+		$version = self::checkForMobileDevice();
+		$mobileSession = Shopware()->Session()->Mobile;
+
+		print_r($return);
+		die();
 	}
     
     /**

@@ -619,10 +619,11 @@ strong { font-weight: 700 }
     font-size: 12px;
     width: 90%;
 }
-#search .emptySearch {
+#search .emptySearch, #account .account-inner {
     margin: 1em;
     color: #7e7e7e;
     text-align: center;
+    text-shadow: #fff 0px 1px 1px;
 }
 
 /*  INFORMATIONS VIEW

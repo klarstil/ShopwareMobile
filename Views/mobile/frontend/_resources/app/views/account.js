@@ -16,7 +16,7 @@ App.views.Account.index = Ext.extend(Ext.Panel, {
 
 	initComponent: function() {
 
-
+		/* Back btn */
 		this.backBtn = new Ext.Button({
 			text: this.title,
 			scope: this,
@@ -25,24 +25,47 @@ App.views.Account.index = Ext.extend(Ext.Panel, {
 			handler:  this.onBackBtn
 		});
 
+		/* Toolbar */
 		this.toolbar = new Ext.Toolbar({
 			dock: 'top',
 			title: this.title,
 			items: [this.backBtn, { xtype: 'spacer' }]
 		});
 
+		/* Logout btn */
 		this.logoutBtn = new Ext.Button({
 			id: 'logoutBtn',
 			ui: 'action',
 			scope: this,
 			text: 'Logout',
-			hidden: (Ext.isEmpty(isUserLoggedIn)) ? true : false,
-			handler: function() { console.log('onLogout'); }
-		});
+			hidden: (~~isUserLoggedIn) ? false : true,
+			handler: function() {
+				var me = this;
+				App.Helpers.getRequest(App.RequestURL.logout, '', function(response) {
+					if(response.success && response.msg) {
+						Ext.Msg.alert('Registrierung erfolgreich', response.msg);
+					}
+					isUserLoggedIn = 0;
 
+					/* Change view */
+					me.logoutBtn.hide();
+					me.centerPnl.hide();
+					me.existingPnl.show();
+					me.newPnl.show();
+					me.doComponentLayout();
+				});
+			}
+		});
+		/* Add logout btn if the user is logged in */
+		if(~~isUserLoggedIn) {
+			this.toolbar.add(this.logoutBtn);
+		}
+
+		/* Login fieldset */
 		this.existingPnl = new Ext.Container({
 			id: 'existing',
 			cls: 'x-form-fieldset',
+			hidden: (~~isUserLoggedIn) ? true : false,
 			listeners: {
 				scope: this,
 				tap: {
@@ -62,9 +85,11 @@ App.views.Account.index = Ext.extend(Ext.Panel, {
 					'</div>'
 		});
 
+		/* Register fieldset */
 		this.newPnl = new Ext.Container({
 			id: 'new',
 			cls: 'x-form-fieldset',
+			hidden: (~~isUserLoggedIn) ? true : false,
 			listeners: {
 				scope: this,
 				tap: {
@@ -84,12 +109,22 @@ App.views.Account.index = Ext.extend(Ext.Panel, {
 					'</div>'
 		});
 
+		/* Customer center */
+		this.centerPnl = new Ext.Panel({
+			id: 'accountCenter',
+			height: '100%',
+			scroll: false,
+			html: '<div class="account-inner">In der Release-Version von Shopware Mobile finden Sie hier das Kunden-Center</div>',
+			hidden: (~~isUserLoggedIn) ? false : true
+		});
+
+		/* holds all views */
 		this.mainPnl = new Ext.Container({
 			cls: 'startup',
 			height: '100%',
 			scroll: 'vertical',
 			hidden: (!App.Helpers.isUserLoggedIn()) ? true : false,
-			items: [this.newPnl, this.existingPnl]
+			items: [this.newPnl, this.existingPnl, this.centerPnl]
 		});
 
 		Ext.apply(this, {
@@ -156,6 +191,11 @@ App.views.Account.login = Ext.extend(Ext.form.FormPanel, {
 		defaults: { labelWidth: '38%' },
 		items: [
 			{
+				xtype: 'hiddenfield',
+				name: 'accountmode',
+				value: 2
+			},
+			{
 				xtype: 'emailfield',
 				name: 'email',
 				label: 'E-Mail',
@@ -179,9 +219,50 @@ App.views.Account.login = Ext.extend(Ext.form.FormPanel, {
 		handler: this.onLoginBtn
 	}],
 	listeners: {
+		scope: this,
+		deactivate: function(me) {
+			me.destroy();
+		},
 		submit: function(form, response) {
 			if(response.success && response.msg) {
-				Ext.Msg.alert('Login erfolgreich', response.msg);
+				Ext.Msg.alert('Login erfolgreich', response.msg, function() {
+					var active = Ext.getCmp('viewport').getActiveItem(),
+						view = 0;
+
+					if(active.id == 'cart') {
+						App.stores.UserData.load({
+							scope: this,
+							callback: function(){
+								view = new App.views.Checkout.index;
+								view.update('');
+								active.setActiveItem(view, {
+									type: 'slide',
+									reverse: true,
+									scope: this
+								});
+							}
+						});
+					} else {
+
+						/* Toolbar set up */
+						active.backBtn.hide();
+						active.logoutBtn.show();
+						active.toolbar.setTitle(active.backBtn.text);
+
+						/* Change active view */
+						active.newPnl.hide();
+						active.existingPnl.hide();
+
+						active.centerPnl.show();
+						active.doComponentLayout();
+
+						active.setActiveItem(view, {
+							type: 'slide',
+							reverse: true,
+							scope: this
+						});
+					}
+				});
 			}
 		},
 		exception: function(form, response) {
@@ -349,6 +430,11 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel, {
 		}
 	],
 	listeners: {
+		scope: this,
+		deactivate: function(me) {
+			console.log('deactivate register');
+			me.destroy();
+		},
 		submit: function(form, response) {
 			if(response.success && response.msg) {
 				Ext.Msg.alert('Registrierung erfolgreich', response.msg);

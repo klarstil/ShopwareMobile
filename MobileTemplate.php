@@ -14,6 +14,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	protected $config;
 	protected $module;
 	protected $plugin;
+	protected $session;
 
 	/**
 	 * init()
@@ -28,6 +29,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 		$this->system = Shopware()->System();
 		$this->config = Shopware()->Config();
 		$this->module = Shopware()->Modules();
+		$this->session = Shopware()->Session();
 		$this->plugin = Shopware()->Plugins()->Frontend()->SwagMobileTemplate();
 	}
 

@@ -74,5 +74,6 @@ App.RequestURL = {
 	getUserData:   App.basePath + '/MobileTemplate/getUserData',
 	getPayment:    App.basePath + '/MobileTemplate/getPaymentMethods',
 	saveOrder:     App.basePath + '/checkout/finish',
-	basketAmount:  App.basePath + '/MobileTemplate/getBasketAmount'
+	basketAmount:  App.basePath + '/MobileTemplate/getBasketAmount',
+	logout:        App.basePath + '/account/ajaxLogout'
 };
