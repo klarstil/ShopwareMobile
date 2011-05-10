@@ -49,7 +49,21 @@ App.views.Shop.index = Ext.extend(Ext.Panel, {
 			store: App.stores.Promotions,
 			height: 150,
 			width: '100%',
-			direction: 'horizontal'
+			direction: 'horizontal',
+			listeners: {
+				scope: this,
+				el: {
+					dblclick: function(event,el) {
+						el = Ext.get(el);
+						Ext.dispatch({
+							controller: 'detail',
+							action: 'show',
+							articleID: el.getAttribute('data-articleid')
+						});
+					},
+					delegate: '.slideArticle'
+				}
+			}
 		});
 
 		/* Hauptkategorien */
@@ -205,7 +219,7 @@ App.views.Shop.index = Ext.extend(Ext.Panel, {
 		var items = [];
 		store.each(function(rec) {
 			items.push({
-				html: '<div class="slideArticle"><div class="art_thumb" style="background-image: url(' + rec.get('img_url') + ')"></div><div class="name">' + rec.get('name') + '</div><div class="price">' + rec.get('price') + ' &euro;</div><div class="desc">' + rec.get('desc') + '</div></div>',
+				html: '<div class="slideArticle" data-articleid="'+rec.get('articleID')+'"><div class="art_thumb" style="background-image: url(' + rec.get('img_url') + ')"></div><div class="name">' + rec.get('name') + '</div><div class="price">' + rec.get('price') + ' &euro;</div><div class="desc">' + rec.get('desc') + '</div></div>',
 				cls: 'slideArticle'
 			});
 		});
