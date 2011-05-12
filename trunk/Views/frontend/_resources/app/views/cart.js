@@ -1,12 +1,21 @@
-/*
- * ----------------------------------------------------------------------
- * cart.js
- *
- * Views fuer den Warenkorb
- * ----------------------------------------------------------------------
+/**
+ * @file cart.js
+ * @link http://www.shopware.de
+ * @author S.Pohl <stp@shopware.de>
+ * @date 11-05-11
  */
+
 Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Cart', 'App.views.Account', 'App.views.Info', 'App.views.Checkout');
 
+/**
+ * Main cart view
+ *
+ * Contains all necessary cart components
+ *
+ * @access public
+ * @namespace App.views.Cart
+ * @extends Ext.Panel
+ */
 App.views.Cart.index = Ext.extend(Ext.Panel, {
 	id: 'cart',
 	title: 'Warenkorb',
@@ -94,6 +103,15 @@ App.views.Cart.index = Ext.extend(Ext.Panel, {
 	}
 });
 
+/**
+ * Cart list
+ *
+ * Displays the cart content
+ *
+ * @access public
+ * @namespace App.views.Cart
+ * @extends Ext.Panel
+ */
 App.views.Cart.list = Ext.extend(Ext.Panel, {
 	id: 'cartlist',
 	layout: 'fit',

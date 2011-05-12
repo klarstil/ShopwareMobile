@@ -1,12 +1,18 @@
 /**
- * ----------------------------------------------------------------------
- * main.js
- *
- * Views fuer den Main Viewport
- * ----------------------------------------------------------------------
+ * @file main.js
+ * @link http://www.shopware.de
+ * @author S.Pohl <stp@shopware.de>
+ * @date 11-05-11
  */
 Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Cart', 'App.views.Account', 'App.views.Info', 'App.views.Checkout');
 
+/**
+ * Main Viewport
+
+ * @access public
+ * @namespace App.views
+ * @extends Ext.TabPanel
+ */
 App.views.Viewport = Ext.extend(Ext.TabPanel, {
 	fullscreen: true,
 	id: 'viewport',

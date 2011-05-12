@@ -1,25 +1,34 @@
 /**
- * ----------------------------------------------------------------------
- * detail.js
- *
- * View for the article details page
- *
+ * @file detail.js
  * @link http://www.shopware.de
  * @author S.Pohl <stp@shopware.de>
- * ----------------------------------------------------------------------
+ * @date 11-05-11
  */
 
 Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Cart', 'App.views.Account', 'App.views.Info', 'App.views.Checkout');
 
 /**
  * Main Detail Panel
+ *
  * Contains the three different sections (e.g. Detail, Comments, Pictures)
+ *
+ * @access public
+ * @namespace App.views.Shop
+ * @extends Ext.Panel
  */
 App.views.Shop.detail = Ext.extend(Ext.Panel, {
 	id: 'detail',
 	layout: 'card',
 	listeners: {
 		scope: this,
+
+		/**
+		 * beforeactivate
+		 *
+		 * Event listener
+		 *
+		 * @param me
+		 */
 		beforeactivate: function(me) {
 			var shopView   = Ext.getCmp('shop'),
 				artListing = Ext.getCmp('artListing');
@@ -31,11 +40,27 @@ App.views.Shop.detail = Ext.extend(Ext.Panel, {
 			shopView.backBtn.setHandler(me.onBackBtn);
 
 		},
+
+		/**
+		 * beforedeactivate
+		 *
+		 * Event listener
+		 *
+		 * @param me
+		 */
 		beforedeactivate: function(me) {
 			var shopView   = Ext.getCmp('shop');
 			shopView.backBtn.setHandler(shopView.onBackBtn, shopView);
 			me.navBtn.destroy();
 		},
+
+		/**
+		 * deactivate
+		 *
+		 * Event listener
+		 *
+		 * @param me
+		 */
 		deactivate: function(me) {
 			var shopView   = Ext.getCmp('shop'),
 				artListing = Ext.getCmp('artListing');
@@ -47,6 +72,12 @@ App.views.Shop.detail = Ext.extend(Ext.Panel, {
 			me.destroy();
 		}
 	},
+
+	/**
+	 * initComponent
+	 *
+	 * Creates the needed sub components
+	 */
 	initComponent: function() {
 		var me = this, shop = Ext.getCmp('shop');
 
@@ -135,6 +166,10 @@ App.views.Shop.detail = Ext.extend(Ext.Panel, {
  * Detail view
  *
  * Contains the basic article informations
+ * 
+ * @access public
+ * @namespace App.views.Shop
+ * @extends Ext.Panel
  */
 var interval;
 App.views.Shop.info = Ext.extend(Ext.Panel, {
@@ -323,9 +358,6 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 	onBuyBtn: function() {
 		var values = Ext.getCmp('formPnl').getValues();
 		App.stores.Cart.add(values);
-		//var buyPnl = new App.views.Shop.buyPnl
-		//Ext.getCmp('detail').add(buyPnl);
-		//Ext.getCmp('detail').setActiveItem(buyPnl, { type: 'cube' })
 	},
 
 	/**
@@ -458,7 +490,12 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 
 /**
  * Comments Main view
+ *
  * Contains the different elements/views for the article comments
+ *
+ * @access public
+ * @namespace App.views.Shop
+ * @extends Ext.Panel
  */
 App.views.Shop.comments = Ext.extend(Ext.Panel, {
 	id: 'votes',
@@ -492,7 +529,12 @@ App.views.Shop.comments = Ext.extend(Ext.Panel, {
 
 /**
  * Comments View
+ *
  * Lists the user comments for an specific article
+ *
+ * @access public
+ * @namespace App.views.Shop
+ * @extends Ext.DataView
  */
 App.views.Shop.commentsView = Ext.extend(Ext.DataView, {
 	id: 'commentsView',
@@ -545,7 +587,12 @@ App.views.Shop.commentsView = Ext.extend(Ext.DataView, {
 
 /**
  * Comment Form
+ *
  * Allows the user to create a comment for a specific article
+ *
+ * @access public
+ * @namespace App.views.Shop
+ * @extends Ext.form.FormPanel
  */
 App.views.Shop.commentForm = Ext.extend(Ext.form.FormPanel, {
 	id: 'commentForm',
@@ -628,7 +675,12 @@ App.views.Shop.commentForm = Ext.extend(Ext.form.FormPanel, {
 
 /**
  * Picture View
+ *
  * Creates an carousel, which contains all article pictures
+ *
+ * @access public
+ * @namespace App.views.Shop
+ * @extends Ext.Panel
  */
 var lastpinch = 75;
 App.views.Shop.pictures = Ext.extend(Ext.Carousel, {

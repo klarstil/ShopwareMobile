@@ -1,12 +1,20 @@
 /**
- * ----------------------------------------------------------------------
- * account.js
- *
- * Views fuer die Registrierung/Login
- * ----------------------------------------------------------------------
+ * @file account.js
+ * @link http://www.shopware.de
+ * @author S.Pohl <stp@shopware.de>
+ * @date 11-05-11
  */
 Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Cart', 'App.views.Account', 'App.views.Info', 'App.views.Checkout');
 
+/**
+ * Main account view
+ *
+ * Contains the customer center
+ *
+ * @access public
+ * @namespace App.views.Account
+ * @extends Ext.Panel
+ */
 App.views.Account.index = Ext.extend(Ext.Panel, {
 	id: 'account',
 	title: 'Kundenkonto',
@@ -134,7 +142,15 @@ App.views.Account.index = Ext.extend(Ext.Panel, {
 		App.views.Account.index.superclass.initComponent.call(this);
 	},
 
-	onBackBtn: function() {
+	/**
+	 * onBackBtn
+	 *
+	 * Handles the back button
+	 *
+	 * @param btn
+	 * @param event
+	 */
+	onBackBtn: function(btn, event) {
         var curr      = this.getActiveItem(),
             currIdx   = this.items.indexOf(curr);
 
@@ -153,6 +169,14 @@ App.views.Account.index = Ext.extend(Ext.Panel, {
         }
     },
 
+	/**
+	 * syncToolbar
+	 *
+	 * Refreshes the toolbar after the back btn
+	 * was clicked/tapped
+	 *
+	 * @param card - active card
+	 */
 	syncToolbar: function(card) {
 		var active        = card || this.getActiveItem(),
 			depth         = this.items.indexOf(active),
@@ -177,6 +201,15 @@ App.views.Account.index = Ext.extend(Ext.Panel, {
 	}
 });
 
+/**
+ * Account Login
+ *
+ * Contains a form to login a user
+ *
+ * @access public
+ * @namespace App.views.Account
+ * @extends Ext.form.FormPanel
+ */
 App.views.Account.login = Ext.extend(Ext.form.FormPanel, {
 	id: 'login',
 	scroll: 'vertical',
@@ -283,6 +316,15 @@ App.views.Account.login = Ext.extend(Ext.form.FormPanel, {
 
 });
 
+/**
+ * Account registration
+ *
+ * Contains a form to register a user
+ *
+ * @access public
+ * @namespace App.views.Account
+ * @extends Ext.form.FormPanel
+ */
 App.views.Account.register = Ext.extend(Ext.form.FormPanel, {
 	id: 'register',
 	scroll: 'vertical',
