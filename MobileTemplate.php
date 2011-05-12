@@ -637,7 +637,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 							'name'      => utf8_encode($site['description']),
 							'content'   => $site['html'],
 							'groupName' => $name . ' (' . $count . ' Seiten)',
-							'form'      => $forms,
+							'form'      => '',
 							'link'      => $site['link'],
 							'sFid'      => $id[1]
 						);
