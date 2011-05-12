@@ -1,12 +1,8 @@
 /**
- * ----------------------------------------------------------------------
- * detail_controller.js
- *
- * Handles the complete detail view logic
- *
+ * @file detail_controller.js
  * @link http://www.shopware.de
  * @author S.Pohl <stp@shopware.de>
- * ----------------------------------------------------------------------
+ * @date 11-05-11
  */
 Ext.regController('detail', {
     last:       null,

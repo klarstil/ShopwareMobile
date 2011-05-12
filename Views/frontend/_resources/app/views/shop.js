@@ -352,7 +352,7 @@ App.views.Shop.artListing = Ext.extend(Ext.Panel, {
 });
 
 /**
- * Subcateogries listing
+ * Subcategories listing
  *
  * @access public
  * @namespace App.views.Shop

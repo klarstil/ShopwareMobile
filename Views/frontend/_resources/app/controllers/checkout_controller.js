@@ -1,9 +1,8 @@
 /**
- * ----------------------------------------------------------------------
- * checkout_controller.js
- *
- * Steuert den kompletten Checkout-Bereich
- * ----------------------------------------------------------------------
+ * @file checkout_controller.js
+ * @link http://www.shopware.de
+ * @author S.Pohl <stp@shopware.de>
+ * @date 11-05-11
  */
 Ext.regController('checkout', {
 	
@@ -47,7 +46,6 @@ Ext.regController('checkout', {
 			options.parentView.doComponentLayout();
 
 			options.parentView.setActiveItem(view, 'slide');
-			//alert('User is logged in, show order confirmation view ...but wait you need to create one yourself ;)');
 		}
 	}
 });

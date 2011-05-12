@@ -1,9 +1,8 @@
 /**
- * ----------------------------------------------------------------------
- * category_controller.js
- *
- * Steuert die Ausgabe der Kategorien
- * ----------------------------------------------------------------------
+ * @file category_controller.js
+ * @link http://www.shopware.de
+ * @author S.Pohl <stp@shopware.de>
+ * @date 11-05-11
  */
 Ext.regController('category', {
 	view: Ext.getCmp('shop'),
