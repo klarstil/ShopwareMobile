@@ -1,14 +1,9 @@
 /**
- * ----------------------------------------------------------------------
- * stores.js
- *
- * Contains the application stores
- *
+ * @file stores.js
  * @link http://www.shopware.de
  * @author S.Pohl <stp@shopware.de>
- * ----------------------------------------------------------------------
+ * @date 11-05-11
  */
-
 App.stores.Categories = new Ext.data.Store({
 	model: 'MainCategories',
 	autoLoad: true
