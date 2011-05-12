@@ -632,23 +632,16 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 			if($name !== 'gDisabled' && $name === $config->staticgroup) {
 				$count = count($groups);
 				foreach($groups as $site) {
-					if(!empty($site['link'])) {
-						preg_match('/\?sViewport=ticket&sFid=([0-9])/i', $site['link'], $id);
-						$forms = Shopware()->Modules()->CmsSupport()->sConstruct($id[1]);
-						if($forms) {
-							$forms = Shopware()->Modules()->CmsSupport()->sELEMENTS;
-						}
+					if(empty($site['link'])) {
+						$output[] = array(
+							'name'      => utf8_encode($site['description']),
+							'content'   => $site['html'],
+							'groupName' => $name . ' (' . $count . ' Seiten)',
+							'form'      => $forms,
+							'link'      => $site['link'],
+							'sFid'      => $id[1]
+						);
 					}
-					$output[] = array(
-						'name'      => utf8_encode($site['description']),
-						'content'   => $site['html'],
-						'groupName' => $name . ' (' . $count . ' Seiten)',
-						'form'      => $forms,
-						'link'      => $site['link'],
-						'sFid'      => $id[1]
-					);
-					$forms = array();
-					Shopware()->Modules()->CmsSupport()->sELEMENTS = null;
 				}
 			}
 		}
