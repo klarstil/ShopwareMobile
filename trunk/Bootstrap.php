@@ -67,6 +67,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 		$this->Menu()->save();
 
 		$form = $this->Form();
+		
 		/* Use Shopware Mobile as subshop */
 		$form->setElement('checkbox', 'useSubshop', array('label'=>'Shopware Mobile als Subshop verwenden','value'=>'1', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
 		$form->setElement('text', 'subshopId', array('label'=>'Subshop ID','value'=>'2', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
@@ -87,6 +88,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 		$form->setElement('text', 'iconPath', array('label'=> 'Icon - nur iOS (Gr&ouml;&szlig;e: 57px x 57px, wird angezeigt wenn der Benutzer die Seite zum Home-Screen hinzuf&uuml;gt)','value'=>'', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
 		$form->setElement('checkbox', 'glossOnIcon', array('label'=>'Glanz &uuml;ber Icon anzeigen - nur iOS','value'=>'1', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
 		$form->setElement('text', 'startUpPath', array('label'=> 'Startup Screen - nur iOS (wird angezeigt wenn der Benutzer die Seite zum Home-Screen hinzuf&uuml;gt)','value'=>'', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
+		$form->setElement('text', 'statusBarStyle', array('label'=> 'Statusbar Style (w&auuml;hlbar: default, black, black-translucent)','value'=>'default', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
 		$form->setElement('checkbox', 'useNormalSite', array('label'=>'Link zur normalen Ansicht anzeigen','value'=>'1', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
 		$form->setElement('text', 'colorStyle', array('label'=> 'Farbtemplate (wählbar: android, blue, brown, default, green, grey, ios, orange, pink, red, turquoise)','value'=>'default', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
 		$form->setElement('textarea', 'additionalCSS', array('label'=>'Zusätzliche CSS-Eigenschaften','value'=>'', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
@@ -155,7 +157,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 	    $mobileSession = Shopware()->Session()->Mobile;
 		if($version === 'mobile' && $mobileSession === 1) {
 			$dirs = Shopware()->Template()->getTemplateDir();
-			$newDirs = array_merge(array(dirname(__FILE__) . '/Views/mobile/'), $dirs);
+			$newDirs = array_merge(array(dirname(__FILE__) . '/Views/'), $dirs);
 			Shopware()->Template()->setTemplateDir($newDirs);
 
 			$view->assign('shopwareMobile',array(
@@ -170,7 +172,8 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 				'logoHeight'     => $config->logoHeight,
 				'iconPath'       => $config->iconPath,
 				'glossOnIcon'    => $config->glossOnIcon,
-				'startUpPath'    => $config->startUpPath
+				'startUpPath'    => $config->startUpPath,
+				'statusBarStyle' => $config->statusBarStyle
 			));
 
 		} else {
@@ -185,7 +188,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 				'basePath'   => $request->getBasePath()
 			));
 
-			$view->extendsTemplate('mobile/frontend/plugins/swag_mobiletemplate/index.tpl');
+			$view->extendsTemplate('frontend/plugins/swag_mobiletemplate/index.tpl');
 		}
     }
 
