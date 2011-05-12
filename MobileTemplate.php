@@ -309,7 +309,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 		$id = $this->Request()->getParam('articleId');
 		$article = Shopware()->Modules()->Articles()->sGetArticleById($id);
 
-		$article['articleName'] = utf8_encode($article['articleName']);
+		$article['articleName'] = utf8_encode($this->truncate($article['articleName'], 30));
 		$article['priceNumeric'] = preg_replace('/,/', '.', $article['price']);
 		if(!empty($article['pseudoprice'])) {
 			$article['pseudoPriceNumeric'] = preg_replace('/,/', '.', $article['pseudoprice']);
