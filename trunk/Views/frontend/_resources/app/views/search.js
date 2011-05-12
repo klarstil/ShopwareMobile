@@ -125,7 +125,12 @@ App.views.Search.list = Ext.extend(Ext.List, {
 	},
 
 	onDataChanged: function(store) {
-		this.refresh();
+		if(store.data.items.length >= 1) {
+			this.refresh();
+		} else {
+			this.ownerCt.update('<div class="emptySearch">Es wurden keine Ergebnisse zu Ihren Suchbegriff gefunden.</div>');
+			this.destroy();
+		}
 	},
 
 	onItemTap: function(view, idx, item, event) {

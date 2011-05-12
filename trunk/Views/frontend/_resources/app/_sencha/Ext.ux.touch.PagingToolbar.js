@@ -59,7 +59,6 @@ Ext.ux.touch.PagingToolbar = Ext.extend(Ext.Toolbar, {
 
 		this.store.on("load", this.fillSelectField, this, { single: true });
 		this.store.on("load", this.handleStoreLoad, this);
-		this.store.on("datachanged",this.handleStoreLoad, this, { single: true });
 
 		cmp.on("afterrender", this.initToolbar, this);
 	},

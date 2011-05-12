@@ -406,7 +406,8 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 			}
 		}
 		$output = array(
-			'sResults'     => $articles,
+			'success'      => (count($articles)) ? true : false,
+			'sResults'     => (count($articles)) ? $articles : '',
 			'resultNum'    => empty($variables["sNumberArticles"]) ? count($articles) : $variables["sNumberArticles"],
 			'sNumberPages' => $variables["sNumberPages"]
 		);
