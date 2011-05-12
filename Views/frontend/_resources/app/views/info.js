@@ -1,18 +1,19 @@
 /**
- * ----------------------------------------------------------------------
- * info.js
- *
- * View for static pages and forms
- *
+ * @file info.js
  * @link http://www.shopware.de
  * @author S.Pohl <stp@shopware.de>
- * ----------------------------------------------------------------------
+ * @date 11-05-11
  */
 Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Cart', 'App.views.Account', 'App.views.Info', 'App.views.Checkout');
 
 /**
  * Main Info Panel
+ *
  * Contains the pages list
+ *
+ * @access public
+ * @namespace App.views.Info
+ * @extends Ext.Panel
  */
 App.views.Info.index = Ext.extend(Ext.Panel, {
 	id: 'info',
@@ -64,7 +65,11 @@ App.views.Info.index = Ext.extend(Ext.Panel, {
 });
 
 /**
- * Static pages and form list
+ * Shopsites list
+ *
+ * @access public
+ * @namespace App.views.Info
+ * @extends Ext.List
  */
 App.views.Info.list = Ext.extend(Ext.List, {
 	store: App.stores.Info,
@@ -107,8 +112,11 @@ App.views.Info.list = Ext.extend(Ext.List, {
 });
 
 /**
- * Detail Panel
- * Filled by onItemTap event handler
+ * Detail Panel for list items
+ *
+ * @access public
+ * @namespace App.views.Shop
+ * @extends Ext.form.FormPanel
  */
 App.views.Info.Detail = Ext.extend(Ext.form.FormPanel, {
 	id: 'infoDetail',

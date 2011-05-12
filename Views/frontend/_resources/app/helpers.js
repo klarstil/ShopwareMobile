@@ -1,19 +1,8 @@
 /**
- * $$()
- *
- * Gibt ein DOM-Element ueber eine gegebene ID zurueck
- *
- * @param id - dom element
- * @return dom element
- */
-$$ = function(id) {
-	return document.getElementById(id);
-}
-
-/**
- * App Helpers
- *
- * Beinhaltet diverse Helper Methoden
+ * @file helper.js
+ * @link http://www.shopware.de
+ * @author S.Pohl <stp@shopware.de>
+ * @date 11-05-11
  */
 App.Helpers = {
 	

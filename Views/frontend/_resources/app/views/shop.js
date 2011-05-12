@@ -1,15 +1,18 @@
 /**
- * ----------------------------------------------------------------------
- * shop.js
- *
- * Views fuer das Kategorielisting und die Startseite
- *
+ * @file shop.js
  * @link http://www.shopware.de
  * @author S.Pohl <stp@shopware.de>
- * ----------------------------------------------------------------------
+ * @date 11-05-11
  */
 Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Cart', 'App.views.Account', 'App.views.Info', 'App.views.Checkout');
 
+/**
+ * Shop Main view
+ *
+ * @access public
+ * @namespace App.views.Shop
+ * @extends Ext.Panel
+ */
 App.views.Shop.index = Ext.extend(Ext.Panel, {
 	id: 'shop',
 	title: 'Shop',
@@ -247,6 +250,13 @@ App.views.Shop.index = Ext.extend(Ext.Panel, {
 	}
 });
 
+/**
+ * Article listing view without subcategories
+ *
+ * @access public
+ * @namespace App.views.Shop
+ * @extends Ext.Panel
+ */
 App.views.Shop.artListing = Ext.extend(Ext.Panel, {
 	id: 'artListing',
 	title: '',
@@ -341,7 +351,13 @@ App.views.Shop.artListing = Ext.extend(Ext.Panel, {
 
 });
 
-/* Subcategory list */
+/**
+ * Subcateogries listing
+ *
+ * @access public
+ * @namespace App.views.Shop
+ * @extends Ext.NestedList
+ */
 App.views.Shop.subListing = Ext.extend(Ext.NestedList, {
 	id: 'subListing',
 	store: App.stores.CategoriesTree,
@@ -452,6 +468,13 @@ App.views.Shop.subListing = Ext.extend(Ext.NestedList, {
 	}
 });
 
+/**
+ * Category filter view
+ *
+ * @access public
+ * @namespace App.views.Shop
+ * @extends Ext.form.FormPanel
+ */
 App.views.Shop.filterView = Ext.extend(Ext.form.FormPanel, {
 	id: 'filterView',
 	scroll: 'vertical',
