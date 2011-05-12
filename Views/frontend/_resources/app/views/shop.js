@@ -15,6 +15,22 @@ App.views.Shop.index = Ext.extend(Ext.Panel, {
 	title: 'Shop',
 	iconCls: 'home',
 	layout: 'card',
+	listeners: {
+		scope: this,
+		activate: function(me) {
+			var active = me.getActiveItem();
+
+			if(active.id = 'detail' && Ext.getCmp('teaser')) {
+				var teaser = Ext.getCmp('teaser');
+				teaser.info.refresh();
+				teaser.desc.refresh();
+				teaser.bundle.refresh();
+				teaser.formPnl.doLayout();
+				teaser.doLayout();
+			}
+		}
+		
+	},
 
 	initComponent: function () {
 		var items;
@@ -22,7 +38,7 @@ App.views.Shop.index = Ext.extend(Ext.Panel, {
 		/* Back button */
 		this.backBtn = new Ext.Button({
 			ui: 'back',
-			text: 'Startseite',
+			text: 'Start...',
 			scope: this,
 			handler: this.onBackBtn,
 			hidden: true
@@ -52,6 +68,10 @@ App.views.Shop.index = Ext.extend(Ext.Panel, {
 			direction: 'horizontal',
 			listeners: {
 				scope: this,
+				orientationchange: function(me, orientation, width, height) {
+					me.setWidth(width);
+					me.doComponentLayout();
+				},
 				el: {
 					dblclick: function(event,el) {
 						el = Ext.get(el);
@@ -360,7 +380,7 @@ App.views.Shop.subListing = Ext.extend(Ext.NestedList, {
 		leafitemtap: function(me, idx) {
 			var subListing = Ext.getCmp('subListing'),
 				shopView = Ext.getCmp('shop');
-			shopView.backBtn.setText(subListing.toolbar.title);
+			shopView.backBtn.setText(App.Helpers.truncate(subListing.toolbar.title, 9));
 			Ext.dispatch({
 				controller: 'category',
 				action: 'show',
@@ -378,7 +398,7 @@ App.views.Shop.subListing = Ext.extend(Ext.NestedList, {
 
 		this.backBtn = new Ext.Button({
 			ui: 'back',
-			text: 'Startseite',
+			text: 'Start...',
 			scope: this,
 			handler: function() {
 				shopView.setActiveItem(0, {
@@ -417,7 +437,7 @@ App.views.Shop.subListing = Ext.extend(Ext.NestedList, {
 				backBtn[backToggleMth]();
 				this.backBtn[backHomeMth]();
 				if (parentNode) {
-					backBtn.setText(backBtnText);
+					backBtn.setText(App.Helpers.truncate(backBtnText, 9));
 				} else if(parentNode === null) {
 					this.backBtn.show();
 					this.toolbar.doLayout();
@@ -508,34 +528,36 @@ App.views.Shop.filterView = Ext.extend(Ext.form.FormPanel, {
 
 		var itms = [];
 		Ext.each(rawData.sSuppliers, function(item) {
-			itms.push({
-				text: item.name,
-				value: item.id
-			});
+			itms.push(new Ext.form.Radio({
+				label:	item.name,
+				value: item.id,
+				name: 'sSupplier',
+				labelWidth: '75%',
+				listeners: {
+					scope: this,
+					check: function(check) {
+						store.proxy.extraParams.sSupplier = ~~(check.getValue());
+					}
+				}
+			}));
+
 		});
 
-		this.supplier = new Ext.form.Select({
-			label: 'Hersteller',
-			name: 'sSupplier',
-			labelWidth: '40%',
-			listeners: {
-				scope: this,
-				change: function(select, value) {
-					this.store.proxy.extraParams.sSupplier = parseInt(value);
-				}
-			},
-			options: itms
+		this.supplierField = new Ext.form.FieldSet({
+			title: 'Hersteller',
+			instructions: 'Bitte w&auml;hlen Sie hier einen Hersteller aus um nur Produkte von diesen Hersteller angezeigt zu bekommen',
+			items: itms
 		});
 
 		
 		this.fieldSet = new Ext.form.FieldSet({
 			instructions: 'Bitte w&auml;hlen Sie eine Eigenschaft um die Artikelauflistung an Ihre pers&ouml;nlichen Bed&uuml;rfnisse anzupassen.',
-			items: [this.perPage, this.sort, this.supplier]
+			items: [this.perPage, this.sort]
 		})
 
 		Ext.apply(this, {
 			dockedItems: [this.toolBar],
-			items: [this.fieldSet]
+			items: [this.fieldSet, this.supplierField]
 		});
 		App.views.Shop.filterView.superclass.initComponent.call(this);
 	},
