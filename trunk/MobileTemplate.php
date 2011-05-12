@@ -755,9 +755,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 		if($this->Request()->isPost()) {
 			$login = Shopware()->Modules()->Admin()->sLogin();
 		}
-
-		$output = array();
-		if(!empty($login['sErrorMessages'])) {
+		if(!empty($login['sErrorMessages']) && Shopware()->Modules()->Admin()->sCheckUser()) {
 			$output = array(
 				'success' => false,
 				'msg'     => 'Ihre Zugangsdaten konnten keinem Benutzer zugeordnet werden.'
