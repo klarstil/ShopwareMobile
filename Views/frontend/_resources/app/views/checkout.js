@@ -142,6 +142,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel, {
 				exception: function(form, response) {
 					if(!response.success && response.msg) {
 						Ext.Msg.alert('Bestellung fehlgeschlagen', response.msg);
+						form.ownerCt.setLoading(false);
 					}
 				}
 			}

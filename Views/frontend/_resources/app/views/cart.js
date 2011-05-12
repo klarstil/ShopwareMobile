@@ -148,7 +148,7 @@ App.views.Cart.list = Ext.extend(Ext.Panel, {
 		if (store.items.length) {
 			this.tpl = App.views.Cart.indexTpl;
 
-			if(this.ownerCt.ownerCt.checkoutBtn) { 
+			if(this.ownerCt && this.ownerCt.ownerCt && this.ownerCt.ownerCt.checkoutBtn) {
 				this.ownerCt.ownerCt.checkoutBtn.show();
 			}
 
@@ -156,7 +156,7 @@ App.views.Cart.list = Ext.extend(Ext.Panel, {
 		} else {
 			this.tpl = App.views.Cart.emptyTpl;
 			
-			if(this.ownerCt.ownerCt.checkoutBtn) {
+			if(this.ownerCt && this.ownerCt.ownerCt && this.ownerCt.ownerCt.checkoutBtn) {
 				this.ownerCt.ownerCt.checkoutBtn.hide();
 			}
 			this.hideCheckoutBtn(true);
