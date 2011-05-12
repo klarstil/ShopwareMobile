@@ -62,7 +62,7 @@ App.views.Shop.index = Ext.extend(Ext.Panel, {
 			autoHeight: true
 		});
 
-		/* Einkaufsweltencarousel */
+		/* Promotions */
 		this.promotions = new Ext.Carousel({
 			id: 'promotions',
 			store: App.stores.Promotions,
@@ -89,7 +89,7 @@ App.views.Shop.index = Ext.extend(Ext.Panel, {
 			}
 		});
 
-		/* Hauptkategorien */
+		/* Main categories */
 		this.list = new Ext.List({
 			id: 'categories',
 			store: App.stores.Categories,
@@ -105,7 +105,7 @@ App.views.Shop.index = Ext.extend(Ext.Panel, {
 			}
 		});
 
-		/* Link zur normalen View */
+		/* Link to the normal version */
 		this.normalView = new Ext.Panel({
 			fullscreen: false,
 			id: 'normalView',
@@ -301,14 +301,12 @@ App.views.Shop.artListing = Ext.extend(Ext.Panel, {
 			}
 		});
 
-		this.list.store.on('checkBanner', this.checkForBanner, this);
-
 		this.banner = new Ext.Panel({
 			id: 'banner',
 			height: '100%'
 		});
+		this.list.store.on('checkBanner', this.checkForBanner, this);
 
-		
 		if(!Ext.getCmp('filterBtn')) {
 			this.filterBtn = new Ext.Button({
 				id: 'filterBtn',
@@ -339,13 +337,13 @@ App.views.Shop.artListing = Ext.extend(Ext.Panel, {
 			banner = Ext.getCmp('banner'),
 			html;
 		
-		if(raw.sBanner && banner) {
+		if(raw.sBanner) {
 			html = '<img src="'+raw.sBanner.img+'" alt="'+raw.sBanner.description+'"/>';
 			if(banner) { banner.update(html); }
 			this.doLayout();
 		} else {
 			if(banner) { banner.destroy(); }
-			this.doComponentLayout();
+			this.doLayout();
 		}
 	}
 
