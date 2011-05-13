@@ -24,12 +24,6 @@ App.views.Account.index = Ext.extend(Ext.Panel, {
 
 	initComponent: function() {
 
-		/* Get user data */
-		var userData = App.stores.UserData;
-		userData = userData.proxy.reader.rawData.sUserData;
-		var billingSalutation = (userData.billingaddress.salutation == 'mr') ? 'Herr' : 'Frau';
-		var shippingSalutation = (userData.shippingaddress.salutation == 'mr') ? 'Herr' : 'Frau';
-
 		/* Back btn */
 		this.backBtn = new Ext.Button({
 			text: this.title,
@@ -70,10 +64,6 @@ App.views.Account.index = Ext.extend(Ext.Panel, {
 				});
 			}
 		});
-		/* Add logout btn if the user is logged in */
-		if(~~isUserLoggedIn) {
-			this.toolbar.add(this.logoutBtn);
-		}
 
 		/* Login fieldset */
 		this.existingPnl = new Ext.Container({
@@ -123,8 +113,37 @@ App.views.Account.index = Ext.extend(Ext.Panel, {
 					'</div>'
 		});
 
-		console.log(userData);
+		/* holds all views */
+		this.mainPnl = new Ext.Container({
+			cls: 'startup',
+			height: '100%',
+			scroll: 'vertical',
+			hidden: (!App.Helpers.isUserLoggedIn()) ? true : false,
+			items: [this.newPnl, this.existingPnl]
+		});
 
+		Ext.apply(this, {
+			dockedItems: [this.toolbar],
+			items: [this.mainPnl]
+		});
+
+		/* Add logout btn if the user is logged in */
+		if(~~isUserLoggedIn) {
+			this.toolbar.add(this.logoutBtn);
+			this.createCustomerCenter(this.mainPnl)
+		}
+
+		App.views.Account.index.superclass.initComponent.call(this);
+	},
+
+	createCustomerCenter: function(parent) {
+		/* Get user data */
+		var userData = App.stores.UserData;
+		userData = userData.proxy.reader.rawData.sUserData;
+		var billingSalutation = (userData.billingaddress.salutation == 'mr') ? 'Herr' : 'Frau';
+		var shippingSalutation = (userData.shippingaddress.salutation == 'mr') ? 'Herr' : 'Frau';
+
+		/* Welcome component */
 		this.welcomeCmp = new Ext.Component({
 			id: 'welcomeCmp',
 			cls: 'infoCon',
@@ -132,6 +151,7 @@ App.views.Account.index = Ext.extend(Ext.Panel, {
 					'<p>Hier erhalten Sie einen Überblick über Ihre Registrierungsinformationen.</p>'
 		});
 
+		/* User info component */
 		this.userInfoCmp = new Ext.Component({
 			id: 'userInfoCmp',
 			html: '<div class="label x-form-fieldset-title">Benutzerinformationen</div>'+
@@ -139,12 +159,14 @@ App.views.Account.index = Ext.extend(Ext.Panel, {
 					userData.additional.user.email + '</div>'
 		});
 
+		/* Payment component */
 		this.paymentCmp = new Ext.Component({
 			id: 'paymentCmp',
 			html: '<div class="label x-form-fieldset-title">Gew&auml;hlte Zahlungsart</div>' +
 					'<div class="infoCon">'+ userData.additional.payment.description +'</div>'
 		});
 
+		/* Billing address component */
 		this.billingCmp = new Ext.Component({
 			id: 'billingCmp',
 			html: '<div class="label x-form-fieldset-title">Rechnungsadresse</div>' +
@@ -154,6 +176,7 @@ App.views.Account.index = Ext.extend(Ext.Panel, {
 					userData.billingaddress.zipcode + '&nbsp;' + userData.billingaddress.city + '</div>'
 		});
 
+		/* Shipping address component */
 		this.deliveryCmp = new Ext.Component({
 			id: 'deliverCmp',
 			html: '<div class="label x-form-fieldset-title">Lieferadresse</div>' +
@@ -162,30 +185,18 @@ App.views.Account.index = Ext.extend(Ext.Panel, {
 					userData.shippingaddress.street + '&nbsp;' + userData.shippingaddress.streetnumber + '<br/>' +
 					userData.shippingaddress.zipcode + '&nbsp;' + userData.shippingaddress.city + '</div>'
 		});
-		
+
 		/* Customer center */
 		this.centerPnl = new Ext.form.FormPanel({
 			id: 'accountCenter',
 			height: '100%',
 			scroll: false,
-			hidden: (~~isUserLoggedIn) ? false : true,
 			items: [this.welcomeCmp, this.userInfoCmp, this.paymentCmp, this.billingCmp, this.deliveryCmp]
 		});
+		parent.add(this.centerPnl);
+		parent.doLayout();
+		parent.doComponentLayout();
 
-		/* holds all views */
-		this.mainPnl = new Ext.Container({
-			cls: 'startup',
-			height: '100%',
-			scroll: 'vertical',
-			hidden: (!App.Helpers.isUserLoggedIn()) ? true : false,
-			items: [this.newPnl, this.existingPnl, this.centerPnl]
-		});
-
-		Ext.apply(this, {
-			dockedItems: [this.toolbar],
-			items: [this.mainPnl]
-		});
-		App.views.Account.index.superclass.initComponent.call(this);
 	},
 
 	/**
@@ -216,10 +227,7 @@ App.views.Account.index = Ext.extend(Ext.Panel, {
     },
 
 	/**
-	 * syncToolbar
-	 *
-	 * Refreshes the toolbar after the back btn
-	 * was clicked/tapped
+	 * syncToolbar/tapped
 	 *
 	 * @param card - active card
 	 */
@@ -240,6 +248,10 @@ App.views.Account.index = Ext.extend(Ext.Panel, {
 			this.toolbar.setTitle(title);
 		}
 
+	/**
+	 * Refreshes the toolbar after the back btn
+	 * was clicked
+	 */
 		if(depth === 0) {
 			this.backBtn.hide();
 			this.toolbar.doLayout();
@@ -323,6 +335,7 @@ App.views.Account.login = Ext.extend(Ext.form.FormPanel, {
 						});
 					} else {
 
+
 						/* Toolbar set up */
 						active.backBtn.hide();
 						active.logoutBtn.show();
@@ -333,14 +346,20 @@ App.views.Account.login = Ext.extend(Ext.form.FormPanel, {
 						active.newPnl.hide();
 						active.existingPnl.hide();
 
-						active.centerPnl.show();
-						active.doComponentLayout();
+						App.stores.UserData.load({
+							scope: this,
+							callback: function() {
+								active.createCustomerCenter(active.mainPnl);
+								active.mainPnl.doComponentLayout();
+								active.mainPnl.doLayout();
 
-						active.setActiveItem(view, {
-							type: 'slide',
-							reverse: true,
-							scope: this
-						});
+								active.setActiveItem(view, {
+									type: 'slide',
+									reverse: true,
+									scope: this
+								});
+							}
+						})
 					}
 				});
 			}

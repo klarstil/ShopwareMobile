@@ -755,6 +755,9 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 		if($this->Request()->isPost()) {
 			$login = Shopware()->Modules()->Admin()->sLogin();
 		}
+
+		$basket = Shopware()->Modules()->Basket()->sCountArticles();
+
 		if(!empty($login['sErrorMessages']) && Shopware()->Modules()->Admin()->sCheckUser()) {
 			$output = array(
 				'success' => false,
@@ -763,7 +766,8 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 		} else {
 			$output = array(
 				'success' => true,
-				'msg'     => 'Ihr Login war erfolgreich. Sie in wenigen Sekunden weitergeleitet.'
+				'msg'     => 'Ihr Login war erfolgreich. Sie in wenigen Sekunden weitergeleitet.',
+				'basket'  => $basket
 			);
 		}
 
