@@ -24,6 +24,12 @@ App.views.Account.index = Ext.extend(Ext.Panel, {
 
 	initComponent: function() {
 
+		/* Get user data */
+		var userData = App.stores.UserData;
+		userData = userData.proxy.reader.rawData.sUserData;
+		var billingSalutation = (userData.billingaddress.salutation == 'mr') ? 'Herr' : 'Frau';
+		var shippingSalutation = (userData.shippingaddress.salutation == 'mr') ? 'Herr' : 'Frau';
+
 		/* Back btn */
 		this.backBtn = new Ext.Button({
 			text: this.title,
@@ -117,13 +123,53 @@ App.views.Account.index = Ext.extend(Ext.Panel, {
 					'</div>'
 		});
 
+		console.log(userData);
+
+		this.welcomeCmp = new Ext.Component({
+			id: 'welcomeCmp',
+			cls: 'infoCon',
+			html: '<p class="welcome-teaser">Willkommen,' + userData.billingaddress.firstname + '&nbsp;' + userData.billingaddress.lastname + '</p>' +
+					'<p>Hier erhalten Sie einen Überblick über Ihre Registrierungsinformationen.</p>'
+		});
+
+		this.userInfoCmp = new Ext.Component({
+			id: 'userInfoCmp',
+			html: '<div class="label x-form-fieldset-title">Benutzerinformationen</div>'+
+					'<div class="infoCon">' + userData.billingaddress.firstname + '&nbsp;' + userData.billingaddress.lastname + '<br/>' +
+					userData.additional.user.email + '</div>'
+		});
+
+		this.paymentCmp = new Ext.Component({
+			id: 'paymentCmp',
+			html: '<div class="label x-form-fieldset-title">Gew&auml;hlte Zahlungsart</div>' +
+					'<div class="infoCon">'+ userData.additional.payment.description +'</div>'
+		});
+
+		this.billingCmp = new Ext.Component({
+			id: 'billingCmp',
+			html: '<div class="label x-form-fieldset-title">Rechnungsadresse</div>' +
+					'<div class="infoCon">' + billingSalutation + '&nbsp;' +
+					userData.billingaddress.firstname + '&nbsp;' + userData.billingaddress.lastname + '<br/> ' +
+					userData.billingaddress.street + '&nbsp;' + userData.billingaddress.streetnumber + '<br/>' +
+					userData.billingaddress.zipcode + '&nbsp;' + userData.billingaddress.city + '</div>'
+		});
+
+		this.deliveryCmp = new Ext.Component({
+			id: 'deliverCmp',
+			html: '<div class="label x-form-fieldset-title">Lieferadresse</div>' +
+					'<div class="infoCon">' + shippingSalutation + '&nbsp;' +
+					userData.shippingaddress.firstname + '&nbsp;' + userData.shippingaddress.lastname + '<br/> ' +
+					userData.shippingaddress.street + '&nbsp;' + userData.shippingaddress.streetnumber + '<br/>' +
+					userData.shippingaddress.zipcode + '&nbsp;' + userData.shippingaddress.city + '</div>'
+		});
+		
 		/* Customer center */
-		this.centerPnl = new Ext.Panel({
+		this.centerPnl = new Ext.form.FormPanel({
 			id: 'accountCenter',
 			height: '100%',
 			scroll: false,
-			html: '<div class="account-inner">In der Release-Version von Shopware Mobile finden Sie hier das Kunden-Center</div>',
-			hidden: (~~isUserLoggedIn) ? false : true
+			hidden: (~~isUserLoggedIn) ? false : true,
+			items: [this.welcomeCmp, this.userInfoCmp, this.paymentCmp, this.billingCmp, this.deliveryCmp]
 		});
 
 		/* holds all views */
@@ -281,6 +327,7 @@ App.views.Account.login = Ext.extend(Ext.form.FormPanel, {
 						active.backBtn.hide();
 						active.logoutBtn.show();
 						active.toolbar.setTitle(active.backBtn.text);
+						active.toolbar.doLayout();
 
 						/* Change active view */
 						active.newPnl.hide();

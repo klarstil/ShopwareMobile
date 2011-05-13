@@ -51,7 +51,8 @@ App.stores.Info = new Ext.data.Store({
 });
 
 App.stores.UserData = new Ext.data.Store({
-	model: 'UserData'
+	model: 'UserData',
+	autoLoad: true
 });
 
 App.CartClass = Ext.extend(Ext.util.Observable, {
