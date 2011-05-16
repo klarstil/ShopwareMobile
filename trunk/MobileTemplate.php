@@ -413,13 +413,6 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 		);
 
 		$this->jsonOutput($output);
-		
-		$this->View()->sSearchResults = $articles;
-		$this->View()->sSearchResultsNum = empty($variables["sNumberArticles"]) ? count($articles) : $variables["sNumberArticles"];
-		$this->View()->sSearchTerm = urldecode($this->Request()->sSearch);
-		$this->View()->sPages = $variables["sPages"];
-		$this->View()->sPerPage = $variables["sPerPage"];
-		$this->View()->sNumberPages = $variables["sNumberPages"];
 	}
 	
 	/**
@@ -477,44 +470,6 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 
 		$this->jsonOutput('{success: true}');
 	}
-	
-	/**
-	 * addArticleToCartAction()
-	 *
-	 * Fuegt einen Artikel zum Warenkorb hinzu
-	 *
-	 * @access public
-	 * @param {int} $_GET['articleID']
-	 * @return {string} json string
-	 */
-	public function addArticleToCartAction()
-	{
-		$id = $this->Request()->getParam('ordernumber');
-		$amount = $this->Request()->getParam('amount');
-
-		$insertId = Shopware()->Modules()->Basket()->sAddArticle($id, $amount);
-		
-		$sql = "SELECT * FROM s_order_basket AS ob
-			    LEFT JOIN s_articles AS a ON ob.articleID = a.id
-			    LEFT JOIN s_articles_supplier AS s ON a.supplierID = s.id  
-			    WHERE ob.id = ?
-			    AND ob.sessionID = ?";
-		
-		$row = Shopware()->Db()->fetchRow($sql, array(
-			$insertId,
-			Shopware()->SessionID(),
-		));
-		
-		$imgs = Shopware()->Modules()->Articles()->sGetArticlePictures($row['articleID'], true, 1);
-		if(isset($imgs['src']) && !empty($imgs['src'][1])) {
-			$row['image_url'] = $this->stripBasePath($imgs['src'][1]);
-		}
-		$row['supplierName'] = $row['name'];
-		$row['amount'] = $row['price'] * $row['quantity'];
-		$row['articlename'] = utf8_encode($row['articlename']);
-		
-		$this->jsonOutput(array('sArticle' => $row));
-	}
 
 	/**
 	 * addBundleToCartAction
@@ -559,9 +514,10 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 			$basket['content'][$i]['articlename'] = utf8_encode($item['articlename']);
 			$basket['content'][$i]['image_url'] = $this->stripBasePath($item['image']['src'][1]);
 			$i++;
-		}	
+		}
 		$this->jsonOutput($basket);
 	}
+
 
 	/**
 	 * getBasketAmountAction()
@@ -605,6 +561,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	public function deleteBasketAction()
 	{
 		Shopware()->Modules()->Basket()->sDeleteBasket();
+		Shopware()->Modules()->Order()->sDeleteTemporaryOrder();
 		
 		$this->jsonOutput(array('success' => true));
 	}
