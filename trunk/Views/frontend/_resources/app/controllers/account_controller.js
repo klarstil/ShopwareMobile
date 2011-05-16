@@ -19,11 +19,13 @@ Ext.regController('account', {
 	},
 
 	/* Shows the registration */
-	showRegister: function() {
+	showRegister: function(options) {
 		var view = Ext.getCmp('register'),
 			accountView = Ext.getCmp('account');
 
-		this.accountView = accountView;
+		this.accountView = options.parentView;
+
+		console.log(this.accountView);
 
 		view = new App.views.Account.register;
 		this.accountView.add(view);
@@ -35,11 +37,11 @@ Ext.regController('account', {
 	},
 
 	/* Shows the login panel */
-	showLogin: function() {
+	showLogin: function(options) {
 		var view = Ext.getCmp('login'),
 			accountView = Ext.getCmp('account');
 
-		this.accountView = accountView;
+		this.accountView = options.parentView;
 
 		view = new App.views.Account.login;
 		this.accountView.add(view);

@@ -18,7 +18,8 @@ Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Ca
 App.views.Account.index = Ext.extend(Ext.Panel,
 /** @lends App.views.Account.index# */
 {
-	id: 'account',
+	//id: 'account',
+	cls: 'account',
 	title: 'Kundenkonto',
 	iconCls: 'user',
 	layout: 'card',
@@ -79,7 +80,8 @@ App.views.Account.index = Ext.extend(Ext.Panel,
 					fn: function() {
 						Ext.dispatch({
 							controller: 'account',
-							action: 'showLogin'
+							action: 'showLogin',
+							parentView: this
 						});
 					}
 				}
@@ -103,7 +105,8 @@ App.views.Account.index = Ext.extend(Ext.Panel,
 					fn: function() {
 						Ext.dispatch({
 							controller: 'account',
-							action: 'showRegister'
+							action: 'showRegister',
+							parentView: this
 						});
 					}
 				}
