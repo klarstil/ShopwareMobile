@@ -118,7 +118,12 @@ App.models.Detail = Ext.regModel('Detail', {
 		{ name: 'sBundles', type: 'array' },
 		{ name: 'priceNumeric', type: 'float'},
 		{ name: 'pseudoPriceNumeric', type: 'float' },
-		{ name: 'liveshoppingData', type: 'array' }
+		{ name: 'liveshoppingData', type: 'array' },
+		{ name: 'purchaseunit', type: 'string' },
+		{ name: 'referenceunit', type: 'string' },
+		{ name: 'purchaseunit', type: 'string' },
+		{ name: 'sUnit', type: 'array' },
+		{ name: 'referenceprice', type: 'string'}
 	],
 	proxy: {
 		type: 'ajax',
