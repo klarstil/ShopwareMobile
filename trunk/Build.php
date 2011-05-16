@@ -9,12 +9,8 @@ return array(
 	'store'=>true,
 	'getmeta'=>true,
 	'changelog'=>array(
-		'1.0.0'=>array('releasedate'=>'2010-01-07', 'lines' => array(
-			'First release'
-		)),
-		'1.0.1'=>array('releasedate'=>'2010-01-18', 'lines' => array(
-			'Fix problems with concurrent plugins installed'
-		)),
+		'1.0.0'=>array('releasedate'=>'2011-05-16', 'lines' => array(
+			'First beta release'
+		))
 	)
 );
-?>

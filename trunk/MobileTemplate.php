@@ -123,6 +123,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 				}
 				$category["description"] = html_entity_decode($category["description"]);
 				$categoryInfo['cmstext'] = $this->truncate(strip_tags($categoryInfo['cmstext']), 100);
+				$category['id'] = (int) $category['id'];
 
 				/* Get first article image */
 				$firstArticle = Shopware()->Modules()->Articles()->sGetArticlesByCategory($category['id'], false, 1);
@@ -170,6 +171,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	public function getPromotionCarouselAction($cat_id = 3)
 	{
+		$cat_id = (int) $cat_id;
 		$promotion_articles = Shopware()->Modules()->Articles()->sGetPromotions($cat_id);
 		
 		$i = 0;
@@ -210,9 +212,9 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	{
 		$params = Shopware()->Front()->Request();
 		
-		if(isset($params->cat_id) && !empty($params->cat_id)) { $cat_id = $params->cat_id; }
-		if(isset($params->limit) && !empty($params->limit)) { $limit = $params->limit; }
-		
+		if(isset($params->cat_id) && !empty($params->cat_id)) { $cat_id = (int) $params->cat_id; }
+		if(isset($params->limit) && !empty($params->limit)) { $limit = (int) $params->limit; }
+
 		$banners = Shopware()->Modules()->Marketing()->sBanner($cat_id, $limit);
 		
 		$retBanners = array(
@@ -250,17 +252,18 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 		if(empty($id)) {
 			$id = 3;
 		}
+		$id = (int) $id;
 
 		// Handle page
 		$page = $this->Request()->getParam('page');
 		if(!empty($page)) {
-			$this->system->_GET['sPage'] = $page;
+			$this->system->_GET['sPage'] = (int) $page;
 		}
 
 		// Handle article per page
 		$limit = $this->Request()->getParam('limit');
 		if(!empty($limit)) {
-			$this->system->_GET['sPerPage'] = $limit;
+			$this->system->_GET['sPerPage'] = (int) $limit;
 		}
 
 		// Handle article sorting
@@ -272,7 +275,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 		// Handle supplier
 		$supplier = $this->Request()->getParam('sSupplier');
 		if(!empty($supplier)) {
-			$this->system->_GET['sSupplier'] = $supplier;
+			$this->system->_GET['sSupplier'] =(int) $supplier;
 		}
 
 		// Fetch data
@@ -306,7 +309,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	public function getArticleDetailsAction()
 	{
-		$id = $this->Request()->getParam('articleId');
+		$id = (int) $this->Request()->getParam('articleId');
 		$article = Shopware()->Modules()->Articles()->sGetArticleById($id);
 
 		$article['articleName'] = utf8_encode($this->truncate($article['articleName'], 30));
@@ -361,14 +364,15 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 		// Handle page
 		$page = $this->Request()->getParam('page');
 		if(!empty($page)) {
-			$this->system->_GET['sPage'] = $page;
+			$this->system->_GET['sPage'] = (int) $page;
 		}
 
 		// Handle article per page
 		$limit = $this->Request()->getParam('limit');
 		if(!empty($limit)) {
-			$this->system->_GET['sPerPage'] = $limit;
+			$this->system->_GET['sPerPage'] = (int) $limit;
 		}
+		$limit = (int) $limit;
 
 		if ($this->Request()->sSearchMode=="supplier"){
 			$variables = Shopware()->Modules()->Articles()->sGetArticlesByName("a.name ASC","","supplier",urldecode($this->Request()->sSearch));
@@ -426,7 +430,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	public function getArticleImagesAction()
 	{
-		$id = $this->Request()->getParam('articleId');
+		$id = (int) $this->Request()->getParam('articleId');
 		$article = Shopware()->Modules()->Articles()->sGetArticleById($id);
 		$images = array();
 
@@ -462,8 +466,8 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	public function addCommentAction()
 	{
-		$articleID = $this->Request()->getParam('articleID');
-		Shopware()->System()->_POST["sVoteName"] = $this->utf8decode(Shopware()->System()->_POST["sVoteName"]);
+		$articleID = (int) $this->Request()->getParam('articleID');
+		Shopware()->System()->_POST["sVoteName"] =  $this->utf8decode(Shopware()->System()->_POST["sVoteName"]);
 		Shopware()->System()->_POST["sVoteSummary"] = $this->utf8decode(Shopware()->System()->_POST["sVoteSummary"]);
 		Shopware()->System()->_POST["sVoteComment"] = $this->utf8decode(Shopware()->System()->_POST["sVoteComment"]);
 		Shopware()->Modules()->Articles()->sSaveComment($articleID);
@@ -481,7 +485,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	public function addBundleToCartAction()
 	{
-		$id = $this->Request()->getParam('id');
+		$id = (int) $this->Request()->getParam('id');
 		$ordernumber = $this->Request()->getParam('ordernumber');
 
 		$bundle = Shopware()->Modules()->Basket()->sAddBundleArticle($ordernumber, $id);
@@ -543,7 +547,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	public function removeArticleFromCartAction()
 	{
-		$id = $this->Request()->getParam('articleId');
+		$id = (int) $this->Request()->getParam('articleId');
 		Shopware()->Modules()->Basket()->sDeleteArticle($id);
 		
 		$this->jsonOutput(array('success' => true));
@@ -595,8 +599,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 							'content'   => $site['html'],
 							'groupName' => $name . ' (' . $count . ' Seiten)',
 							'form'      => '',
-							'link'      => $site['link'],
-							'sFid'      => $id[1]
+							'link'      => $site['link']
 						);
 					}
 				}
@@ -747,7 +750,6 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 			$url = $this->senchaIo . $url;
 		}
 		return $url;
-		//return $url = preg_replace("/http:\/\/".Shopware()->Config()->BasePath."/i", '', $url);
 	}
 	
 	/**
