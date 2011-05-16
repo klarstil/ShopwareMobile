@@ -619,7 +619,7 @@ strong { font-weight: 700 }
     font-size: 12px;
     width: 90%;
 }
-#search .emptySearch, #account .account-inner {
+#search .emptySearch, .account .account-inner {
     margin: 1em;
     color: #7e7e7e;
     text-align: center;
@@ -657,22 +657,22 @@ strong { font-weight: 700 }
 
 /*  ACCOUNT VIEW
 	------------------------------------------------------------------ */
-#account #new, #account #existing { margin: 1em }
-#account .startup .inner {
+.account #new, .account #existing { margin: 1em }
+.account .startup .inner {
     min-height: 2.6em;
     padding: 0.5em 0.8em;
     background: #fff;
 }
-#account .startup .inner strong {
+.account .startup .inner strong {
     display: block;
     margin-bottom: 8px;
 }
-#account .startup .inner p {
+.account .startup .inner p {
     display: block;
     font-size: 12px;
     color: #666;
 }
-#account .infoCon {
+.account .infoCon {
     color: #333;
     text-shadow: white 0px 1px 1px;
     background: #fff;
@@ -680,7 +680,7 @@ strong { font-weight: 700 }
     border-radius: .4em;
     padding: 1em;
 }
-#account #welcomeCmp .welcome-teaser {
+.account #welcomeCmp .welcome-teaser {
     font-weight: 700;
     margin-bottom: .5em;
 }
