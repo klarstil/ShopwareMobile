@@ -589,7 +589,7 @@ App.views.Shop.filterView = Ext.extend(Ext.form.FormPanel,
 				{text: 'Erscheinungsdatum',  value: '1'},
 				{text: 'Beliebtheit', value: '2'},
 				{text: 'Niedrigster Preis',  value: '3'},
-				{text: 'H?chster Preis', value: '4'},
+				{text: 'H&oouml;chster Preis', value: '4'},
 				{text: 'Erscheinungsdatum',  value: '5'},
 				{text: 'Artikelbezeichnung', value: '6'}
 			]

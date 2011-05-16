@@ -80,22 +80,22 @@ App.views.Search.index = Ext.extend(Ext.Panel,
      * @param event
      */
 	onKeyUp: function(cmp, event) {
-		var val = cmp.getValue();
+	    /* Search on enter key */
 		if (event.browserEvent.keyCode == 13) {
 			cmp.blur();
-			this.onSearch(val);
+			this.onSearch();
 		}
 	},
 
     /**
      * Event handler
-     *
-     * @param val
      */
-	onSearch: function(val) {
+	onSearch: function() {
 		var list   = Ext.getCmp('searchList'),
-			search = Ext.getCmp('search');
-		
+			search = Ext.getCmp('search'),
+			field  = Ext.getCmp('searchfield'),
+			val    = field.getValue();
+
 		if(!list) {
 			list = new App.views.Search.list();
 			search.add(list);
