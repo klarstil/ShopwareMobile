@@ -36,7 +36,9 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 			shipping = userData.shippingaddress,
 			dispatch = userData.activeDispatch;
 
-		/** Back btn */
+		App.Helpers.postRequest(App.RequestURL.confirm, '');
+
+		/** Back button */
 		this.backBtn = new Ext.Button({
 			text: 'Warenkorb',
 			ui: 'back',
@@ -127,16 +129,15 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 						Ext.Msg.alert('Bestellung erfolgreich', response.msg, function() {
 							App.stores.Cart.removeAll();
 
-							console.log(me);
-
-							/* Could be cleaner... */
-							//me.setActiveItem(0);
-							//me.toolbar.show();
-							//Ext.getCmp('viewport').setActiveItem(0, {
-								//type: 'slide',
-								//reverse: true,
-								//scope: this
-							//})
+							me.setActiveItem(0);
+							Ext.getCmp('viewport').setActiveItem(0, {
+								type: 'slide',
+								reverse: true,
+								scope: this
+							});
+							Ext.getCmp('shop').toolBar.hide();
+							Ext.getCmp('shop').doLayout();
+							Ext.getCmp('shop').setActiveItem(Ext.getCmp('home'));
 						});
 					}
 				},
