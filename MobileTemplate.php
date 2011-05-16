@@ -334,6 +334,10 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 			}
 		}
 
+		if(!empty($article['sUnit'])) {
+			$article['sUnit']['description'] = utf8_encode($article['sUnit']['description']);
+		}
+
 		// Bundles
 		$bundle = Shopware()->Modules()->Articles()->sGetArticleBundlesByArticleID($id);
 		if(!empty($bundle)) {
