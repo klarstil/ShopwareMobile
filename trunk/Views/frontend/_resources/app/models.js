@@ -1,10 +1,19 @@
 /**
- * @file models.js
- * @link http://www.shopware.de
- * @author S.Pohl <stp@shopware.de>
- * @date 11-05-11
+ * ----------------------------------------------------------------------
+ * models.js
+ *
+ * Provides the data structures for the application stores
+ * ----------------------------------------------------------------------
  */
-Ext.regModel('Promotion', {
+
+/**
+ * Registers the application models to the global namespace
+ * @class
+ */
+App.models = {};
+
+/** Model for the promotion carousel */
+App.models.Promotions = Ext.regModel('Promotion', {
 	fields: [
 		{ name: 'articleID', type: 'int' },
 		{ name: 'id', type: 'int' },
@@ -25,7 +34,8 @@ Ext.regModel('Promotion', {
 	}
 });
 
-Ext.regModel('MainCategories', {
+/** Model for the main categories - only used on the home view */
+App.models.MainCategories = Ext.regModel('MainCategories', {
 	fields: [
 		{ name: 'id', type: 'int' },
 		{ name: 'name', type: 'string' },
@@ -41,8 +51,8 @@ Ext.regModel('MainCategories', {
 		}
 	}
 });
-
-Ext.regModel('Categories', {
+/** Model for the subcategories */
+App.models.Categories = Ext.regModel('Categories', {
 	idProperty: 'id',
 	fields: [
 		{ name: 'parentId', type: 'int' },
@@ -62,7 +72,8 @@ Ext.regModel('Categories', {
 	}
 });
 
-Ext.regModel('Articles', {
+/** Model for the article listing */
+App.models.Articles = Ext.regModel('Articles', {
 	fields: [
 		{ name: 'articleID', type: 'int' },
 		{ name: 'ordernumber', type: 'string' },
@@ -82,8 +93,8 @@ Ext.regModel('Articles', {
 		}
 	}
 });
-
-Ext.regModel('Detail', {
+/** Model for the article details */
+App.models.Detail = Ext.regModel('Detail', {
 	fields: [
 		{ name: 'articleID', type: 'int' },
 		{ name: 'categoryID', type: 'int' },
@@ -119,7 +130,8 @@ Ext.regModel('Detail', {
 	}
 });
 
-Ext.regModel('Picture', {
+/** Model for the article pictures */
+App.models.Pictures = Ext.regModel('Picture', {
 	fields: [
 		{ name: 'small_picture', type: 'string' },
         { name: 'big_picture', type: 'string' },
@@ -135,7 +147,8 @@ Ext.regModel('Picture', {
 	}
 });
 
-Ext.regModel('Search', {
+/** Model for the search function */
+App.models.Search = Ext.regModel('Search', {
 	fields: [
 		{ name: 'articleID', type: 'int' },
 		{ name: 'relevance', type: 'int' },
@@ -157,7 +170,8 @@ Ext.regModel('Search', {
 	}
 });
 
-Ext.regModel('Static', {
+/** Model for the static pages */
+App.models.Static = Ext.regModel('Static', {
 	fields: [
 		{ name: 'name', type: 'string' },
 		{ name: 'groupName', type: 'string' },
@@ -176,7 +190,8 @@ Ext.regModel('Static', {
 	}
 });
 
-Ext.regModel('UserData', {
+/** Model for the user data */
+App.models.UserData = Ext.regModel('UserData', {
 	fields: [
 		{ name: 'billingaddress', type: 'array' },
 		{ name: 'additional', type: 'array' },

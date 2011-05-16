@@ -1,23 +1,57 @@
 /**
- * @file helper.js
- * @link http://www.shopware.de
- * @author S.Pohl <stp@shopware.de>
- * @date 11-05-11
+ * ----------------------------------------------------------------------
+ * helpers.js
+ *
+ * Provides basic helper functions
+ * ----------------------------------------------------------------------
+ */
+ 
+/**
+ * Provides basic helper functions for the application
+ *
+ * @author S.Pohl info@shopware.de
+ * @date 05-11-11
+ * @class
  */
 App.Helpers = {
-	
-	// Send post request
+
+    /**
+     * Sends an post request to the server
+     *
+     * @requires this._request()
+     * @param url
+     * @param params
+     * @param callback
+     * @param scope
+     */
 	postRequest: function(url, params, callback, scope) {
-		this.request(url, 'POST', params, callback, scope);
+		this._request(url, 'POST', params, callback, scope);
 	},
-	
-	// Send get request
+
+    /**
+     * Sends an get request to the server
+     *
+     * @requires this._request()
+     * @param url
+     * @param params
+     * @param callback
+     * @param scope
+     */
 	getRequest: function(url, params, callback, scope) {
-		this.request(url, 'GET', params, callback, scope);
+		this._request(url, 'GET', params, callback, scope);
 	},
-	
-	// generell request method
-	request: function(url, method, params, callback, scope) {
+
+    /**
+     * Sends an general request to the server
+     *
+     * @private
+     * @param url
+     * @param method
+     * @param params
+     * @param callback
+     * @param scope
+     */
+	_request: function(url, method, params, callback, scope) {
 		scope = scope || this;
 		Ext.Ajax.request({
 			url: url,
@@ -38,7 +72,12 @@ App.Helpers = {
 		});
 	},
 
-	// Checks if the user is logged in
+    /**
+     * Checks if the user is logged in
+     *
+     * @param void
+     * @returns data - Login data
+     */
 	isUserLoggedIn: function() {
 		this.getRequest(App.RequestURL.userLoggedIn, '', function(data) {
 			if(data == true) {
@@ -51,12 +90,19 @@ App.Helpers = {
 		});
 	},
 
-	// Load user data from server
+    /**
+     * Loads user data in "UserData" store
+     *
+     */
 	getUserData: function() {
 		App.stores.UserData.load();
 	},
 
-	// Load all payment methods from server
+    /**
+     * Loads all available payment methods
+     *
+     * @param void
+     */
 	getPaymentMethods: function() {
 		if(!Ext.isEmpty(isUserLoggedIn)) {
 			this.getRequest(App.RequestURL.getPayment, '', function(data) {
@@ -70,9 +116,21 @@ App.Helpers = {
 		return false;
 	},
 
+    /**
+     * Server class which is needed for the liveshopping
+     *
+     * @class
+     */
 	server: {
+
+        /** Date object which stores the liveshopping time */
 		dataObj: {},
 
+        /**
+         * Initialize the liveshopping timing
+         *
+         * @param servertime
+         */
 		init: function(servertime) {
 			App.Helpers.server.dateObj = new Date();
 			App.Helpers.server.dateObj.setTime(servertime * 1000);
@@ -81,19 +139,39 @@ App.Helpers = {
 			}, 1000);
 		},
 
+        /**
+         * Increments the liveshopping time
+         */
 		increment: function() {
 			var crntTime = App.Helpers.server.dateObj.getTime() + 1000;
 			App.Helpers.server.dateObj = new Date(crntTime);
 		}
 	},
 
+    /**
+     * Liveshopping class which handles the whole liveshopping process
+     *
+     * @public
+     * @class
+     */
 	liveshopping: {
-		price: null,
+
+        /**
+         * Current liveshopping price
+         * @private
+         */
+	    _price: null,
+
+        /**
+         * Initialize the liveshopping
+         *
+         * @param data - basic liveshopping data
+         */
 		init: function(data) {
 			var now, diff, target, me = this;
 			target = new Date();
 			target.setTime(data.valid_to_ts * 1000);
-			this.price = null;
+			this._price = null;
 			
 			var interval = window.setInterval(function() {
 				now = App.Helpers.server.dateObj;
@@ -115,7 +193,11 @@ App.Helpers = {
 			return interval;
 		},
 
-		// refresh dates
+        /**
+         * Refreshes the dates and times in the liveshopping display
+         *
+         * @param diff
+         */
 		refreshDates: function(diff) {
 			var tmpD = diff.d.toString(), tmpH = diff.h.toString(), tmpM = diff.m.toString(), tmpS = diff.s.toString();
 
@@ -138,7 +220,12 @@ App.Helpers = {
 			return true;
 		},
 
-		// refresh prices
+        /**
+         * Refreshes the prices in the liveshopping display
+         *
+         * @param diff
+         * @param data
+         */
 		refreshPrices: function(diff, data) {
 			if(diff.s === 0) {
 
@@ -160,7 +247,7 @@ App.Helpers = {
 	/**
 	 * truncate
 	 *
-	 * Truncates a string and returns it
+	 * Truncates a string and returns the string
 	 *
 	 * @param str - string to truncate
 	 * @param length - length of visible string part
@@ -182,6 +269,14 @@ App.Helpers = {
 		return str;
 	},
 
+    /**
+     * Formats a number to the european number standard
+     *
+     * @param number
+     * @param decimals
+     * @param dec_point
+     * @param thousands_sep
+     */
 	number_format: function (number, decimals, dec_point, thousands_sep) {
         var n = number,
             prec = decimals;
@@ -212,6 +307,12 @@ App.Helpers = {
         return s;
     },
 
+    /**
+     * Compares two given timestamps and returns their difference
+     *
+     * @param d1
+     * @param d2
+     */
 	timestampDiff: function (d1, d2) {
         if (d1 < d2) {
             return false;

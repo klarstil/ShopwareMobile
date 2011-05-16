@@ -12,10 +12,12 @@ Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Ca
  * Contains all necessary sub components
  *
  * @access public
- * @namespace App.views.Search
+ * @class
  * @extends Ext.Panel
  */
-App.views.Search.index = Ext.extend(Ext.Panel, {
+App.views.Search.index = Ext.extend(Ext.Panel,
+/** @lends App.views.Search.index# */
+{
 	id: 'search',
 	title: 'Suche',
 	iconCls: 'search',
@@ -71,6 +73,12 @@ App.views.Search.index = Ext.extend(Ext.Panel, {
 		App.views.Search.index.superclass.initComponent.call(this);
 	},
 
+    /**
+     * Event handler
+     *
+     * @param cmp
+     * @param event
+     */
 	onKeyUp: function(cmp, event) {
 		var val = cmp.getValue();
 		if (event.browserEvent.keyCode == 13) {
@@ -79,6 +87,11 @@ App.views.Search.index = Ext.extend(Ext.Panel, {
 		}
 	},
 
+    /**
+     * Event handler
+     *
+     * @param val
+     */
 	onSearch: function(val) {
 		var list   = Ext.getCmp('searchList'),
 			search = Ext.getCmp('search');
@@ -109,7 +122,16 @@ App.views.Search.index = Ext.extend(Ext.Panel, {
 	}
 });
 
-App.views.Search.list = Ext.extend(Ext.List, {
+/**
+ * Search result list
+ *
+ * @access public
+ * @class
+ * @extends Ext.List
+ */
+App.views.Search.list = Ext.extend(Ext.List,
+/** @lends App.views.Search.list */
+{
 	id: 'searchList',
 	store: App.stores.Search,
 	itemTpl: App.views.Search.itemTpl,
@@ -124,6 +146,11 @@ App.views.Search.list = Ext.extend(Ext.List, {
 		App.views.Search.list.superclass.initComponent.call(this);
 	},
 
+    /**
+     * Event handler
+     * 
+     * @param store
+     */
 	onDataChanged: function(store) {
 		if(store.data.items.length >= 1) {
 			this.refresh();
@@ -133,6 +160,14 @@ App.views.Search.list = Ext.extend(Ext.List, {
 		}
 	},
 
+    /**
+     * Event handler
+     *
+     * @param view
+     * @param idx
+     * @param item
+     * @param event
+     */
 	onItemTap: function(view, idx, item, event) {
 		var tmpRec = this.store.getAt(idx);
 		Ext.dispatch({

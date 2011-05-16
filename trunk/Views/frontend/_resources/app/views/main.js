@@ -10,10 +10,12 @@ Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Ca
  * Main Viewport
 
  * @access public
- * @namespace App.views
+ * @class
  * @extends Ext.TabPanel
  */
-App.views.Viewport = Ext.extend(Ext.TabPanel, {
+App.views.Viewport = Ext.extend(Ext.TabPanel,
+/** @lends App.views.Viewport# */
+{
 	fullscreen: true,
 	id: 'viewport',
 	cls: 'viewport',
@@ -53,6 +55,9 @@ App.views.Viewport = Ext.extend(Ext.TabPanel, {
 		this.constructor.superclass.initComponent.call(this);
 	},
 
+	/**
+	 * Returns the cart button
+	 */
 	getCartButton: function () {
 		return this.tabBar.items.getAt(2)
 	}

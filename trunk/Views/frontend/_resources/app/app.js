@@ -4,60 +4,96 @@
  *
  * Register the application, set up router for history support
  * and provides request urls
- *
- * TODO - Change stores proxies to ScriptProxy for native application
- *
- * @link http://www.shopware.de
- * @author S.Pohl <stp@shopware.de>
  * ----------------------------------------------------------------------
  */
 
 Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Cart', 'App.views.Account', 'App.views.Info', 'App.views.Checkout');
 
+/** @private */
 var userLoggedIn = false;
 
-/* Register application */
-Ext.regApplication({
-
-	/* Basic settings */
-	name: 'App',
-	icon: (!Ext.isEmpty(iconPath)) ? iconPath : false,
-	glossOnIcon: false,
-	autoInitViewport: true,
+/**
+ * Register Application in global namespace
+ *
+ * @author S.Pohl info@shopware.de
+ * @date 05-11-11
+ * @class
+ */
+var App = Ext.regApplication(
+	/** @lends App# */
+	{
+		/** Name of the application */
+		name: 'App',
+		/** Path to icon - iOS only, Size 72px x 72px */
+		icon: (!Ext.isEmpty(iconPath)) ? iconPath : false,
+		/** Set gloss on icon - iOS only */
+		glossOnIcon: false,
+		/** Auto create basic viewport */
+		autoInitViewport: true,
+		
+		/** Base path - will be needed for the native app */
+		basePath: '',
+		/** Default URL for the router */
+		defaultUrl: '#home',
+		/** Activate histroy support */
+		useHistory: true,
 	
-	/* History settings */
-	basePath: '',
-	defaultUrl: '#home',
-	useHistory: true,
-
-    launch: function () {
-		this.launched = true;
-	    this.mainLaunch();
-    },
-
-	mainLaunch: function() {
-
-		/* Basic viewport */
-    	this.viewport = new App.views.Viewport;
-
-	    /* Load cart from server */
-    	App.stores.Cart.load();
+		/**
+		 * Will be called when the application is initialized
+		 * @returns void
+		 */
+	    launch: function () {
+			this.launched = true;
+		    this.mainLaunch();
+	    },
+		
+		/**
+		 * Will be called if the application
+		 * is packed as an native app
+		 * @returns void
+		 */
+		mainLaunch: function() {
+	
+			/** Create basic viewport */
+	    	this.viewport = new App.views.Viewport;
+	
+		    /** Load cart content from server */
+	    	App.stores.Cart.load();
+		}
 	}
-});
-
-/* Set up router for history support */
-Ext.Router.draw(function(map) {
-	map.connect('home', { controller: 'home', action: 'show' });
-	map.connect('category/:index', { controller: 'category', action: 'show' });
-	map.connect('detail/:articleID', { controller: 'detail', action: 'show' });
-
-	/* Fallback route - would match route like http://example.com/#basket/show to 'basket' controllers 'show' action */
-	map.connect(':controller/:action');
-});
+);
 
 /**
- * Providing request urls - needed for native application
- * */
+ * Register namespace for the application views
+ *
+ * @namespace
+ */
+App.views = {};
+
+/**
+ * Set up router for history support
+ *
+ * @param {Function} fn - The fn to call
+ * @class
+ */
+App.router = Ext.Router.draw(function(map)
+	/** @lends App.router# */
+	{
+		/** URL pattern to match the home controller */
+		map.connect('home', { controller: 'home', action: 'show' });
+		/** URL pattern to match the category controller */
+		map.connect('category/:index', { controller: 'category', action: 'show' });
+		/** URL pattern to match the detail controller */
+		map.connect('detail/:articleID', { controller: 'detail', action: 'show' });
+	
+		/** Fallback route - would match route like http://example.com/#basket/show to 'basket' controllers 'show' action */
+		map.connect(':controller/:action');
+	}
+);
+
+/**
+ * Provides the request urls which are needed for the native application
+ */
 App.RequestURL = {
 	getPromotions: App.basePath + '/MobileTemplate/getPromotionCarousel',
 	getCategories: App.basePath + '/MobileTemplate/getMainCategories',

@@ -10,10 +10,12 @@ Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Ca
  * Shop Main view
  *
  * @access public
- * @namespace App.views.Shop
+ * @class
  * @extends Ext.Panel
  */
-App.views.Shop.index = Ext.extend(Ext.Panel, {
+App.views.Shop.index = Ext.extend(Ext.Panel,
+/** @lends App.views.Shop.index# */
+{
 	id: 'shop',
 	title: 'Shop',
 	iconCls: 'home',
@@ -38,7 +40,7 @@ App.views.Shop.index = Ext.extend(Ext.Panel, {
 	initComponent: function () {
 		var items;
 		
-		/* Back button */
+		/** Back button */
 		this.backBtn = new Ext.Button({
 			ui: 'back',
 			text: 'Start...',
@@ -47,7 +49,7 @@ App.views.Shop.index = Ext.extend(Ext.Panel, {
 			hidden: true
 		});
 
-		/* Toolbar */
+		/** Toolbar */
 		this.toolBar = new Ext.Toolbar({
 			title: 'Master',
 			items: [this.backBtn],
@@ -55,14 +57,14 @@ App.views.Shop.index = Ext.extend(Ext.Panel, {
 			width: '100%'
 		});
 
-		/* Shoplogo */
+		/** Shop logo */
 		this.logo = new Ext.Panel({
 			id: 'logo',
 			scroll: false,
 			autoHeight: true
 		});
 
-		/* Promotions */
+		/** Promotions */
 		this.promotions = new Ext.Carousel({
 			id: 'promotions',
 			store: App.stores.Promotions,
@@ -89,7 +91,7 @@ App.views.Shop.index = Ext.extend(Ext.Panel, {
 			}
 		});
 
-		/* Main categories */
+		/** Main categories */
 		this.list = new Ext.List({
 			id: 'categories',
 			store: App.stores.Categories,
@@ -105,7 +107,7 @@ App.views.Shop.index = Ext.extend(Ext.Panel, {
 			}
 		});
 
-		/* Link to the normal version */
+		/** Link to the normal version */
 		this.normalView = new Ext.Panel({
 			fullscreen: false,
 			id: 'normalView',
@@ -123,13 +125,13 @@ App.views.Shop.index = Ext.extend(Ext.Panel, {
 			}
 		});
 
-		/* Render Einkaufswelten, wenn der Store geladen ist */
+		/** Renders the promotion carousel after the store has changes */
 		this.promotions.store.on({
 			scope: this,
 			load: function() { this.promotions.doLayout() }
 		});
 
-		/* Einkaufswelten auslesen */
+		/** Get promotion articles */
 		items = this.getPromotionItems(this.promotions.store);
 		if(items.length) {
 			this.promotions.add(items);
@@ -144,7 +146,7 @@ App.views.Shop.index = Ext.extend(Ext.Panel, {
 			this.normalView
 		];
 
-		/* Panel */
+		/** Main view panel */
 		this.pnl = new Ext.Panel({
 			id: 'home',
 			scroll: 'vertical',
@@ -161,7 +163,12 @@ App.views.Shop.index = Ext.extend(Ext.Panel, {
 		});
 		App.views.Shop.index.superclass.initComponent.call(this);
 	},
-	
+
+    /**
+     * Handles the toolbar
+     *
+     * @param card
+     */
 	syncToolbar: function(card) {
 		var active        = card || this.getActiveItem(),
 			depth         = this.items.indexOf(active),
@@ -184,6 +191,9 @@ App.views.Shop.index = Ext.extend(Ext.Panel, {
 		}
 	},
 
+    /**
+     * Event handler
+     */
 	onBackBtn: function() {
 		var curr    = this.getActiveItem(),
 			currIdx = this.items.indexOf(curr),
@@ -220,6 +230,12 @@ App.views.Shop.index = Ext.extend(Ext.Panel, {
 
 	},
 
+    /**
+     * Event handler
+     *
+     * @param list
+     * @param idx
+     */
 	onItemTap: function(list, idx) {
 		Ext.dispatch({
 			controller: 'category',
@@ -230,14 +246,28 @@ App.views.Shop.index = Ext.extend(Ext.Panel, {
 		});
 	},
 
+    /**
+     * Event handler
+     *
+     * @param selModel
+     * @param recs
+     */
 	onSelectionChange: function(selModel, recs) {
 		selModel.deselect(recs);
 	},
 
+    /**
+     * Event handler
+     */
 	onNormalView: function() {
 		window.location.href = App.RequestURL.useNormalSite;
 	},
 
+    /**
+     * Creates the items for the promotions carousel
+     *
+     * @param store
+     */
 	getPromotionItems: function(store) {
 		var items = [];
 		store.each(function(rec) {
@@ -254,10 +284,12 @@ App.views.Shop.index = Ext.extend(Ext.Panel, {
  * Article listing view without subcategories
  *
  * @access public
- * @namespace App.views.Shop
+ * @class
  * @extends Ext.Panel
  */
-App.views.Shop.artListing = Ext.extend(Ext.Panel, {
+App.views.Shop.artListing = Ext.extend(Ext.Panel,
+/** @lends App.views.Shop.artListing# */
+{
 	id: 'artListing',
 	title: '',
 	scroll: 'vertical',
@@ -326,12 +358,18 @@ App.views.Shop.artListing = Ext.extend(Ext.Panel, {
 		App.views.Shop.artListing.superclass.initComponent.call(this);
 	},
 
+    /**
+     * Event handler
+     */
 	onFilterBtn: function() {
 		var filterView = new App.views.Shop.filterView;
 		Ext.getCmp('shop').add(filterView);
 		Ext.getCmp('shop').setActiveItem(filterView, 'flip');
 	},
 
+    /**
+     * Event handler
+     */
 	checkForBanner: function() {
 		var raw    = App.stores.Listing.proxy.reader.rawData,
 			banner = Ext.getCmp('banner'),
@@ -353,10 +391,12 @@ App.views.Shop.artListing = Ext.extend(Ext.Panel, {
  * Subcategories listing
  *
  * @access public
- * @namespace App.views.Shop
+ * class
  * @extends Ext.NestedList
  */
-App.views.Shop.subListing = Ext.extend(Ext.NestedList, {
+App.views.Shop.subListing = Ext.extend(Ext.NestedList,
+/** @lends App.views.Shop.subListing# */
+{
 	id: 'subListing',
 	store: App.stores.CategoriesTree,
 	toolbar: {
@@ -436,6 +476,12 @@ App.views.Shop.subListing = Ext.extend(Ext.NestedList, {
 
 
 	},
+
+    /**
+     * Handles the toolbar
+     *
+     * @param card
+     */
 	syncToolbar: function(card) {
 		var list          = card || this.getActiveItem(),
 			depth         = this.items.indexOf(list),
@@ -470,10 +516,12 @@ App.views.Shop.subListing = Ext.extend(Ext.NestedList, {
  * Category filter view
  *
  * @access public
- * @namespace App.views.Shop
+ * @class
  * @extends Ext.form.FormPanel
  */
-App.views.Shop.filterView = Ext.extend(Ext.form.FormPanel, {
+App.views.Shop.filterView = Ext.extend(Ext.form.FormPanel,
+/** @lends App.views.Shop.filterView# */
+{
 	id: 'filterView',
 	scroll: 'vertical',
 	store: App.stores.Listing,
@@ -541,7 +589,7 @@ App.views.Shop.filterView = Ext.extend(Ext.form.FormPanel, {
 				{text: 'Erscheinungsdatum',  value: '1'},
 				{text: 'Beliebtheit', value: '2'},
 				{text: 'Niedrigster Preis',  value: '3'},
-				{text: 'Höchster Preis', value: '4'},
+				{text: 'H?chster Preis', value: '4'},
 				{text: 'Erscheinungsdatum',  value: '5'},
 				{text: 'Artikelbezeichnung', value: '6'}
 			]
@@ -583,6 +631,9 @@ App.views.Shop.filterView = Ext.extend(Ext.form.FormPanel, {
 		App.views.Shop.filterView.superclass.initComponent.call(this);
 	},
 
+    /**
+     * Event handler
+     */
 	onBackBtn: function() {
 		this.store.load();
 		var shopView = Ext.getCmp('shop');

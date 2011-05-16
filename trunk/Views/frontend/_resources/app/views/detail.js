@@ -13,18 +13,18 @@ Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Ca
  * Contains the three different sections (e.g. Detail, Comments, Pictures)
  *
  * @access public
- * @namespace App.views.Shop
+ * @class
  * @extends Ext.Panel
  */
-App.views.Shop.detail = Ext.extend(Ext.Panel, {
+App.views.Shop.detail = Ext.extend(Ext.Panel,
+/** @lends App.views.Shop.detail# */
+{
 	id: 'detail',
 	layout: 'card',
 	listeners: {
 		scope: this,
 
 		/**
-		 * beforeactivate
-		 *
 		 * Event listener
 		 *
 		 * @param me
@@ -42,8 +42,6 @@ App.views.Shop.detail = Ext.extend(Ext.Panel, {
 		},
 
 		/**
-		 * beforedeactivate
-		 *
 		 * Event listener
 		 *
 		 * @param me
@@ -74,8 +72,6 @@ App.views.Shop.detail = Ext.extend(Ext.Panel, {
 	},
 
 	/**
-	 * initComponent
-	 *
 	 * Creates the needed sub components
 	 */
 	initComponent: function() {
@@ -106,8 +102,6 @@ App.views.Shop.detail = Ext.extend(Ext.Panel, {
 
 
 	/**
-	 * onBackBtn - event handler
-	 *
 	 * Handles the back button
 	 */
 	onBackBtn: function() {
@@ -126,8 +120,6 @@ App.views.Shop.detail = Ext.extend(Ext.Panel, {
 	},
 
 	/**
-	 * onNavBtn - event handler
-	 *
 	 * Handles the segmented button to change the section
 	 *
 	 * @param pnl
@@ -163,16 +155,23 @@ App.views.Shop.detail = Ext.extend(Ext.Panel, {
 });
 
 /**
+ * Liveshopping interval
+ * @private
+ */
+var interval;
+
+/**
  * Detail view
  *
  * Contains the basic article informations
  * 
  * @access public
- * @namespace App.views.Shop
+ * @class
  * @extends Ext.Panel
  */
-var interval;
-App.views.Shop.info = Ext.extend(Ext.Panel, {
+App.views.Shop.info = Ext.extend(Ext.Panel,
+/** @lends App.views.Shop.info# */
+{
 	id: 'teaser',
 	layout: 'vbox',
 	scroll: 'vertical',
@@ -200,7 +199,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 	initComponent: function() {
 		var me = this, store = App.stores.Detail, tpl = App.views.Shop;
 
-		/* Teaser Panel with main picture */
+		/** Teaser Panel with main picture */
 		me.info = new Ext.DataView({
 			store: store,
 			tpl: tpl.detailTpl,
@@ -222,7 +221,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 			storeLoaded: me.onStoreLoaded
 		});
 		
-		/* Amount spinner */
+		/** Amount spinner */
 		me.spinner = new Ext.form.Spinner({
 			value: 1,
 			label: 'Anzahl',
@@ -234,7 +233,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 			name: 'sQuantity'
 		});
 
-		/* "Buy now" form panel */
+		/** "Buy now" form panel */
 		me.formPnl = new Ext.form.FormPanel({
 			id: 'formPnl',
 			width: '100%',
@@ -250,7 +249,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 			]
 		});
 
-		/* "Buy now"-Button */
+		/** "Buy now"-Button */
 		me.buyBtn = new Ext.Button({
 			id: 'buyBtn',
 			ui: 'confirm round',
@@ -260,7 +259,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 			height: '33px'
 		});
 
-		/* Bundle support */
+		/** Bundle support */
 		me.bundle = new Ext.DataView({
 			store: store,
 			tpl: tpl.bundleTpl,
@@ -278,7 +277,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 			}
 		});
 
-		/* Article description */
+		/** Article description */
 		me.desc = new Ext.DataView({
 			store: store,
 			tpl: tpl.descTpl,
@@ -299,8 +298,6 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 	},
 
 	/**
-	 * onStoreLoaded - Event handler
-	 *
 	 * Handles the different article types and creates the needed elements (e.g. variants, configurator, bundles)
 	 */
 	onStoreLoaded: function() {
@@ -336,8 +333,6 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 	},
 
 	/**
-	 * onBundleBtn - Event handler
-	 *
 	 * Adds bundle articles to cart
 	 */
 	onBundleBtn: function() {
@@ -350,10 +345,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 	},
 
 	/**
-	 * onBuyBtn - Event handler
-	 *
 	 * Adds an article to cart
-	 *
 	 */
 	onBuyBtn: function() {
 		var values = Ext.getCmp('formPnl').getValues();
@@ -361,8 +353,6 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 	},
 
 	/**
-	 * onImageTap - Event handler
-	 *
 	 * Calls an controller action
 	 */
 	onImageTap: function() {
@@ -373,8 +363,6 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 	},
 
 	/**
-	 * buildVariantField
-	 *
 	 * Builds the needed form field for variant articles
 	 *
 	 * @param item - Store article data
@@ -406,8 +394,6 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 	},
 
 	/**
-	 * buildConfigurator
-	 *
 	 * Builds the needed form elements for configurator articles
 	 *
 	 * @param rec - Store article data
@@ -447,8 +433,6 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 	},
 
 	/**
-	 * buildOrdernumber
-	 *
 	 * Creates an hidden input field - needed
 	 *
 	 * @param item
@@ -463,8 +447,6 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
 	},
 
 	/**
-	 * onConfiguratorChange - Event handler
-	 *
 	 * Handles the configuration of an configurator article
 	 *
 	 * @param select
@@ -494,10 +476,12 @@ App.views.Shop.info = Ext.extend(Ext.Panel, {
  * Contains the different elements/views for the article comments
  *
  * @access public
- * @namespace App.views.Shop
+ * @class
  * @extends Ext.Panel
  */
-App.views.Shop.comments = Ext.extend(Ext.Panel, {
+App.views.Shop.comments = Ext.extend(Ext.Panel,
+/** @lends App.views.Shop.comments# */
+{
 	id: 'votes',
 	layout: 'vbox',
 	scroll: 'vertical',
@@ -533,10 +517,12 @@ App.views.Shop.comments = Ext.extend(Ext.Panel, {
  * Lists the user comments for an specific article
  *
  * @access public
- * @namespace App.views.Shop
+ * @class
  * @extends Ext.DataView
  */
-App.views.Shop.commentsView = Ext.extend(Ext.DataView, {
+App.views.Shop.commentsView = Ext.extend(Ext.DataView,
+/** @lends App.views.Shop.commentsView# */
+{
 	id: 'commentsView',
 	store: App.stores.Detail,
 	scroll: false,
@@ -556,8 +542,6 @@ App.views.Shop.commentsView = Ext.extend(Ext.DataView, {
 	},
 
 	/**
-	 * onDataChanged - Event handler
-	 *
 	 * Updates store and refresh the layout
 	 */
 	onDataChanged: function() {
@@ -566,8 +550,6 @@ App.views.Shop.commentsView = Ext.extend(Ext.DataView, {
 	},
 
 	/**
-	 * update - Event handler
-	 *
 	 * Pre dispatch the default update function
 	 *
 	 * @param store
@@ -591,10 +573,12 @@ App.views.Shop.commentsView = Ext.extend(Ext.DataView, {
  * Allows the user to create a comment for a specific article
  *
  * @access public
- * @namespace App.views.Shop
+ * @class
  * @extends Ext.form.FormPanel
  */
-App.views.Shop.commentForm = Ext.extend(Ext.form.FormPanel, {
+App.views.Shop.commentForm = Ext.extend(Ext.form.FormPanel,
+/** @lends App.views.Shop.commentForm# */
+{
 	id: 'commentForm',
 	width: '100%',
 	items: [{
@@ -674,16 +658,24 @@ App.views.Shop.commentForm = Ext.extend(Ext.form.FormPanel, {
 });
 
 /**
+ * Last picture zoom pinch
+ *
+ * @private
+ */
+var lastpinch = 75;
+
+/**
  * Picture View
  *
  * Creates an carousel, which contains all article pictures
  *
  * @access public
- * @namespace App.views.Shop
+ * @class
  * @extends Ext.Panel
  */
-var lastpinch = 75;
-App.views.Shop.pictures = Ext.extend(Ext.Carousel, {
+App.views.Shop.pictures = Ext.extend(Ext.Carousel,
+/** @lends App.views.Shop.pictures# */
+{
 	id: 'pictures',
 	direction: 'horizontal',
 	listeners: {
@@ -731,8 +723,6 @@ App.views.Shop.pictures = Ext.extend(Ext.Carousel, {
 	},
 
 	/**
-	 * onPinch - Event handler
-	 *
 	 * Resize the current picture through a pinch gesture
 	 *
 	 * @param obj
@@ -756,8 +746,6 @@ App.views.Shop.pictures = Ext.extend(Ext.Carousel, {
 	},
 
 	/**
-	 * onDblTap - Event handler
-	 *
 	 * Resize the current picture to a specific value
 	 */
 	onDblTap: function() {

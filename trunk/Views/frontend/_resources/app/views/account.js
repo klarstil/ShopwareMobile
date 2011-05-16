@@ -12,10 +12,12 @@ Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Ca
  * Contains the customer center
  *
  * @access public
- * @namespace App.views.Account
+ * @class
  * @extends Ext.Panel
  */
-App.views.Account.index = Ext.extend(Ext.Panel, {
+App.views.Account.index = Ext.extend(Ext.Panel,
+/** @lends App.views.Account.index# */
+{
 	id: 'account',
 	title: 'Kundenkonto',
 	iconCls: 'user',
@@ -24,7 +26,7 @@ App.views.Account.index = Ext.extend(Ext.Panel, {
 
 	initComponent: function() {
 
-		/* Back btn */
+		/** Back btn */
 		this.backBtn = new Ext.Button({
 			text: this.title,
 			scope: this,
@@ -33,14 +35,14 @@ App.views.Account.index = Ext.extend(Ext.Panel, {
 			handler:  this.onBackBtn
 		});
 
-		/* Toolbar */
+		/** Toolbar */
 		this.toolbar = new Ext.Toolbar({
 			dock: 'top',
 			title: this.title,
 			items: [this.backBtn, { xtype: 'spacer' }]
 		});
 
-		/* Logout btn */
+		/** Logout btn */
 		this.logoutBtn = new Ext.Button({
 			id: 'logoutBtn',
 			ui: 'action',
@@ -65,7 +67,7 @@ App.views.Account.index = Ext.extend(Ext.Panel, {
 			}
 		});
 
-		/* Login fieldset */
+		/** Login fieldset */
 		this.existingPnl = new Ext.Container({
 			id: 'existing',
 			cls: 'x-form-fieldset',
@@ -89,7 +91,7 @@ App.views.Account.index = Ext.extend(Ext.Panel, {
 					'</div>'
 		});
 
-		/* Register fieldset */
+		/** Register fieldset */
 		this.newPnl = new Ext.Container({
 			id: 'new',
 			cls: 'x-form-fieldset',
@@ -113,7 +115,7 @@ App.views.Account.index = Ext.extend(Ext.Panel, {
 					'</div>'
 		});
 
-		/* holds all views */
+		/** Main panel holds all views */
 		this.mainPnl = new Ext.Container({
 			cls: 'startup',
 			height: '100%',
@@ -127,7 +129,7 @@ App.views.Account.index = Ext.extend(Ext.Panel, {
 			items: [this.mainPnl]
 		});
 
-		/* Add logout btn if the user is logged in */
+		/** Add logout btn if the user is logged in */
 		if(~~isUserLoggedIn) {
 			this.toolbar.add(this.logoutBtn);
 			this.createCustomerCenter(this.mainPnl)
@@ -136,6 +138,10 @@ App.views.Account.index = Ext.extend(Ext.Panel, {
 		App.views.Account.index.superclass.initComponent.call(this);
 	},
 
+    /**
+     * Creates the customer center if the user is logged in
+     * @param parent
+     */
 	createCustomerCenter: function(parent) {
 		/* Get user data */
 		var userData = App.stores.UserData;
@@ -148,7 +154,7 @@ App.views.Account.index = Ext.extend(Ext.Panel, {
 			id: 'welcomeCmp',
 			cls: 'infoCon',
 			html: '<p class="welcome-teaser">Willkommen,' + userData.billingaddress.firstname + '&nbsp;' + userData.billingaddress.lastname + '</p>' +
-					'<p>Hier erhalten Sie einen Überblick über Ihre Registrierungsinformationen.</p>'
+					'<p>Hier erhalten Sie einen ?berblick ?ber Ihre Registrierungsinformationen.</p>'
 		});
 
 		/* User info component */
@@ -265,10 +271,12 @@ App.views.Account.index = Ext.extend(Ext.Panel, {
  * Contains a form to login a user
  *
  * @access public
- * @namespace App.views.Account
+ * @class
  * @extends Ext.form.FormPanel
  */
-App.views.Account.login = Ext.extend(Ext.form.FormPanel, {
+App.views.Account.login = Ext.extend(Ext.form.FormPanel,
+/** @lends App.views.Account.login# */
+{
 	id: 'login',
 	scroll: 'vertical',
 	title: 'Login',
@@ -388,10 +396,12 @@ App.views.Account.login = Ext.extend(Ext.form.FormPanel, {
  * Contains a form to register a user
  *
  * @access public
- * @namespace App.views.Account
+ * @class
  * @extends Ext.form.FormPanel
  */
-App.views.Account.register = Ext.extend(Ext.form.FormPanel, {
+App.views.Account.register = Ext.extend(Ext.form.FormPanel,
+/** @lends App.views.Account.register# */
+{
 	id: 'register',
 	scroll: 'vertical',
 	title: 'Registrierung',
