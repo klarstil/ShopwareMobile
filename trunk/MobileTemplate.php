@@ -60,7 +60,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 		$main_categories = Shopware()->Modules()->Categories()->sGetCategoriesAsArrayById();
 		$i = 0;
 		foreach($main_categories as $cat) {
-			$categoryInfo = Shopware()->Modules()->Categories()->sGetCategoryContent($cat['id']);
+			$categoryInfo = Shopware()->Modules()->Categories()->sGetCategoryContent((int) $cat['id']);
 			$output[$i] = array(
 				'id'     => $cat['id'],
 				'name'   => utf8_encode($cat['description']),
