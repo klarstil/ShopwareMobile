@@ -112,12 +112,14 @@ Ext.ux.touch.PagingToolbar = Ext.extend(Ext.Toolbar, {
 	handleNextPage: function() {
 		this.store.nextPage();
 		this.ownerCt.doComponentLayout();
+		this.ownerCt.doLayout();
 	},
 
 	//private
 	onPageChoose: function(select, value) {
 		this.store.loadPage(value);
 		this.ownerCt.doComponentLayout();
+		this.ownerCt.doLayout();
 	},
 
 	/**
