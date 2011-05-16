@@ -43,6 +43,7 @@ App.views.Search.index = Ext.extend(Ext.Panel,
 					autoFocus: true,
 					hasFocus: true,
 					width: '78%',
+					autoComplete: false,
 					placeHolder: 'Ihr Suchbegriff',
 					listeners: {
 						scope: this,

@@ -153,8 +153,8 @@ App.views.Account.index = Ext.extend(Ext.Panel,
 		this.welcomeCmp = new Ext.Component({
 			id: 'welcomeCmp',
 			cls: 'infoCon',
-			html: '<p class="welcome-teaser">Willkommen,' + userData.billingaddress.firstname + '&nbsp;' + userData.billingaddress.lastname + '</p>' +
-					'<p>Hier erhalten Sie einen ?berblick ?ber Ihre Registrierungsinformationen.</p>'
+			html: '<p class="welcome-teaser">Willkommen, ' + userData.billingaddress.firstname + '&nbsp;' + userData.billingaddress.lastname + '</p>' +
+					'<p>Hier erhalten Sie einen &Uuml;berblick &uuml;ber Ihre Registrierungsinformationen.</p>'
 		});
 
 		/* User info component */
@@ -299,10 +299,12 @@ App.views.Account.login = Ext.extend(Ext.form.FormPanel,
 				name: 'email',
 				label: 'E-Mail',
 				required: true,
+				autoComplete: false,
 				placeHolder: 'me@shopware.de'
 			},
 			{
 				xtype: 'passwordfield',
+				autoComplete: false,
 				name: 'password',
 				label: 'Passwort',
 				required: true
@@ -550,12 +552,55 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel,
 	listeners: {
 		scope: this,
 		deactivate: function(me) {
-			console.log('deactivate register');
 			me.destroy();
 		},
 		submit: function(form, response) {
 			if(response.success && response.msg) {
-				Ext.Msg.alert('Registrierung erfolgreich', response.msg);
+				Ext.Msg.alert('Registrierung erfolgreich', response.msg, function() {
+					var active = Ext.getCmp('viewport').getActiveItem(),
+						view = 0;
+
+					if(active.id == 'cart') {
+						App.stores.UserData.load({
+							scope: this,
+							callback: function(){
+								view = new App.views.Checkout.index;
+								view.update('');
+								active.setActiveItem(view, {
+									type: 'slide',
+									reverse: true,
+									scope: this
+								});
+							}
+						});
+					} else {
+
+						/* Toolbar set up */
+						active.backBtn.hide();
+						active.logoutBtn.show();
+						active.toolbar.setTitle(active.backBtn.text);
+						active.toolbar.doLayout();
+
+						/* Change active view */
+						active.newPnl.hide();
+						active.existingPnl.hide();
+
+						App.stores.UserData.load({
+							scope: this,
+							callback: function() {
+								active.createCustomerCenter(active.mainPnl);
+								active.mainPnl.doComponentLayout();
+								active.mainPnl.doLayout();
+
+								active.setActiveItem(view, {
+									type: 'slide',
+									reverse: true,
+									scope: this
+								});
+							}
+						})
+					}
+				});
 			}
 		},
 		

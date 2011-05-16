@@ -46,8 +46,8 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 		/* Subscribe hooks */
 		$hook = $this->createHook(
 			'Shopware_Controllers_Frontend_Register',
-			'saveOrder',
-			'onSaveOrder',
+			'saveRegister',
+			'onSaveRegister',
 			Enlight_Hook_HookHandler::TypeAfter,
 			0
 		);
@@ -88,9 +88,9 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 		$form->setElement('text', 'iconPath', array('label'=> 'Icon - nur iOS (Gr&ouml;&szlig;e: 57px x 57px, wird angezeigt wenn der Benutzer die Seite zum Home-Screen hinzuf&uuml;gt)','value'=>'', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
 		$form->setElement('checkbox', 'glossOnIcon', array('label'=>'Glanz &uuml;ber Icon anzeigen - nur iOS','value'=>'1', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
 		$form->setElement('text', 'startUpPath', array('label'=> 'Startup Screen - nur iOS (wird angezeigt wenn der Benutzer die Seite zum Home-Screen hinzuf&uuml;gt)','value'=>'', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
-		$form->setElement('text', 'statusBarStyle', array('label'=> 'Statusbar Style (w&auuml;hlbar: default, black, black-translucent)','value'=>'default', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
+		$form->setElement('text', 'statusBarStyle', array('label'=> 'Statusbar Style (w&auml;hlbar: default, black, black-translucent)','value'=>'default', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
 		$form->setElement('checkbox', 'useNormalSite', array('label'=>'Link zur normalen Ansicht anzeigen','value'=>'1', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
-		$form->setElement('text', 'colorStyle', array('label'=> 'Farbtemplate (wählbar: android, blue, brown, default, green, grey, ios, orange, pink, red, turquoise)','value'=>'default', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
+		$form->setElement('text', 'colorStyle', array('label'=> 'Farbtemplate (w&auml;hlbar: android, blue, brown, default, green, grey, ios, orange, pink, red, turquoise)','value'=>'default', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
 		$form->setElement('textarea', 'additionalCSS', array('label'=>'Zusätzliche CSS-Eigenschaften','value'=>'', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
 
 		$form->save();
@@ -227,7 +227,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 	 * @param Enlight_Hook_HookArgs $args
 	 * @return void
 	 */
-	public static function onSaveOrder(Enlight_Hook_HookArgs $args)
+	public static function onSaveRegister(Enlight_Hook_HookArgs $args)
 	{
 		$subject = $args->getSubject();
 		$view = $subject->View();
@@ -249,35 +249,13 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 		} else {
 			$return = array(
 				'success' => true,
-				'msg'     => 'Hallo ' . $view->register['form_data']['firstname'] . ' ' . $view->register['form_data']['lastname'] .
-							 '. Danke f&uuml;r Ihr Registierung bei' . Shopware()->Config()->Shopname
+				'msg'     => 'Danke f&uuml;r Ihr Registierung bei ' . Shopware()->Config()->Shopname
 			);
 		}
-		if($version === 'mobile' && $mobileSession === 1) {
+
+		if($version === 'mobile') {
 			die(json_encode($return));
 		}
-	}
-
-	/**
-	 * onFinishAction()
-	 *
-	 * Erweitert die Finish-Methode um das Ergebnis der Bestellung
-	 * als JSON-String zurueck
-	 *
-	 * @static
-	 * @param Enlight_Hook_HookArgs $args
-	 * @return void
-	 */
-	public static function onFinishAction(Enlight_Hook_HookArgs $args)
-	{
-		$subject = $args->getSubject();
-		$return = $args->getReturn();
-		$view = $subject->View();
-		$version = self::checkForMobileDevice();
-		$mobileSession = Shopware()->Session()->Mobile;
-
-		print_r($return);
-		die();
 	}
     
     /**

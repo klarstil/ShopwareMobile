@@ -197,10 +197,6 @@ App.CartClass = Ext.extend(Ext.util.Observable,
                     // reset cart state
                     items.clear();
 
-                    // only change badge if it's not a bundle
-                    if(!Ext.isDefined(bundle)) {
-                        me.changeBadgeText(0);
-                    }
                     me.amount = 0;
                     me.articleCount = 0;
 

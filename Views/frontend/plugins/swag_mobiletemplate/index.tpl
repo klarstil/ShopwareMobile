@@ -1,4 +1,4 @@
-{block name="frontend_index_header_javascript_jquery" append}
+{block name="frontend_index_no_script_message" prepend}
 <script type="text/javascript">
 var request    = {$shopwareMobile.active},
     useSubShop = {$shopwareMobile.useSubShop}
@@ -12,9 +12,8 @@ if(navigator.userAgent.match(/{$shopwareMobile.userAgents}/i) && !request) {
 	}
 
     if(quest == true && useSubShop == 1) {
-        $.post('/', { 'sLanguage': subShopID }, function(data) {
-            window.location.href = '/mobile';
-        });
+        document.body.innerHTML += '<form id="dynForm" action="" method="post"><input type="hidden" name="sLanguage" value="'+ subShopID +'"></form>';
+        document.getElementById("dynForm").submit();
     }
 }
 </script>
