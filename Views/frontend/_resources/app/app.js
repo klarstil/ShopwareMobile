@@ -103,7 +103,7 @@ App.RequestURL = {
 	getSearch:     App.basePath + '/MobileTemplate/search',
 	getInfo:       App.basePath + '/MobileTemplate/getInfoSites',
 	getBasket:     App.basePath + '/MobileTemplate/getBasket',
-	addArticle:    App.basePath + '/MobileTemplate/addArticleToCart',
+	addArticle:    App.basePath + '/checkout/addArticle',
 	addBundle:     App.basePath + '/MobileTemplate/addBundleToCart',
 	removeArticle: App.basePath + '/MobileTemplate/removeArticleFromCart',
 	deleteBasket:  App.basePath + '/MobileTemplate/deleteBasket',

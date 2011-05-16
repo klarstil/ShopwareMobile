@@ -130,8 +130,8 @@ App.CartClass = Ext.extend(Ext.util.Observable,
                 options.sOrdernumber = options.sAdd;
             }
             App.Helpers.postRequest(App.RequestURL.addArticle, {
-                ordernumber: options.sOrdernumber,
-                amount: options.sQuantity
+                sAdd: options.sOrdernumber,
+                sQuantity: options.sQuantity
             }, function(data) {
                 var item = me.items.findBy(function(data) {
                     if(data.ordernumber ==  options.sOrdernumber) {
@@ -199,6 +199,8 @@ App.CartClass = Ext.extend(Ext.util.Observable,
 
                     me.amount = 0;
                     me.articleCount = 0;
+
+	                me.changeBadgeText('');
 
                     me.fireEvent('datachanged', me);
                 } else {

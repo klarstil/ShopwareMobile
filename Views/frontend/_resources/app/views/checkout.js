@@ -25,7 +25,6 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 	listeners: {
 		scope: this,
 		deactivate: function(me) {
-			console.log('destroy orderConfirmation');
 			me.destroy();
 		}
 	},
@@ -128,15 +127,16 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 						Ext.Msg.alert('Bestellung erfolgreich', response.msg, function() {
 							App.stores.Cart.removeAll();
 
+							console.log(me);
+
 							/* Could be cleaner... */
-							me.setActiveItem(0);
-							me.toolbar.show();
-							me.doComponentLayout();
-							Ext.getCmp('viewport').setActiveItem(0, {
-								type: 'slide',
-								reverse: true,
-								scope: this
-							})
+							//me.setActiveItem(0);
+							//me.toolbar.show();
+							//Ext.getCmp('viewport').setActiveItem(0, {
+								//type: 'slide',
+								//reverse: true,
+								//scope: this
+							//})
 						});
 					}
 				},

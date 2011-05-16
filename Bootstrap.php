@@ -247,6 +247,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 				'msg'     => 'Es ist ein Fehler aufgetreten, pr&uuml;fen Sie bitte Ihre Eingaben'
 			);
 		} else {
+			Shopware()->Session()->sRegisterFinished = true;
 			$return = array(
 				'success' => true,
 				'msg'     => 'Danke f&uuml;r Ihr Registierung bei ' . Shopware()->Config()->Shopname

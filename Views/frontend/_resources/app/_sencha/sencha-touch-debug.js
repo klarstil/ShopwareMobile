@@ -12035,6 +12035,7 @@ Ext.Element.addMethods({
                 platform = Ext.is,
                 style = dom.style;
 
+	        
             prop = El.normalize(prop);
             cs = (view) ? view.getComputedStyle(dom, '') : dom.currentStyle;
             result = (cs) ? cs[prop] : null;
