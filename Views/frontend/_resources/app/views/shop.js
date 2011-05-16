@@ -22,7 +22,9 @@ App.views.Shop.index = Ext.extend(Ext.Panel,
 	layout: 'card',
 	listeners: {
 		scope: this,
+
 		activate: function(me) {
+			me.setLoading(false);
 			var active = me.getActiveItem();
 
 			if(active.id = 'detail' && Ext.getCmp('teaser')) {
@@ -149,6 +151,12 @@ App.views.Shop.index = Ext.extend(Ext.Panel,
 		/** Main view panel */
 		this.pnl = new Ext.Panel({
 			id: 'home',
+			listeners: {
+				scope: this,
+				activate: function(me) {
+					me.setLoading(false);
+				}
+			},
 			scroll: 'vertical',
 			layout: {
 				type: 'vbox',
