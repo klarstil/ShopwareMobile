@@ -143,6 +143,7 @@ App.views.Account.index = Ext.extend(Ext.Panel,
      * @param parent
      */
 	createCustomerCenter: function(parent) {
+
 		/* Get user data */
 		var userData = App.stores.UserData;
 		userData = userData.proxy.reader.rawData.sUserData;
@@ -321,9 +322,6 @@ App.views.Account.login = Ext.extend(Ext.form.FormPanel,
 	}],
 	listeners: {
 		scope: this,
-		deactivate: function(me) {
-			me.destroy();
-		},
 		submit: function(form, response) {
 			if(response.success && response.msg) {
 				Ext.Msg.alert('Login erfolgreich', response.msg, function() {
@@ -551,9 +549,6 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel,
 	],
 	listeners: {
 		scope: this,
-		deactivate: function(me) {
-			me.destroy();
-		},
 		submit: function(form, response) {
 			if(response.success && response.msg) {
 				Ext.Msg.alert('Registrierung erfolgreich', response.msg, function() {

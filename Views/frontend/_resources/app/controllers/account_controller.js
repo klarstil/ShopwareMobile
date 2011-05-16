@@ -11,7 +11,6 @@ Ext.regController('account', {
 	/* Checks if the user is logged in and redirects the user */
 	show: function() {
 
-		// TODO - Check if the user is logged in
 	},
 
 	/* Shows the startup page, if the user isn't logged in */
@@ -21,16 +20,13 @@ Ext.regController('account', {
 
 	/* Shows the registration */
 	showRegister: function() {
-		var view = Ext.getCmp('register');
+		var view = Ext.getCmp('register'),
+			accountView = Ext.getCmp('account');
 
-		if(!this.accountView) {
-			this.accountView = Ext.getCmp('account');
-		}
+		this.accountView = accountView;
 
-		if(!view) {
-			view = new App.views.Account.register;
-			this.accountView.add(view);
-		}
+		view = new App.views.Account.register;
+		this.accountView.add(view);
 
 		this.setToolbarTitle(view.title);
 		this.accountView.backBtn.show();
@@ -40,21 +36,19 @@ Ext.regController('account', {
 
 	/* Shows the login panel */
 	showLogin: function() {
-		var view = Ext.getCmp('login');
+		var view = Ext.getCmp('login'),
+			accountView = Ext.getCmp('account');
 
-		if(!this.accountView) {
-			this.accountView = Ext.getCmp('account');
-		}
+		this.accountView = accountView;
 
-		if(!view) {
-			view = new App.views.Account.login;
-			this.accountView.add(view);
-		}
+		view = new App.views.Account.login;
+		this.accountView.add(view);
 
 		this.setToolbarTitle(view.title);
 		this.accountView.backBtn.show();
 
 		this.accountView.setActiveItem(view, 'slide');
+
 	},
 
 	/* Shows the account informations */
