@@ -26,6 +26,8 @@ var App = Ext.regApplication(
 		name: 'App',
 		/** Path to icon - iOS only, Size 72px x 72px */
 		icon: (!Ext.isEmpty(iconPath)) ? iconPath : false,
+		/** Splashscreen - iOS only, Size 320px x 460px */
+		phoneStartupScreen: (!Ext.isEmpty(startUpPath)) ? startUpPath : false,
 		/** Set gloss on icon - iOS only */
 		glossOnIcon: false,
 		/** Auto create basic viewport */
