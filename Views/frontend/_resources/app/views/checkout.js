@@ -12,10 +12,12 @@ Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Ca
  * Contains all necessary checkout components
  *
  * @access public
- * @namespace App.views.Checkout
+ * @class
  * @extends Ext.Panel
  */
-App.views.Checkout.index = Ext.extend(Ext.Panel, {
+App.views.Checkout.index = Ext.extend(Ext.Panel,
+/** @lends App.views.Checkout.index# */
+{
 	id: 'orderConfirmation',
 	title: 'Bestellbest&auml;tigung',
 	scroll: 'vertical',
@@ -35,7 +37,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel, {
 			shipping = userData.shippingaddress,
 			dispatch = userData.activeDispatch;
 
-		/* Back btn */
+		/** Back btn */
 		this.backBtn = new Ext.Button({
 			text: 'Warenkorb',
 			ui: 'back',
@@ -43,13 +45,13 @@ App.views.Checkout.index = Ext.extend(Ext.Panel, {
 			handler: this.onBackBtn
 		});
 
-		/* Toolbar */
+		/** Toolbar */
 		this.toolbar = new Ext.Toolbar({
 			title: App.Helpers.truncate(this.title, 14),
 			items: [this.backBtn]
 		});
 
-		/* Cart listing */
+		/** Cart listing */
 		this.cartLabel = new Ext.Container({
 			id: 'cartListLabel',
 			html: '<div class="x-form-fieldset-title">Ihr Warenkorb</div>'
@@ -58,7 +60,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel, {
 		this.cartView.tpl = App.views.Checkout.cartTpl;
 
 
-		/* Payment methods fieldset */
+		/** Payment methods fieldset */
 		this.paymentField = new Ext.form.FieldSet({
 			title: 'Ausgew&auml;hlte Zahlungsart',
 			items: [{
@@ -69,7 +71,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel, {
 			}]
 		});
 
-		/* shipping type fieldset */
+		/** shipping type fieldset */
 		this.shippingTypeField = new Ext.form.FieldSet({
 			id: 'shippingTypeField',
 			title: 'Ausgew&auml;hlte Versandart',
@@ -82,7 +84,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel, {
 			}]
 		});
 
-		/* General checkout form pnl */
+		/** General checkout form pnl */
 		this.formPnl = new Ext.form.FormPanel({
 			height: '100%',
 			scroll: false,
@@ -90,7 +92,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel, {
 			items: [this.paymentField, this.shippingTypeField]
 		});
 
-		/* Billing address */
+		/** Billing address */
 		this.billing = new Ext.Container({
 			id: 'billingAddress',
 			html: '<div class="label x-form-fieldset-title">Rechnungsadresse</div>' +
@@ -101,7 +103,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel, {
 				  '</div>'
 		});
 
-		/* Shipping address */
+		/** Shipping address */
 		this.shipping = new Ext.Container({
 			id: 'shippingAddress',
 			html: '<div class="label x-form-fieldset-title">Lieferadresse</div>' +
@@ -112,7 +114,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel, {
 				  '</div>'
 		});
 
-		/* Handles all neccessary order informations */
+		/** Handles all neccessary order informations */
 		this.orderPnl = new Ext.form.FormPanel({
 			id: 'orderPnl',
 			url: App.RequestURL.saveOrder,
@@ -148,7 +150,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel, {
 			}
 		});
 
-		/* Order comment */
+		/** Order comment */
 		if(~~useComment) {
 			this.commentField = new Ext.form.FieldSet({
 				id: 'commentFieldset',
@@ -164,7 +166,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel, {
 			this.orderPnl.add(this.commentField);
 		}
 
-		/* Voucher field */
+		/** Voucher field */
 		if(~~useVoucher) {
 			this.voucherField = new Ext.form.FieldSet({
 				title: 'Gutschein hinzuf&uuml;gen',
@@ -178,12 +180,12 @@ App.views.Checkout.index = Ext.extend(Ext.Panel, {
 			this.orderPnl.add(this.voucherField);
 		}
 
-		/* Subscribe to newsletter */
+		/** Subscribe to newsletter */
 		if(~~useNewsletter) {
 			this.newsletterField = new Ext.form.FieldSet({
 				id: 'newsletterFieldset',
 				title: 'Newsletter abonnieren',
-				instructions: 'Möchten Sie den kostenlosen ' + shopName + ' Newsletter erhalten? Sie können sich jederzeit wieder abmelden! ',
+				instructions: 'M?chten Sie den kostenlosen ' + shopName + ' Newsletter erhalten? Sie k?nnen sich jederzeit wieder abmelden! ',
 				items: [{
 					xtype: 'checkboxfield',
 					name: 'sNewsletter',
@@ -195,7 +197,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel, {
 			this.orderPnl.add(this.newsletterField);
 		}
 
-		/* AGB checkbox */
+		/** AGB checkbox */
 		this.agbField = new Ext.form.FieldSet({
 			id: 'agbFieldset',
 			title: 'AGBs akzeptieren',
@@ -210,7 +212,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel, {
 			}]
 		});
 
-		/* Submit order */
+		/** Submit order */
 		this.submitOrderBtn = new Ext.Button({
 			id: 'submitOrderBtn',
 			ui: 'confirm',
@@ -222,7 +224,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel, {
 		this.orderPnl.add(this.agbField);
 		this.orderPnl.add(this.submitOrderBtn);
 
-		/* Main Pnl */
+		/** Main Pnl */
 		this.pnl = new Ext.Panel({
 			scroll: 'vertical',
 			items: [
@@ -236,7 +238,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel, {
 			]
 		});
 
-		/* Apply all components to main pnl */
+		/** Apply all components to main pnl */
 		Ext.apply(this, {
 			dockedItems: [this.toolbar],
 			items: [this.pnl]
@@ -244,7 +246,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel, {
 		App.views.Checkout.index.superclass.initComponent.call(this);
 	},
 
-	/* onBackBtn - event handler */
+	/** onBackBtn - event handler */
 	onBackBtn: function() {
 		var cart = Ext.getCmp('cart');
 		cart.setActiveItem(0, {
@@ -256,7 +258,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel, {
 		cart.doComponentLayout();
 	},
 
-	/* onSubmitOrderBtn - event handler */
+	/** onSubmitOrderBtn - event handler */
 	onSubmitOrderBtn: function() {
 		var pnl    = this.orderPnl,
 			values = pnl.getValues();

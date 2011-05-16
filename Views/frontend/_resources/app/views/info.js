@@ -12,10 +12,12 @@ Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Ca
  * Contains the pages list
  *
  * @access public
- * @namespace App.views.Info
+ * @class
  * @extends Ext.Panel
  */
-App.views.Info.index = Ext.extend(Ext.Panel, {
+App.views.Info.index = Ext.extend(Ext.Panel,
+/** @lends App.views.Info.index# */
+{
 	id: 'info',
 	title: 'Informationen',
 	iconCls: 'info',
@@ -46,8 +48,6 @@ App.views.Info.index = Ext.extend(Ext.Panel, {
 	},
 
 	/**
-	 * onBackBtn - Event handler
-	 *
 	 * Handles the back button behavior
 	 */
 	onBackBtn: function() {
@@ -56,8 +56,8 @@ App.views.Info.index = Ext.extend(Ext.Panel, {
 	},
 
 	/**
-	 * getToolbar
 	 * Returns the toolbar
+     * @return toolbar - Ext.Toolbar
 	 */
 	getToolbar: function() {
 		return this.toolbar;
@@ -68,10 +68,12 @@ App.views.Info.index = Ext.extend(Ext.Panel, {
  * Shopsites list
  *
  * @access public
- * @namespace App.views.Info
+ * @class
  * @extends Ext.List
  */
-App.views.Info.list = Ext.extend(Ext.List, {
+App.views.Info.list = Ext.extend(Ext.List,
+/** @lends App.views.Info.list# */
+{
 	store: App.stores.Info,
 	itemTpl: '<strong>{name}</strong>',
 	id: 'static_list',
@@ -91,8 +93,6 @@ App.views.Info.list = Ext.extend(Ext.List, {
 	},
 
 	/**
-	 * onItemTap - Event handler
-	 *
 	 * Opens the detail view
 	 *
 	 * @param pnl
@@ -115,10 +115,12 @@ App.views.Info.list = Ext.extend(Ext.List, {
  * Detail Panel for list items
  *
  * @access public
- * @namespace App.views.Shop
+ * @class
  * @extends Ext.form.FormPanel
  */
-App.views.Info.Detail = Ext.extend(Ext.form.FormPanel, {
+App.views.Info.Detail = Ext.extend(Ext.form.FormPanel,
+/** @lends App.views.Info.Detail# */
+{
 	id: 'infoDetail',
 	height: '100%',
 	scroll: 'vertical',
@@ -131,8 +133,6 @@ App.views.Info.Detail = Ext.extend(Ext.form.FormPanel, {
 	},
 
 	/**
-	 * constructor
-	 *
 	 * Will be called when a new instance would create
 	 *
 	 * @param item
@@ -182,8 +182,6 @@ App.views.Info.Detail = Ext.extend(Ext.form.FormPanel, {
 	},
 
 	/**
-	 * createFormElements
-	 *
 	 * Dynamic creation of forms
 	 * 
 	 * @param cfg

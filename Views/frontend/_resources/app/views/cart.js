@@ -13,10 +13,12 @@ Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Ca
  * Contains all necessary cart components
  *
  * @access public
- * @namespace App.views.Cart
+ * @class
  * @extends Ext.Panel
  */
-App.views.Cart.index = Ext.extend(Ext.Panel, {
+App.views.Cart.index = Ext.extend(Ext.Panel,
+/** @lends App.views.Cart.index# */
+{
 	id: 'cart',
 	title: 'Warenkorb',
 	iconCls: 'cart',
@@ -91,7 +93,10 @@ App.views.Cart.index = Ext.extend(Ext.Panel, {
 			this.checkoutBtn.hide();
 		}
 	},
-
+    
+    /**
+     * Will be called when the checkout btn is tapped
+     */
 	onCheckoutBtn: function() {
 		var view = this;
 
@@ -109,10 +114,12 @@ App.views.Cart.index = Ext.extend(Ext.Panel, {
  * Displays the cart content
  *
  * @access public
- * @namespace App.views.Cart
+ * @class
  * @extends Ext.Panel
  */
-App.views.Cart.list = Ext.extend(Ext.Panel, {
+App.views.Cart.list = Ext.extend(Ext.Panel,
+/** @lends App.views.Cart.list# */
+{
 	id: 'cartlist',
 	layout: 'fit',
 	flex: 1,
@@ -140,10 +147,19 @@ App.views.Cart.list = Ext.extend(Ext.Panel, {
 		})
 	},
 
+    /**
+     * Calls when the store is changed
+     *
+     * @param store
+     */
 	onDataChanged: function(store) {
 		this.update(this.store);
 	},
 
+    /**
+     * Calls when the store is updated
+     * @param store
+     */
 	update: function (store) {
 		if (store.items.length) {
 			this.tpl = App.views.Cart.indexTpl;
@@ -164,6 +180,12 @@ App.views.Cart.list = Ext.extend(Ext.Panel, {
 		App.views.Cart.list.superclass.update.apply(this, arguments);
 	},
 
+    /**
+     * Calls when the delete button is tapped
+     *
+     * @param event
+     * @param el
+     */
 	onDeleteBtn: function(event, el) {
 		var el = Ext.get(el), val;
 		val = el.dom.attributes[1].nodeValue;
@@ -171,6 +193,11 @@ App.views.Cart.list = Ext.extend(Ext.Panel, {
 		return false;
 	},
 
+    /**
+     * Hides the checkout btn
+     *
+     * @param state
+     */
 	hideCheckoutBtn: function(state) {
 		var btn = Ext.getCmp('checkoutBtn');
 		if (state === true) { btn.hide(); } else { btn.show(); }
