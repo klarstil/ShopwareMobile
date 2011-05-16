@@ -32,7 +32,6 @@ Ext.regController('checkout', {
 
 				options.parentView.toolbar.show();
 				options.parentView.doComponentLayout();
-				//view.destroy();
 			});
 			view.backBtn.setText('Warenkorb');
 			view.backBtn.show();
