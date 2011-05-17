@@ -43,15 +43,6 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 		);
 		$this->subscribeEvent($event);
 
-		/* Subscribe hooks */
-		$hook = $this->createHook(
-			'Shopware_Controllers_Frontend_Register',
-			'saveRegister',
-			'onSaveRegister',
-			Enlight_Hook_HookHandler::TypeAfter,
-			0
-		);
-		$this->subscribeHook($hook);
 
 		/* Add menu entry */
 		$parent = $this->Menu()->findOneBy('label', 'Marketing');
@@ -219,47 +210,6 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
     {
     	return dirname(__FILE__) . '/MobileTemplateAdmin.php';
     }
-
-	/**
-	 * onSaveRegisterAction()
-	 *
-	 * Gibt das Ergebnis der Registrierung in einen JSON String wieder
-	 *
-	 * @static
-	 * @param Enlight_Hook_HookArgs $args
-	 * @return void
-	 */
-	public static function onSaveRegister(Enlight_Hook_HookArgs $args)
-	{
-		$subject = $args->getSubject();
-		$view = $subject->View();
-		$version = self::checkForMobileDevice();
-		$mobileSession = Shopware()->Session()->Mobile;
-
-		$errors = 0;
-		foreach($view->register as $steps) {
-			if(isset($steps['error_flags'])) {
-				$errors++;
-			}
-		}
-
-		if($errors > 0) {
-			$return = array(
-				'success' => false,
-				'msg'     => 'Es ist ein Fehler aufgetreten, pr&uuml;fen Sie bitte Ihre Eingaben'
-			);
-		} else {
-			Shopware()->Session()->sRegisterFinished = true;
-			$return = array(
-				'success' => true,
-				'msg'     => 'Danke f&uuml;r Ihr Registierung bei ' . Shopware()->Config()->Shopname
-			);
-		}
-
-		if($version === 'mobile') {
-			die(json_encode($return));
-		}
-	}
     
     /**
      * checkForMobileDevice()
