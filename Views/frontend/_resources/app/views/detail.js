@@ -206,7 +206,8 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 			tpl: tpl.detailTpl,
 			scroll: false,
 			autoWidth: true,
-			height: '200px',
+			autoHeight: true,
+			style: 'max-height: 250px; width: 100%',
 			itemSelector: '.image',
 			listeners: {
 				scope: this,
@@ -230,6 +231,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 			xtype: 'spinnerfield',
 			minValue: 1,
 			maxValue: 100,
+			width: '100%',
 			cycle: false,
 			name: 'sQuantity'
 		});
@@ -238,9 +240,6 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 		me.formPnl = new Ext.form.FormPanel({
 			id: 'formPnl',
 			width: '100%',
-			flex: 1,
-			height: '77px',
-			style: 'height: 77px !important',
 			items: [
 				{
 					id: 'buyFieldset',

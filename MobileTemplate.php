@@ -722,7 +722,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 
 		$basket = Shopware()->Modules()->Basket()->sCountArticles();
 
-		if(!empty($login['sErrorMessages']) && Shopware()->Modules()->Admin()->sCheckUser()) {
+		if(!empty($login['sErrorMessages']) && !Shopware()->Modules()->Admin()->sCheckUser()) {
 			$output = array(
 				'success' => false,
 				'msg'     => 'Ihre Zugangsdaten konnten keinem Benutzer zugeordnet werden.'
