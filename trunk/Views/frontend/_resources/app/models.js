@@ -163,7 +163,8 @@ App.models.Search = Ext.regModel('Search', {
 		{ name: 'articleName', type: 'string' },
 		{ name: 'description', type: 'string' },
 		{ name: 'img', type: 'string'},
-		{ name: 'type', type: 'string' }
+		{ name: 'type', type: 'string' },
+		{ name: 'priceStartingFrom', type: 'string' }
 	],
 	proxy: {
 		type: 'ajax',
