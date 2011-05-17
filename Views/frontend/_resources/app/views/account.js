@@ -146,6 +146,9 @@ App.views.Account.index = Ext.extend(Ext.Panel,
      * @param parent
      */
 	createCustomerCenter: function(parent) {
+		var me = this,
+			userData = App.stores.UserData.proxy.reader.rawData.sUserData,
+			paymentMethods = [];
 
 		/* Get user data */
 		var userData = App.stores.UserData;
@@ -169,11 +172,9 @@ App.views.Account.index = Ext.extend(Ext.Panel,
 					userData.additional.user.email + '</div>'
 		});
 
-		/* Payment component */
-		this.paymentCmp = new Ext.Component({
-			id: 'paymentCmp',
-			html: '<div class="label x-form-fieldset-title">Gew&auml;hlte Zahlungsart</div>' +
-					'<div class="infoCon">'+ userData.additional.payment.description +'</div>'
+		/** Payment methods fieldset */
+		this.paymentField = new Ext.form.FieldSet({
+			title: 'Zahlungsart ausw&auml;hlen'
 		});
 
 		/* Billing address component */
@@ -201,8 +202,29 @@ App.views.Account.index = Ext.extend(Ext.Panel,
 			id: 'accountCenter',
 			height: '100%',
 			scroll: false,
-			items: [this.welcomeCmp, this.userInfoCmp, this.paymentCmp, this.billingCmp, this.deliveryCmp]
+			items: [this.welcomeCmp, this.userInfoCmp, this.paymentField, this.billingCmp, this.deliveryCmp]
 		});
+
+	    App.Helpers.getRequest(App.RequestURL.getPayment, '', function(data) {
+			for(idx in data.sPaymentMethods) {
+				var payItem = data.sPaymentMethods[idx];
+				if(App.Helpers.inArray(payItem.id, payments)) {
+					paymentMethods.push(new Ext.form.Radio({
+						name: 'paymentMethod',
+						value: payItem.id,
+						label: payItem.description,
+						checked: (userData.additional.payment.id == payItem.id) ? true : false,
+						listeners: {
+							scope: this,
+							check: me.onPayment
+						}
+					}));
+				}
+			}
+			me.paymentField.add(paymentMethods);
+			me.centerPnl.doLayout();
+		});
+
 		parent.add(this.centerPnl);
 		parent.doLayout();
 		parent.doComponentLayout();
@@ -235,6 +257,21 @@ App.views.Account.index = Ext.extend(Ext.Panel,
 	        if(curr) { curr.destroy(); }
         }
     },
+	
+	/**
+	 * Event handler
+	 * @param chkbox
+	 */
+	onPayment: function(chkbox) {
+		Ext.Ajax.request({
+			url: App.RequestURL.changePayment,
+			method: 'post',
+			disableCaching: false,
+			params: {
+				'register[payment]': chkbox.getValue()
+			}
+		});
+	},
 
 	/**
 	 * syncToolbar/tapped
