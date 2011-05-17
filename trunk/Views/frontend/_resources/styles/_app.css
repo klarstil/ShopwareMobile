@@ -471,7 +471,7 @@ strong { font-weight: 700 }
 .emptyComments p:last-child { margin: 0 }
 .emptyCart strong, .emptyComments strong { font-weight: 700; }
 
-#cartlist .item {
+.cartlist .item {
     position: relative;
     margin: 0 1.2em;
     background: #fff;
@@ -480,18 +480,18 @@ strong { font-weight: 700 }
     padding: 8px 8px 14px;
     font-size: 15px;
 }
-#cartlist .item:first-child {
+.cartlist .item:first-child {
     margin-top: 0.5em;
     border-top: 1px solid #ddd;
     border-top-left-radius: .4em;
     border-top-right-radius: .4em;
 }
-#cart .item:last-child {
+.cartlist .item:last-child {
     margin-bottom: 0.5em;
     border-bottom-right-radius: .4em;
     border-bottom-left-radius: .4em; 
 }
-#cartlist .image {
+.cartlist .image {
     height: 57px;
     width: 57px;
     background-color: #fff;
@@ -502,44 +502,44 @@ strong { font-weight: 700 }
     -webkit-box-shadow: 0 0 1px #555;
     float: left;
 }
-#cartlist .info {
+.cartlist .info {
 	float: left;
 	max-width: 65%;
 	margin-left: 0.5em;
 }
-#cartlist .info .name { display: block; font-size: 14px; }
-#cartlist .info .supplier,
-#cartlist .info .ordernumber,
-#cartlist .info .quantity { color: #777; }
+.cartlist .info .name { display: block; font-size: 14px; }
+.cartlist .info .supplier,
+.cartlist .info .ordernumber,
+.cartlist .info .quantity { color: #777; }
 
-#cartlist .info .supplier {
+.cartlist .info .supplier {
 	font-size: 11px;
 	display: block;
 }
-#cartlist .ordernumber, #cartlist .quantity {
+.cartlist .ordernumber, .cartlist .quantity {
 	font-size: 11px;
 	display: block;
 }
-#cartlist .info .ordernumber strong,
-#cartlist .info .quantity strong {
+.cartlist .info .ordernumber strong,
+.cartlist .info .quantity strong {
 	display: inline-block;
 	width: 60px;
 }
-#cartlist .price {
+.cartlist .price {
 	display: block;
 	position: absolute;
 	right: 10px;
 	top: 10px;
 	font-weight: 12px;
 }
-#cartlist .deleteBtn {
+.cartlist .deleteBtn {
     height: 21px;
     text-align: center;
     position: absolute;
     bottom: 16px;
     right: 8px;
 }
-#cartlist .deleteBtn img {
+.cartlist .deleteBtn img {
     height: 16px;
     width: 16px;
 }

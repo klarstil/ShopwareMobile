@@ -114,11 +114,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 			id: 'orderPnl',
 			url: App.RequestURL.saveOrder,
 			listeners: {
-				beforesubmit: function() {
-					this.ownerCt.setLoading(true);
-				},
 				submit: function(form, response) {
-					this.ownerCt.setLoading(false);
 					if(response.success && response.msg) {
 						Ext.Msg.alert('Bestellung erfolgreich', response.msg, function() {
 							App.stores.Cart.removeAll();
@@ -131,6 +127,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 							});
 							Ext.getCmp('shop').toolBar.hide();
 							Ext.getCmp('shop').doLayout();
+							Ext.getCmp('shop').doComponentLayout();
 							Ext.getCmp('shop').setActiveItem(Ext.getCmp('home'));
 						});
 					}
@@ -139,7 +136,6 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 				exception: function(form, response) {
 					if(!response.success && response.msg) {
 						Ext.Msg.alert('Bestellung fehlgeschlagen', response.msg);
-						form.ownerCt.setLoading(false);
 					}
 				}
 			}
@@ -289,7 +285,6 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 			Ext.Msg.alert('Fehler', 'Bitte best&auml;tigen Sie die AGBs um Ihre Bestellung durchzu&uuml;hren.');
 			return false;
 		}
-
 		pnl.submit();
 	},
 

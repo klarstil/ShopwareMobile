@@ -132,12 +132,7 @@ App.CartClass = Ext.extend(Ext.util.Observable,
             App.Helpers.postRequest(App.RequestURL.addArticle, {
                 sAdd: options.sOrdernumber,
                 sQuantity: options.sQuantity
-            }, function(data) {
-                var item = me.items.findBy(function(data) {
-                    if(data.ordernumber ==  options.sOrdernumber) {
-                        return true;
-                    }
-                }, me);
+            }, function() {
 
                 // Fire event to refresh card list
                 App.Helpers.postRequest(App.RequestURL.getBasket, {}, function(data) {

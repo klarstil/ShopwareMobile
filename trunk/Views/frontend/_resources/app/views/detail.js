@@ -238,7 +238,6 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 
 		/** "Buy now" form panel */
 		me.formPnl = new Ext.form.FormPanel({
-			id: 'formPnl',
 			width: '100%',
 			height: '200px',
 			items: [
@@ -352,7 +351,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 	 * Adds an article to cart
 	 */
 	onBuyBtn: function() {
-		var values = Ext.getCmp('formPnl').getValues();
+		var values = this.formPnl.getValues();
 		App.stores.Cart.add(values);
 	},
 
@@ -430,7 +429,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 					}
 				}]
 			});
-			Ext.getCmp('formPnl').add(fieldset);
+			me.formPnl.add(fieldset);
 			groupIdx++;
 			options = [];
 		});
@@ -447,7 +446,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 			name: 'sOrdernumber',
 			value: item.data.ordernumber
 		});
-		Ext.getCmp('formPnl').add(ordernumber);
+		this.formPnl.add(ordernumber);
 	},
 
 	/**

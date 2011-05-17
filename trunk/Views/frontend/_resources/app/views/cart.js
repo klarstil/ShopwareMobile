@@ -39,24 +39,18 @@ App.views.Cart.index = Ext.extend(Ext.Panel,
 			var active = me.getActiveItem(), view;
 
 			if(active && active.id == 'orderConfirmation') {
-				active.setActiveItem(me.pnl, {
-					type: 'slide',
-					reverse: true,
-					scope: this
-				});
 
-				me.toolbar.setTitle(me.title);
-				me.toolbar.show();
-
-				Ext.getCmp('cartlist').destroy();
-				active.destroy();
-				
-				if(!Ext.getCmp('cartlist')) {
-					view = new App.views.Cart.list;
-					view.tpl = App.views.Cart.emptyTpl;
-					Ext.getCmp('cart').add(view);
-					me.doComponentLayout();
+				if(me.toolbar) {
+					me.toolbar.setTitle(me.title);
+					me.toolbar.show();
 				}
+
+				if(active) {
+					active.destroy();
+				}
+				me.doComponentLayout();
+				me.pnl.show();
+				//view.show();
 			}
 		}
 	},
@@ -120,7 +114,7 @@ App.views.Cart.index = Ext.extend(Ext.Panel,
 App.views.Cart.list = Ext.extend(Ext.Panel,
 /** @lends App.views.Cart.list# */
 {
-	id: 'cartlist',
+	cls: 'cartlist',
 	layout: 'fit',
 	flex: 1,
 	tpl: App.views.Cart.indexTpl,
@@ -128,6 +122,12 @@ App.views.Cart.list = Ext.extend(Ext.Panel,
 	store: App.stores.Cart,
 	autoHeight: true,
 	scroll: false,
+	listeners: {
+		scope: this,
+		deactivate: function(me) {
+			alert('cartlist deactivate');
+		}
+	},
 	initComponent: function() {
 		this.store.on({
 			datachanged: this.onDataChanged,
