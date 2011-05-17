@@ -454,7 +454,7 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel,
 			xtype: 'fieldset',
 			title: 'Pers&ouml;nliche Angaben',
 			defaults: {
-				labelWidth: '38%'
+				labelWidth: '42%'
 			},
 			items: [
 				{
