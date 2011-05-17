@@ -21,6 +21,9 @@ return array(
 		)),
 		'1.0.2'=>array('releasedate'=>'2011-05-17', 'lines' => array(
 			'Refactor the registration'
+		)),
+		'1.0.3'=>array('releasedate'=>'2011-05-17', 'lines' => array(
+			'Improved checkout section and registration'
 		))
 	)
 );
