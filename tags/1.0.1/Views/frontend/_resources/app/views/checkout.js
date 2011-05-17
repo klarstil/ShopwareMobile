@@ -290,7 +290,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 			return false;
 		}
 
-		//pnl.submit();
+		pnl.submit();
 	},
 
 	/**
