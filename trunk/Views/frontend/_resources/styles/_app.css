@@ -168,7 +168,7 @@ strong { font-weight: 700 }
 #detail .image {
     display: block;
     padding: 4px;
-    margin: 8px;
+    margin: 8px 8px 8px 18px;
     background: #fff;
     -webkit-border-radius: 8px;
     border: 1px solid #c7c7c7;

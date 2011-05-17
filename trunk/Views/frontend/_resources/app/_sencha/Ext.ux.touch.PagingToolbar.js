@@ -164,7 +164,9 @@ Ext.ux.touch.PagingToolbar = Ext.extend(Ext.Toolbar, {
 
 			if(numPages <= 1) {
 				this.hide();
-				this.cmp.ownerCt.doComponentLayout();
+				if(this.cmp && this.cmp.ownerCt) {
+					this.cmp.ownerCt.doComponentLayout();
+				}
 			}
 		}
 	},
