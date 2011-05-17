@@ -80,7 +80,7 @@ App.views.Shop.index = Ext.extend(Ext.Panel,
 					me.doComponentLayout();
 				},
 				el: {
-					dblclick: function(event,el) {
+					tap: function(event,el) {
 						el = Ext.get(el);
 						Ext.dispatch({
 							controller: 'detail',
@@ -317,7 +317,7 @@ App.views.Shop.artListing = Ext.extend(Ext.Panel,
 		this.list = new Ext.List({
 			id: 'articleListingList',
 			store: App.stores.Listing,
-			itemTpl: '<div class="image"<tpl if="image_url"> style="background-image:url({image_url})"</tpl>></div><strong>{articleName}</strong><span class="price">{price} &euro;</span><div class="desc">{description_long}</div>',
+			itemTpl: '<div class="image"<tpl if="image_url"> style="background-image:url({image_url})"</tpl>></div><strong>{articleName}</strong><span class="price"><tpl if="!Ext.isEmpty(priceStartingFrom)">ab </tpl>{price} &euro;</span><div class="desc">{description_long}</div>',
 			scroll: false,
 			height: '100%',
 			plugins: [new Ext.ux.touch.PagingToolbar],

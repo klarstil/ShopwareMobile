@@ -82,7 +82,8 @@ App.models.Articles = Ext.regModel('Articles', {
 		{ name: 'description_long', type: 'string' },
 		{ name: 'articleName', type: 'string' },
 		{ name: 'price', type: 'string' },
-		{ name: 'image_url', type: 'string' }
+		{ name: 'image_url', type: 'string' },
+		{ name: 'priceStartingFrom', type: 'string' }
 	],
 	proxy: {
 		type: 'ajax',
