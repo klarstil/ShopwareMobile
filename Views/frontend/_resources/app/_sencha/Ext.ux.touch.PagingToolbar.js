@@ -124,7 +124,7 @@ Ext.ux.touch.PagingToolbar = Ext.extend(Ext.Toolbar, {
 
 	/**
      * Returns the number of records possible in Store
-     * @publich
+     * @public
      */
 	getTotalRecs: function() {
 		var store = this.store;
