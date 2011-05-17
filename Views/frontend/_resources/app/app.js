@@ -12,6 +12,9 @@ Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Ca
 /** @private */
 var userLoggedIn = false;
 
+/** @private */
+payments = payments.split(',');
+
 /**
  * Register Application in global namespace
  *
@@ -119,5 +122,6 @@ App.RequestURL = {
 	saveOrder:     App.basePath + '/checkout/finish',
 	basketAmount:  App.basePath + '/MobileTemplate/getBasketAmount',
 	logout:        App.basePath + '/account/ajaxLogout',
-	confirm:       App.basePath + '/checkout/confirm'
+	confirm:       App.basePath + '/checkout/confirm',
+	changePayment: App.basePath + '/account/savePayment'
 };

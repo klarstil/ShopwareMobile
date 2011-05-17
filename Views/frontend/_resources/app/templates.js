@@ -26,6 +26,7 @@ App.views.Shop.detailTpl = new Ext.XTemplate(
 				'<span class="pricePercent">({pseudopricePercent.float} % gespart)</span></tpl>',
 				'<span class="price">{price} &euro;*</span>',
 			'</strong>',
+			// Base price
 			'<tpl if="!Ext.isEmpty(purchaseunit)">',
 				'<span class="tax">Inhalt: {purchaseunit} {sUnit.description}</span>',
 				'<tpl if="purchaseunit != referenceunit">',
@@ -34,7 +35,7 @@ App.views.Shop.detailTpl = new Ext.XTemplate(
 			'</tpl>',
 			'<span class="tax">Preise inkl. gesetzlicher MwSt. zzgl. Versandkosten</span>',
 		'</div>',
-		'<div class="clear">&nbsp;</div>',
+		'<div class="clear clearfloat">&nbsp;</div>',
 		'</tpl>',
 
 		// Liveshopping

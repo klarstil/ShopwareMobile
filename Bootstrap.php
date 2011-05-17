@@ -81,6 +81,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 		$form->setElement('checkbox', 'useVoucher', array('label'=>'Gutscheineingabe auf der Bestellbest&auml;tigungsseite anzeigen','value'=>'0', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
 		$form->setElement('checkbox', 'useNewsletter', array('label'=>'Newsletteranmeldung auf der Bestellbest&auml;tigungsseite anzeigen','value'=>'0', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
 		$form->setElement('checkbox', 'useComment', array('label'=>'Kommentarfeld auf der Bestellbest&auml;tigungsseite anzeigen','value'=>'0', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
+		$form->setElement('text', 'supportedPayments', array('label'=> 'Zahlungsarten-IDs, die unterst&uuml;tzt werden (Komma getrennt)','value'=>'3,4,5', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
 
 		/* Template related settings */
 		$form->setElement('text', 'logoPath', array('label'=> 'Logo-Pfad (bitte achten Sie darauf, dass das Logo nicht breiter als 320px ist)','value'=>'', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
@@ -173,7 +174,8 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 				'iconPath'       => $config->iconPath,
 				'glossOnIcon'    => $config->glossOnIcon,
 				'startUpPath'    => $config->startUpPath,
-				'statusBarStyle' => $config->statusBarStyle
+				'statusBarStyle' => $config->statusBarStyle,
+				'payments'       => $config->supportedPayments
 			));
 
 		} else {

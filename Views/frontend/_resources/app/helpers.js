@@ -327,5 +327,20 @@ App.Helpers = {
             'm': m,
             's': s
         };
-    }
+    },
+
+	/**
+	 * Search a string in an array
+	 *
+	 * @param needle
+	 * @param haystack
+	 */
+	inArray: function(needle, haystack) {
+		var length = haystack.length;
+		for(var i = 0; i < length; i++) {
+			if(haystack[i] == needle) return true;
+		}
+		return false;
+	}
+
 };

@@ -19,7 +19,7 @@
 
 /*	GENERAL FORMATING
 	------------------------------------------------------------------ */
-.clear {height: 0; clear: both;}
+.clear {height: 0; clear: both; float: none; line-height: 0}
 .hidden { display: none }
 strong { font-weight: 700 }
 

@@ -175,6 +175,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 	id: 'teaser',
 	layout: 'vbox',
 	scroll: 'vertical',
+	flex: 1,
 	autoHeight: true,
 	listeners: {
 		scope: this,
@@ -237,6 +238,9 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 		me.formPnl = new Ext.form.FormPanel({
 			id: 'formPnl',
 			width: '100%',
+			flex: 1,
+			height: '77px',
+			style: 'height: 77px !important',
 			items: [
 				{
 					id: 'buyFieldset',
