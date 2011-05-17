@@ -34,7 +34,8 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 			userData = App.stores.UserData.proxy.reader.rawData.sUserData,
 			billing  = userData.billingaddress,
 			shipping = userData.shippingaddress,
-			dispatch = userData.activeDispatch;
+			dispatch = userData.activeDispatch,
+			paymentMethods = [];
 
 		App.Helpers.postRequest(App.RequestURL.confirm, '');
 
@@ -60,16 +61,9 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 		this.cartView = new App.views.Cart.list;
 		this.cartView.tpl = App.views.Checkout.cartTpl;
 
-
 		/** Payment methods fieldset */
 		this.paymentField = new Ext.form.FieldSet({
-			title: 'Ausgew&auml;hlte Zahlungsart',
-			items: [{
-				xtype: 'textfield',
-				value: userData.additional.payment.description,
-				name: 'paymentMeans',
-				disabled: true
-			}]
+			title: 'Zahlungsart ausw&auml;hlen'
 		});
 
 		/** shipping type fieldset */
@@ -245,9 +239,29 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 			items: [this.pnl]
 		});
 		App.views.Checkout.index.superclass.initComponent.call(this);
+
+		App.Helpers.getRequest(App.RequestURL.getPayment, '', function(data) {
+			for(idx in data.sPaymentMethods) {
+				var payItem = data.sPaymentMethods[idx];
+				if(App.Helpers.inArray(payItem.id, payments)) {
+					paymentMethods.push(new Ext.form.Radio({
+						name: 'paymentMethod',
+						value: payItem.id,
+						label: payItem.description,
+						checked: (userData.additional.payment.id == payItem.id) ? true : false,
+						listeners: {
+							scope: this,
+							check: me.onPayment
+						}
+					}));
+				}
+			}
+			me.paymentField.add(paymentMethods);
+			me.pnl.doLayout();
+		});
 	},
 
-	/** onBackBtn - event handler */
+	/** Event handler */
 	onBackBtn: function() {
 		var cart = Ext.getCmp('cart');
 		cart.setActiveItem(0, {
@@ -259,16 +273,38 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 		cart.doComponentLayout();
 	},
 
-	/** onSubmitOrderBtn - event handler */
+	/** Event handler */
 	onSubmitOrderBtn: function() {
-		var pnl    = this.orderPnl,
-			values = pnl.getValues();
+		var pnl     = this.orderPnl,
+			values  = pnl.getValues(),
+			form    = this.formPnl,
+			formVal = form.getValues();
+
+		if(Ext.isEmpty(formVal.paymentMethod)) {
+			Ext.Msg.alert('Fehler', 'Bitte w&auml;hlen Sie eine Zahlungsart aus um Ihre Bestellung durchzu&uuml;hren.');
+			return false;
+		}
 
 		if(Ext.isEmpty(values.sAGB)) {
 			Ext.Msg.alert('Fehler', 'Bitte best&auml;tigen Sie die AGBs um Ihre Bestellung durchzu&uuml;hren.');
 			return false;
 		}
 
-		pnl.submit();
+		//pnl.submit();
+	},
+
+	/**
+	 * Event handler
+	 * @param chkbox
+	 */
+	onPayment: function(chkbox) {
+		Ext.Ajax.request({
+			url: App.RequestURL.changePayment,
+			method: 'post',
+			disableCaching: false,
+			params: {
+				'register[payment]': chkbox.getValue()
+			}
+		});
 	}
 });
