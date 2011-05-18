@@ -690,13 +690,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	public function getUserDataAction()
 	{
-		$userData = Shopware()->Modules()->Admin()->sGetUserData();
-
-		foreach($userData as $group => $values) {
-			if($group !== 'additional') {
-				foreach($values as $k => $v) { $return[$group][$k] = htmlentities($v); }
-			} else { $return[$group] = $values; }
-		}
+		$return = Shopware()->Modules()->Admin()->sGetUserData();
 
 		if(isset($userData['additional']) && !empty($userData['additional'])) {
 			Shopware()->Session()->sCountry = $userData['additional']['country']['id'];

@@ -202,7 +202,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 		/** AGB checkbox */
 		this.agbField = new Ext.form.FieldSet({
 			id: 'agbFieldset',
-			title: 'AGBs akzeptieren',
+			title: 'AGB akzeptieren',
 			instructions: 'Bitte best&auml;tigen Sie die geltenden Allgemeinen Gesch&auml;ftsbedingungen.',
 			items: [{
 				xtype: 'checkboxfield',
@@ -290,12 +290,12 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 			formVal = form.getValues();
 
 		if(Ext.isEmpty(formVal.paymentMethod)) {
-			Ext.Msg.alert('Fehler', 'Bitte w&auml;hlen Sie eine Zahlungsart aus um Ihre Bestellung durchzu&uuml;hren.');
+			Ext.Msg.alert('Fehler', 'Bitte w&auml;hlen Sie eine Zahlungsart aus um Ihre Bestellung durchzuf&uuml;hren.');
 			return false;
 		}
 
 		if(Ext.isEmpty(values.sAGB)) {
-			Ext.Msg.alert('Fehler', 'Bitte best&auml;tigen Sie die AGBs um Ihre Bestellung durchzu&uuml;hren.');
+			Ext.Msg.alert('Fehler', 'Bitte best&auml;tigen Sie die AGBs um Ihre Bestellung durchzuf&uuml;hren.');
 			return false;
 		}
 		pnl.submit();

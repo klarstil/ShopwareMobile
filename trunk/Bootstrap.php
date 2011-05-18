@@ -43,6 +43,11 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 		);
 		$this->subscribeEvent($event);
 
+		$event = $this->createEvent(
+			'Enlight_Controller_Action_PreDispatch_Frontend_Register',
+			'onPreDispatchRegister'
+		);
+		$this->subscribeEvent($event);
 
 		/* Add menu entry */
 		$parent = $this->Menu()->findOneBy('label', 'Marketing');
@@ -210,6 +215,44 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
     {
     	return dirname(__FILE__) . '/MobileTemplateAdmin.php';
     }
+
+	/**
+	 * onPreDispatchRegister()
+	 *
+	 * Wandelt alle Umlaute in der Registrierung um
+	 *
+	 * @static
+	 * @param Enlight_Event_EventArgs $args
+	 * @return
+	 */
+	public static function onPreDispatchRegister(Enlight_Event_EventArgs $args)
+	{
+		$request = $args->getSubject()->Request();
+		$response = $args->getSubject()->Response();
+		$view = $args->getSubject()->View();
+		$mobileSession = Shopware()->Session()->Mobile;
+		$post = $request->getPost();
+
+		if(!$mobileSession) {
+			return;
+		}
+
+		// UTF8 decode personal informations
+		if(!empty($post['register']['personal'])) {
+			foreach($post['register']['personal'] as $k => $v) {
+				$post['register']['personal'][$k] = utf8_decode($v);
+			}
+		}
+
+		// UTF8 decode billing informations
+		if(!empty($post['register']['billing'])) {
+			foreach($post['register']['billing'] as $k => $v) {
+				$post['register']['billing'][$k] = utf8_decode($v);
+			}
+		}
+
+		$request->setPost($post);
+	}
     
     /**
      * checkForMobileDevice()
