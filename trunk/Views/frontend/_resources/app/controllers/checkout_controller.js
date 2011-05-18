@@ -15,7 +15,7 @@ Ext.regController('checkout', {
 		}
 
 		/* Check if the user is logged in */
-		if(Ext.isEmpty(isUserLoggedIn)) {
+		if(!~~isUserLoggedIn) {
 			view = new App.views.Account.index;
 			view.toolbar.setTitle('Checkout');
 
