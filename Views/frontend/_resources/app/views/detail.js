@@ -239,7 +239,6 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 		/** "Buy now" form panel */
 		me.formPnl = new Ext.form.FormPanel({
 			width: '100%',
-			height: '200px',
 			items: [
 				{
 					id: 'buyFieldset',
