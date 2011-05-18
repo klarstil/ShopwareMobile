@@ -24,6 +24,12 @@ return array(
 		)),
 		'1.0.3'=>array('releasedate'=>'2011-05-17', 'lines' => array(
 			'Improved checkout section and registration'
+		)),
+		'1.0.4'=>array('releasedate'=>'2011-05-18', 'lines' => array(
+			'Fix session problem',
+			'Remove layout problem in cart',
+			'Better view handling in the checkout section',
+			'Fix layout problem at the detail view'
 		))
 	)
 );
