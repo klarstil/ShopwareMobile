@@ -22,12 +22,6 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 	title: 'Bestellbest&auml;tigung',
 	scroll: 'vertical',
 	layout: 'card',
-	listeners: {
-		scope: this,
-		deactivate: function(me) {
-			me.destroy();
-		}
-	},
 	
 	initComponent: function() {
 		var me = this,
@@ -117,14 +111,31 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 				submit: function(form, response) {
 					if(response.success && response.msg) {
 						Ext.Msg.alert('Bestellung erfolgreich', response.msg, function() {
+							var owner = me.ownerCt;
+							
+							/* Clear cart store */
 							App.stores.Cart.removeAll();
 
-							me.setActiveItem(0);
+							/* Destroy Order confirmation */
+							me.destroy();
+
+							/* Create new cart list on owner */
+							owner.pnl.update('');
+							owner.pnl.show();
+							owner.toolbar.show();
+							owner.doLayout();
+
+							/* Hide checkout button */
+							owner.checkoutBtn.hide();
+
+							/* Slide to home view */
 							Ext.getCmp('viewport').setActiveItem(0, {
 								type: 'slide',
 								reverse: true,
 								scope: this
 							});
+							
+							/* Refresh main view */
 							Ext.getCmp('shop').toolBar.hide();
 							Ext.getCmp('shop').doLayout();
 							Ext.getCmp('shop').doComponentLayout();
@@ -265,8 +276,10 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 			reverse: true,
 			scope: this
 		});
+
 		cart.toolbar.show();
 		cart.doComponentLayout();
+		this.destroy();
 	},
 
 	/** Event handler */

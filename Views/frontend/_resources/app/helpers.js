@@ -62,7 +62,7 @@ App.Helpers = {
 				try {
 					this.data = Ext.util.JSON.decode(response.responseText)
 				} catch(err) {
-					Ext.Msg.alert('Fehler', 'Es ist ein Fehler bei einen AJAX-Request aufgetreten, bitte versuchen Sie es sp&auml;er erneut.');
+					Ext.Msg.alert('Fehler', 'Es ist ein Fehler bei einen AJAX-Request aufgetreten, bitte versuchen Sie es sp&auml;ter erneut.');
 				}
 				
 				if(Ext.isFunction(callback)) {
