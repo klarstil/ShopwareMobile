@@ -654,7 +654,7 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel,
 		
 		exception: function(form, response) {
 			if(!response.success && response.msg) {
-				Ext.Msg.alert('Registrierung fehlgeschlagen', response.msg);
+				Ext.Msg.alert('Registrierung fehlgeschlagen', response.msg + response.errors);
 				isUserLoggedIn = 0;
 			}
 		}
