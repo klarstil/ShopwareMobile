@@ -263,6 +263,10 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 		this.orderPnl.add(this.agbBtn);
 		this.orderPnl.add(this.submitOrderBtn);
 
+		this.starNotice = new Ext.Container({
+			html: '<div class="priceNotice x-form-fieldset-instructions">* Alle Preise inkl. gesetzl. Mehrwertsteuer zzgl. Versandkosten und ggf. Nachnahmegebühren, wenn nicht anders beschrieben</div>'
+		});
+
 		/** Main Pnl */
 		this.pnl = new Ext.Panel({
 			scroll: 'vertical',
@@ -273,7 +277,8 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 				this.billing,
 				this.shipping,
 				this.orderPnl,
-				this.submitOrderBtn
+				this.submitOrderBtn,
+				this.starNotice
 			]
 		});
 
