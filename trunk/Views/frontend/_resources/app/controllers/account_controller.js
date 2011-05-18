@@ -25,8 +25,6 @@ Ext.regController('account', {
 
 		this.accountView = options.parentView;
 
-		console.log(this.accountView);
-
 		view = new App.views.Account.register;
 		this.accountView.add(view);
 
