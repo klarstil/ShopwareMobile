@@ -381,7 +381,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 		}
 
 		if(Ext.isEmpty(values.sAGB)) {
-			Ext.Msg.alert('Fehler', 'Bitte best&auml;tigen Sie die AGBs um Ihre Bestellung durchzuf&uuml;hren.');
+			Ext.Msg.alert('Fehler', 'Bitte best&auml;tigen Sie die AGB um Ihre Bestellung durchzuf&uuml;hren.');
 			return false;
 		}
 		pnl.submit();

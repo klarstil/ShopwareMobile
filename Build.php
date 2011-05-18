@@ -30,6 +30,13 @@ return array(
 			'Remove layout problem in cart',
 			'Better view handling in the checkout section',
 			'Fix layout problem at the detail view'
+		)),
+		'1.0.5'=>array('releasedate'=>'2011-05-18', 'lines' => array(
+			'Fix encoding problem',
+			'Add error messages if the registration was not successful',
+			'Add missing stars behind prices',
+			'Add and format agb box',
+			'Add total sum and shipping costs box'
 		))
 	)
 );
