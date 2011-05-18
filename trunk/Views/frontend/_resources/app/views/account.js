@@ -372,6 +372,10 @@ App.views.Account.login = Ext.extend(Ext.form.FormPanel,
 						App.stores.UserData.load({
 							scope: this,
 							callback: function(){
+
+								/* Set user is logged in */
+								isUserLoggedIn = 1;
+
 								view = new App.views.Checkout.index;
 								view.update('');
 								active.setActiveItem(view, {
@@ -382,8 +386,6 @@ App.views.Account.login = Ext.extend(Ext.form.FormPanel,
 							}
 						});
 					} else {
-
-
 						/* Toolbar set up */
 						active.backBtn.hide();
 						active.logoutBtn.show();
@@ -401,6 +403,9 @@ App.views.Account.login = Ext.extend(Ext.form.FormPanel,
 								active.mainPnl.doComponentLayout();
 								active.mainPnl.doLayout();
 
+								/* Set user is logged in */
+								isUserLoggedIn = 1;
+
 								active.setActiveItem(view, {
 									type: 'slide',
 									reverse: true,
@@ -415,6 +420,7 @@ App.views.Account.login = Ext.extend(Ext.form.FormPanel,
 		exception: function(form, response) {
 			if(!response.success && response.msg) {
 				Ext.Msg.alert('Login fehlgeschlagen', response.msg);
+				isUserLoggedIn = 0;
 			}
 		}
 	},
@@ -599,6 +605,10 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel,
 						App.stores.UserData.load({
 							scope: this,
 							callback: function(){
+
+								/* Set user is logged in */
+								isUserLoggedIn = 1;
+
 								view = new App.views.Checkout.index;
 								view.update('');
 								active.setActiveItem(view, {
@@ -627,6 +637,9 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel,
 								active.mainPnl.doComponentLayout();
 								active.mainPnl.doLayout();
 
+								/* Set user is logged in */
+								isUserLoggedIn = 1;
+
 								active.setActiveItem(view, {
 									type: 'slide',
 									reverse: true,
@@ -642,6 +655,7 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel,
 		exception: function(form, response) {
 			if(!response.success && response.msg) {
 				Ext.Msg.alert('Registrierung fehlgeschlagen', response.msg);
+				isUserLoggedIn = 0;
 			}
 		}
 	},
