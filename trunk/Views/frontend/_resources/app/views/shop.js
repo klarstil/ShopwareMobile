@@ -127,6 +127,10 @@ App.views.Shop.index = Ext.extend(Ext.Panel,
 			}
 		});
 
+		this.starNotice = new Ext.Container({
+			html: '<div class="priceNotice x-form-fieldset-instructions">* Alle Preise inkl. gesetzl. Mehrwertsteuer zzgl. Versandkosten und ggf. Nachnahmegebühren, wenn nicht anders beschrieben</div>'
+		});
+
 		/** Renders the promotion carousel after the store has changes */
 		this.promotions.store.on({
 			scope: this,
@@ -145,7 +149,8 @@ App.views.Shop.index = Ext.extend(Ext.Panel,
 			this.logo,
 			this.promotions,
 			this.list,
-			this.normalView
+			this.normalView,
+			this.starNotice
 		];
 
 		/** Main view panel */
@@ -341,6 +346,10 @@ App.views.Shop.artListing = Ext.extend(Ext.Panel,
 			}
 		});
 
+		this.starNotice = new Ext.Container({
+			html: '<div class="priceNotice x-form-fieldset-instructions">* Alle Preise inkl. gesetzl. Mehrwertsteuer zzgl. Versandkosten und ggf. Nachnahmegebühren, wenn nicht anders beschrieben</div>'
+		});
+
 		this.banner = new Ext.Panel({
 			id: 'banner',
 			height: '100%'
@@ -360,7 +369,7 @@ App.views.Shop.artListing = Ext.extend(Ext.Panel,
 		}
 
 		Ext.apply(this, {
-			items: [this.banner, this.list]
+			items: [this.banner, this.list, this.starNotice]
 		});
 
 		App.views.Shop.artListing.superclass.initComponent.call(this);
