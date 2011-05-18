@@ -37,6 +37,9 @@ return array(
 			'Add missing stars behind prices',
 			'Add and format agb box',
 			'Add total sum and shipping costs box'
+		)),
+		'1.0.6'=>array('releasedate'=>'2011-05-18', 'lines' => array(
+			'Add star notice on all sites with prices'
 		))
 	)
 );
