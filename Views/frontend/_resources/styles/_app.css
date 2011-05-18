@@ -690,6 +690,7 @@ strong { font-weight: 700 }
     background: #fff;
     border: 1px solid #ddd;
     border-radius: .4em;
+    font-size: 14px;
 }
 .agbBox h1, .agbBox h2, .agbBox h3, .agbBox h4, .agbBox h5, .agbBox h6 {font-weight:700;color:#111;}
 .agbBox h1 {font-size:1.6em;line-height:1;margin-bottom:0.5em;}
