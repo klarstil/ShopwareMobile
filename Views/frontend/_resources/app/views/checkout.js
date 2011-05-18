@@ -207,12 +207,21 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 			items: [{
 				xtype: 'checkboxfield',
 				checked: false,
-				label: 'AGBs',
+				label: 'AGB',
 				name: 'sAGB',
-				required: true,
+				//required: true,
 				value: 'active'
 			}]
 		});
+
+		this.agbBtn = new Ext.Button({
+			text: 'AGB anzeigen',
+			ui: 'small',
+			scope: this,
+			style: 'margin: .6em',
+			handler: this.onAGBBtn
+		});
+
 
 		/** Submit order */
 		this.submitOrderBtn = new Ext.Button({
@@ -224,6 +233,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 		});
 
 		this.orderPnl.add(this.agbField);
+		this.orderPnl.add(this.agbBtn);
 		this.orderPnl.add(this.submitOrderBtn);
 
 		/** Main Pnl */
@@ -280,6 +290,55 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 		cart.toolbar.show();
 		cart.doComponentLayout();
 		this.destroy();
+	},
+
+	/** Event handler */
+	onAGBBtn: function() {
+		var me = this;
+		App.Helpers.getRequest(App.RequestURL.customSite, {
+			sCustom: ~~agbID
+		}, function(response) {
+			var view = new Ext.Panel({
+				scroll: 'vertical',
+				listeners: {
+					scope: this,
+					deactivate: function(me) {
+						me.destroy();
+					}
+				},
+				dockedItems: [{
+					xtype: 'toolbar',
+					title: 'AGB',
+					items: [{
+						xtype: 'button',
+						ui: 'back',
+						text: 'Zur&uuml;ck',
+						scope: this,
+						handler: function() {
+							var active = me.getActiveItem();
+
+							me.toolbar.show();
+							me.doComponentLayout();
+							me.setActiveItem(active-1, {
+								type: 'slide',
+								reverse: true,
+								scope: this
+							});
+						}
+					}]
+				}],
+				items: [{
+					cls: 'agbBox',
+					height: '100%',
+					scroll: false,
+					html: response
+				}]
+			});
+			me.add(view);
+			me.toolbar.hide();
+			me.doComponentLayout();
+			me.setActiveItem(view, 'slide');
+		})
 	},
 
 	/** Event handler */
