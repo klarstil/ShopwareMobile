@@ -169,7 +169,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 
 			me.orderInfo.update(
 				'<div class="deliveryInfo">' +
-					'<p><strong>Summe:</strong><span>' + response.amount + '*</span></p>' +
+					'<p><strong>Summe:</strong><span>' + response.basketAmount + '*</span></p>' +
 					'<p><strong>Versandkosten:</strong><span>' + response.shippingCosts + '*</span></p>' +
 					'<p><strong>Gesamtsumme:</strong><span>' + totalAmount + '&nbsp;</span></p>' +
 					net +
