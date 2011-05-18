@@ -44,6 +44,12 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 		$this->subscribeEvent($event);
 
 		$event = $this->createEvent(
+			'Enlight_Controller_Action_PostDispatch_Frontend_Register',
+			'onPostDispatchRegister'
+		);
+		$this->subscribeEvent($event);
+
+		$event = $this->createEvent(
 			'Enlight_Controller_Action_PreDispatch_Frontend_Register',
 			'onPreDispatchRegister'
 		);
@@ -215,6 +221,36 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
     {
     	return dirname(__FILE__) . '/MobileTemplateAdmin.php';
     }
+
+	/**
+	 * onPostDispatchRegister()
+	 *
+	 * Stellt die Fehlermeldungen bei der Registrierung
+	 * als einzelnen String zu Verf&uuml;gung
+	 *
+	 * @static
+	 * @param Enlight_Event_EventArgs $args
+	 * @return 
+	 */
+	public static function onPostDispatchRegister(Enlight_Event_EventArgs $args)
+	{
+		$request = $args->getSubject()->Request();
+		$response = $args->getSubject()->Response();
+		$view = $args->getSubject()->View();
+		$mobileSession = Shopware()->Session()->Mobile;
+
+		if(!$mobileSession) {
+			return;
+		}
+
+		if(!empty($view->register->personal->error_messages)) {
+			$errors = '';
+			foreach($view->register->personal->error_messages as $k => $v) {
+				$errors = $errors . '<br/>' . utf8_encode($v);
+			}
+			$view->registerErrors = $errors;
+		}
+	}
 
 	/**
 	 * onPreDispatchRegister()
