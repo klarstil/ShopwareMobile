@@ -31,8 +31,6 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 			dispatch = userData.activeDispatch,
 			paymentMethods = [];
 
-		App.Helpers.postRequest(App.RequestURL.confirm, '');
-
 		/** Back button */
 		this.backBtn = new Ext.Button({
 			text: 'Warenkorb',
@@ -54,6 +52,9 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 		});
 		this.cartView = new App.views.Cart.list;
 		this.cartView.tpl = App.views.Checkout.cartTpl;
+
+		/** Contains all price related informations */
+		me.orderInfo = new Ext.Container({});
 
 		/** Payment methods fieldset */
 		this.paymentField = new Ext.form.FieldSet({
@@ -78,7 +79,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 			height: '100%',
 			scroll: false,
 			id: 'checkoutForm',
-			items: [this.paymentField, this.shippingTypeField]
+			items: [this.orderInfo, this.paymentField, this.shippingTypeField]
 		});
 
 		/** Billing address */
@@ -150,6 +151,32 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 					}
 				}
 			}
+		});
+
+		App.Helpers.postRequest(App.RequestURL.confirm, '', function(response) {
+			var totalAmount, net;
+			if(response.amountWithTaxAlone && userData.additional.charge_vat) {
+				totalAmount = response.amountWithTax
+			} else {
+				totalAmount = response.amount
+			}
+
+			if(userData.additional.charge_vat) {
+				net = '<p><strong>Gesamtsumme ohne MwSt.:</strong><span>' + reponse.amountNet  + '</span></p>';
+			} else {
+				net = '';
+			}
+
+			me.orderInfo.update(
+				'<div class="deliveryInfo">' +
+					'<p><strong>Summe:</strong><span>' + response.amount + '*</span></p>' +
+					'<p><strong>Versandkosten:</strong><span>' + response.shippingCosts + '*</span></p>' +
+					'<p><strong>Gesamtsumme:</strong><span>' + totalAmount + '&nbsp;</span></p>' +
+					net +
+					'</div>'
+			);
+			me.orderInfo.doLayout();
+			me.doComponentLayout();
 		});
 
 		/** Order comment */

@@ -684,7 +684,7 @@ strong { font-weight: 700 }
     font-weight: 700;
     margin-bottom: .5em;
 }
-.agbBox {
+.agbBox, .deliveryInfo {
     margin: 1em;
     padding: 1em;
     background: #fff;
@@ -708,3 +708,9 @@ strong { font-weight: 700 }
 .agbBox dl {margin:0 0 1.5em 0;}
 .agbBox dl dt {font-weight:bold;}
 .agbBox dd {margin-left:1.5em;}
+
+.deliveryInfo {
+    margin: 0;
+}
+.deliveryInfo p { position: relative; }
+.deliveryInfo span { position: absolute; right: 0px; text-align: right; display: block; width: 120px; top: 0px; }
