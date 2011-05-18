@@ -123,5 +123,6 @@ App.RequestURL = {
 	basketAmount:  App.basePath + '/MobileTemplate/getBasketAmount',
 	logout:        App.basePath + '/account/ajaxLogout',
 	confirm:       App.basePath + '/checkout/confirm',
-	changePayment: App.basePath + '/account/savePayment'
+	changePayment: App.basePath + '/account/savePayment',
+	customSite:    App.basePath + '/custom/'
 };
