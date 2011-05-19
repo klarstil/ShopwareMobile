@@ -31,7 +31,7 @@ App.views.Cart.index = Ext.extend(Ext.Panel,
 		activate: function() {
 			var amountEl = Ext.get('amount-display');
 			if(amountEl) {
-				amountEl.setHTML((Math.round(App.stores.Cart.amount*100) / 100) + '&nbsp;&euro;*');
+				amountEl.setHTML(App.Helpers.number_format((Math.round(App.stores.Cart.amount*100) / 100), 2, ',', '.') + '&nbsp;&euro;*');
 			}
 		},
 

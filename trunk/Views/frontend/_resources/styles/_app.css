@@ -712,7 +712,7 @@ strong { font-weight: 700 }
 .deliveryInfo {  margin: 0; }
 .deliveryInfo p { position: relative; }
 .deliveryInfo span { position: absolute; right: 0px; text-align: right; display: block; width: 120px; top: 0px; }
-.deliveryInfo p.grey strong { color: #666 }
+.deliveryInfo p.grey { color: #707070 }
 .deliveryInfo .doubleborder { margin-bottom: 3px }
 .deliveryInfo .doubleborder span { border-bottom: 3px double #666 }
 .deliveryInfo .totalSum { font-weight: 700; font-size: 16px; margin-bottom: 2px; padding-bottom: 2px }
