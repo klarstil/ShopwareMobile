@@ -334,6 +334,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 			}
 		}
 
+		// Base price
 		if(!empty($article['sUnit'])) {
 			$article['sUnit']['description'] = utf8_encode($article['sUnit']['description']);
 		}
@@ -351,6 +352,17 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 				$i++;
 			}
 			$article['sBundles'] = $bundle;
+		}
+
+		// Configurator
+		if(!empty($article['sConfigurator'])) {
+			foreach($article['sConfigurator'] as $id => $configurator) {
+				$article['sConfigurator'][$id]['groupname'] = utf8_encode($configurator['groupname']);
+				$article['sConfigurator'][$id]['groupdescription'] = utf8_encode($configurator['groupdescription']);
+				foreach($configurator['values'] as $key => $value) {
+					$article['sConfigurator'][$id]['values'][$key]['optionname'] = utf8_encode($value['optionname']);
+				}
+			}
 		}
 		
 		$this->jsonOutput(array('sArticle' => array($article)));
