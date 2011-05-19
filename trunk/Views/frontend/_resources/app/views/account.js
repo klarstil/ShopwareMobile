@@ -25,6 +25,17 @@ App.views.Account.index = Ext.extend(Ext.Panel,
 	layout: 'card',
 	scroll: false,
 
+	listeners: {
+		scope: this,
+		activate: function(me) {
+			if(Ext.getCmp('accountCenter')) {
+				Ext.getCmp('accountCenter').show();
+				me.doComponentLayout();
+				me.doLayout();
+			}
+		}
+	},
+
 	initComponent: function() {
 
 		/** Back btn */
