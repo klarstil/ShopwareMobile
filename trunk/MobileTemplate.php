@@ -734,7 +734,6 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 			Shopware()->Session()->sCountry = $userData['additional']['country']['id'];
 		}
 
-
 		// UTF8 encode user data
 		foreach($userData as $group => $array) {
 			foreach($array as $groupname => $value) {
