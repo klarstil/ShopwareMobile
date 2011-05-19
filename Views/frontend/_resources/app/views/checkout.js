@@ -153,6 +153,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 			}
 		});
 
+		/** Calculate delivery costs, total sum ... */
 		App.Helpers.postRequest(App.RequestURL.confirm, '', function(response) {
 			var totalAmount, net;
 			if(response.amountWithTaxAlone && userData.additional.charge_vat) {
@@ -162,18 +163,22 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 			}
 
 			if(userData.additional.charge_vat) {
-				net = '<p><strong>Gesamtsumme ohne MwSt.:</strong><span>' + reponse.amountNet  + '</span></p>';
+				net = '<p class="grey"><strong>Gesamtsumme ohne MwSt.:</strong><span>' + response.amountNet  + '&nbsp;</span></p>';
+				for(idx in response.taxRates) {
+					net += '<p class="grey"><strong>zzgl. '+ idx +'&nbsp;% MwSt.:</strong><span>'+ App.Helpers.number_format(response.taxRates[idx], 2, ',', '.') +'&euro;&nbsp;</span></p>'
+				}
 			} else {
 				net = '';
 			}
 
 			me.orderInfo.update(
 				'<div class="deliveryInfo">' +
-					'<p><strong>Summe:</strong><span>' + response.basketAmount + '*</span></p>' +
-					'<p><strong>Versandkosten:</strong><span>' + response.shippingCosts + '*</span></p>' +
-					'<p><strong>Gesamtsumme:</strong><span>' + totalAmount + '&nbsp;</span></p>' +
+					'<p class="grey"><strong>Summe:</strong><span>' + response.basketAmount + '*</span></p>' +
+					'<p class="doubleborder grey"><strong>Versandkosten:</strong><span>' + response.shippingCosts + '*</span></p>' +
+					'<p class="totalSum"><strong>Gesamtsumme:</strong><span>' + totalAmount + '&nbsp;</span></p>' +
 					net +
-					'</div>'
+					'</div>' +
+					'<div class="priceNotice x-form-fieldset-instructions">* Alle Preise inkl. gesetzl. Mehrwertsteuer zzgl. Versandkosten und ggf. Nachnahmegebühren, wenn nicht anders beschrieben</div>'
 			);
 			me.orderInfo.doLayout();
 			me.doComponentLayout();
@@ -263,10 +268,6 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 		this.orderPnl.add(this.agbBtn);
 		this.orderPnl.add(this.submitOrderBtn);
 
-		this.starNotice = new Ext.Container({
-			html: '<div class="priceNotice x-form-fieldset-instructions">* Alle Preise inkl. gesetzl. Mehrwertsteuer zzgl. Versandkosten und ggf. Nachnahmegebühren, wenn nicht anders beschrieben</div>'
-		});
-
 		/** Main Pnl */
 		this.pnl = new Ext.Panel({
 			scroll: 'vertical',
@@ -278,7 +279,6 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 				this.shipping,
 				this.orderPnl,
 				this.submitOrderBtn,
-				this.starNotice
 			]
 		});
 
