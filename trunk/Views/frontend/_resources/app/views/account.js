@@ -362,6 +362,9 @@ App.views.Account.login = Ext.extend(Ext.form.FormPanel,
 	}],
 	listeners: {
 		scope: this,
+		deactivate: function(me) {
+			me.destroy();
+		},
 		submit: function(form, response) {
 			if(response.success && response.msg) {
 				Ext.Msg.alert('Login erfolgreich', response.msg, function() {
@@ -595,6 +598,9 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel,
 	],
 	listeners: {
 		scope: this,
+		deactivate: function(me) {
+			me.destroy();
+		},
 		submit: function(form, response) {
 			if(response.success && response.msg) {
 				Ext.Msg.alert('Registrierung erfolgreich', response.msg, function() {
