@@ -423,7 +423,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 					options: options,
 					name: 'group['+groupIdx+']',
 					listeners: {
-						scope: this,
+						scope: me,
 						change: me.onConfiguratorChange
 					}
 				}]
@@ -440,12 +440,12 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 	 * @param item
 	 */
 	buildOrdernumber: function(item) {
-		var ordernumber = new Ext.form.Hidden({
+		this.hiddenOrdernumber = new Ext.form.Hidden({
 			id: 'hiddenOrdernumber',
 			name: 'sOrdernumber',
 			value: item.data.ordernumber
 		});
-		this.formPnl.add(ordernumber);
+		this.formPnl.add(this.hiddenOrdernumber);
 	},
 
 	/**
@@ -458,17 +458,19 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 		var store  = App.stores.Detail,
 			item   = store.getAt(0),
 			configurator = item.data.sConfigurator,
-			groupId, active;
+			groupId, active, values = this.formPnl.getValues(),
+			me = this;
 
-		groupId = parseInt(select.name.match(/[0-9]/i));
-		configurator = configurator[(groupId - 1)];
-		active = configurator.values[val];
-		
-		if(active && active.ordernumber) {
-			Ext.getCmp('hiddenOrdernumber').setValue(active.ordernumber);
-		} else {
-			Ext.getCmp('hiddenOrdernumber').setValue(item.data.ordernumber);
-		}
+		this.setLoading(true);
+		values.articleId = item.data.articleID;
+		App.Helpers.postRequest(App.RequestURL.getDetail, values, function(response) {
+				if(!Ext.isEmpty(response.sArticle)) {
+					me.hiddenOrdernumber.setValue(response.sArticle[0].ordernumber);
+					me.setLoading(false);
+				}
+			}
+		);
+
 	}
 });
 
