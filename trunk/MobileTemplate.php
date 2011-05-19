@@ -734,6 +734,22 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 			Shopware()->Session()->sCountry = $userData['additional']['country']['id'];
 		}
 
+
+		// UTF8 encode user data
+		foreach($userData as $group => $array) {
+			foreach($array as $groupname => $value) {
+				if(!empty($value)) {
+					if(is_array($value)) {
+						foreach($value as $k => $v) {
+							$userData[$group][$groupname][$k] = utf8_encode($v);
+						}
+					} else {
+						$userData[$group][$groupname] = utf8_encode($value);	
+					}
+				}
+			}
+		}
+
 		$userData['activeDispatch'] = $this->getActiveDispatchMethod();
 		$this->jsonOutput(array('sUserData' => $userData));
 	}

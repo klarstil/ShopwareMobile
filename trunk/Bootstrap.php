@@ -50,7 +50,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 		$this->subscribeEvent($event);
 
 		$event = $this->createEvent(
-			'Enlight_Controller_Action_PreDispatch_Frontend_Register',
+			'Enlight_Controller_Front_DispatchLoopStartup',
 			'onPreDispatchRegister'
 		);
 		$this->subscribeEvent($event);
@@ -266,14 +266,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 	public static function onPreDispatchRegister(Enlight_Event_EventArgs $args)
 	{
 		$request = $args->getSubject()->Request();
-		$response = $args->getSubject()->Response();
-		$view = $args->getSubject()->View();
-		$mobileSession = Shopware()->Session()->Mobile;
 		$post = $request->getPost();
-
-		if(!$mobileSession) {
-			return;
-		}
 
 		// UTF8 decode personal informations
 		if(!empty($post['register']['personal'])) {
