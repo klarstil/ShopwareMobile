@@ -1,5 +1,5 @@
-{if $error_messages}
-{['success'=>false, 'msg'=> 'Ihre Registrierung konnte nicht ausgef&uuml;hrt werden. Bitte prüfen Sie Ihre Eingabe.'|utf8_encode, 'view' => 'checkout/confirm']|json_encode}
+{if $error_messages || $registerErrors}
+{['success'=>true, 'msg'=> 'Ihre Registrierung war erfolgreich. Klicken Sie auf "Ok" um fortzufahren.'|utf8_encode, 'view' => 'register/index', 'errors' => $error_messages]|json_encode}
 {else}
-{['basketAmount' => $sBasket.Amount|currency, 'amount' => $sAmount|currency, 'shippingCosts' => $sShippingcosts|currency, 'amountWithTaxAlone' => $sAmountWithTax,'amountWithTax' => $sAmountWithTax|currency, 'amountNet' => $sAmountNet|currency, 'shippingCostsDifference' => $sShippingcostsDifference|currency, 'taxRates' => $sBasket.sTaxRates]|json_encode}
+{['success'=>true, 'msg'=> 'Ihre Registrierung war erfolgreich. Klicken Sie auf "Ok" um fortzufahren.'|utf8_encode,'basketAmount' => $sBasket.Amount|currency, 'amount' => $sAmount|currency, 'shippingCosts' => $sShippingcosts|currency, 'amountWithTaxAlone' => $sAmountWithTax,'amountWithTax' => $sAmountWithTax|currency, 'amountNet' => $sAmountNet|currency, 'shippingCostsDifference' => $sShippingcostsDifference|currency, '']|json_encode}
 {/if}

@@ -51,7 +51,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 
 		$event = $this->createEvent(
 			'Enlight_Controller_Front_DispatchLoopStartup',
-			'onPreDispatchRegister'
+			'onDispatchLoopStartup'
 		);
 		$this->subscribeEvent($event);
 
@@ -224,6 +224,8 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
     	return dirname(__FILE__) . '/MobileTemplateAdmin.php';
     }
 
+
+
 	/**
 	 * onPostDispatchRegister()
 	 *
@@ -255,7 +257,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 	}
 
 	/**
-	 * onPreDispatchRegister()
+	 * onDispatchLoopStartup()
 	 *
 	 * Wandelt alle Umlaute in der Registrierung um
 	 *
@@ -263,7 +265,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 	 * @param Enlight_Event_EventArgs $args
 	 * @return
 	 */
-	public static function onPreDispatchRegister(Enlight_Event_EventArgs $args)
+	public static function onDispatchLoopStartup(Enlight_Event_EventArgs $args)
 	{
 		$request = $args->getSubject()->Request();
 		$post = $request->getPost();
