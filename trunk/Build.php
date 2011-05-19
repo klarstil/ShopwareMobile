@@ -40,6 +40,12 @@ return array(
 		)),
 		'1.0.6'=>array('releasedate'=>'2011-05-18', 'lines' => array(
 			'Add star notice on all sites with prices'
+		)),
+		'1.0.7'=>array('releasedate'=>'2011-05-19', 'lines' => array(
+			'Enhance and proper format the price box on the checkout view ',
+			'Change number format on cart summary',
+			'Fix configurator articles',
+			'Fix registration encoding'
 		))
 	)
 );
