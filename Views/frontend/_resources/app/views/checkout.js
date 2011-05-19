@@ -165,7 +165,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 			if(userData.additional.charge_vat) {
 				net = '<p class="grey"><strong>Gesamtsumme ohne MwSt.:</strong><span>' + response.amountNet  + '&nbsp;</span></p>';
 				for(idx in response.taxRates) {
-					net += '<p class="grey"><strong>zzgl. '+ idx +'&nbsp;% MwSt.:</strong><span>'+ App.Helpers.number_format(response.taxRates[idx], 2, ',', '.') +'&euro;&nbsp;</span></p>'
+					net += '<p class="grey"><strong>zzgl. '+ idx +'&nbsp;% MwSt.:</strong><span>'+ App.Helpers.number_format(response.taxRates[idx], 2, ',', '.') +'&nbsp;&euro;&nbsp;</span></p>'
 				}
 			} else {
 				net = '';
