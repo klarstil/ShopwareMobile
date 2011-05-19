@@ -690,14 +690,40 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	public function getUserDataAction()
 	{
-		$return = Shopware()->Modules()->Admin()->sGetUserData();
+		$userData = Shopware()->Modules()->Admin()->sGetUserData();
+
+		if(!empty($userData['additional']['countryShipping']))
+		{
+			$sTaxFree = false;
+			if (!empty( $userData['additional']['countryShipping']['taxfree'])){
+				$sTaxFree = true;
+			} elseif (
+				(!empty($userData['additional']['countryShipping']['taxfree_ustid']) || !empty($userData['additional']['countryShipping']['taxfree_ustid_checked']))
+				&& !empty($userData['billingaddress']['ustid'])
+				&& $userData['additional']['country']['id'] == $userData['additional']['countryShipping']['id']) {
+				$sTaxFree = true;
+			}
+			if(!empty($sTaxFree))
+			{
+				Shopware()->System()->sUSERGROUPDATA['tax'] = 0;
+				Shopware()->System()->sCONFIG['sARTICLESOUTPUTNETTO'] = 1;
+				Shopware()->System()->_SESSION['sUserGroupData'] = Shopware()->System()->sUSERGROUPDATA;
+				$userData['additional']['charge_vat'] = false;
+				$userData['additional']['show_net'] = false;
+			}
+			else
+			{
+				$userData['additional']['charge_vat'] = true;
+				$userData['additional']['show_net'] = !empty(Shopware()->System()->sUSERGROUPDATA['tax']);
+			}
+		}
 
 		if(isset($userData['additional']) && !empty($userData['additional'])) {
 			Shopware()->Session()->sCountry = $userData['additional']['country']['id'];
 		}
 
-		$return['activeDispatch'] = $this->getActiveDispatchMethod();
-		$this->jsonOutput(array('sUserData' => $return));
+		$userData['activeDispatch'] = $this->getActiveDispatchMethod();
+		$this->jsonOutput(array('sUserData' => $userData));
 	}
 	
 	/**
