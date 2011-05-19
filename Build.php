@@ -46,6 +46,11 @@ return array(
 			'Change number format on cart summary',
 			'Fix configurator articles',
 			'Fix registration encoding'
+		)),
+		'1.0.8'=>array('releasedate'=>'2011-05-19', 'lines' => array(
+			'Auto destroy registration and login after deactivate',
+			'Fix small bug on the checkout section',
+			'Fix bug in the customer center'
 		))
 	)
 );
