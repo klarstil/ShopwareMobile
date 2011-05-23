@@ -8,7 +8,8 @@ if(navigator.userAgent.match(/{$shopwareMobile.userAgents}/i) && !request) {
     var quest = confirm(text);
 
     if(quest == true && useSubShop == 0) {
-		window.location.refresh();
+		 document.body.innerHTML += '<form id="dynForm" action="" method="post"><input type="hidden" name="sMobile" value="1"></form>';
+        document.getElementById("dynForm").submit();
 	}
 
     if(quest == true && useSubShop == 1) {
