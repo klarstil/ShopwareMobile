@@ -56,7 +56,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 		$this->subscribeEvent($event);
 
 		/* Add menu entry */
-		$parent = $this->Menu()->findOneBy('label', 'Marketing');
+		/* $parent = $this->Menu()->findOneBy('label', 'Marketing');
         $item = $this->createMenuItem(array(
 		        'label' => 'Shopware Mobile',
 	            'onclick' => 'openAction(\'MobileTemplate\');',
@@ -66,7 +66,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 	            'style' => 'background-position: 5px 5px;'
 		));
 		$this->Menu()->addItem($item);
-		$this->Menu()->save();
+		$this->Menu()->save(); */
 
 		$form = $this->Form();
 		
