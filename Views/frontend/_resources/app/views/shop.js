@@ -628,13 +628,6 @@ App.views.Shop.filterView = Ext.extend(Ext.form.FormPanel,
 			}));
 
 		});
-
-		this.supplierField = new Ext.form.FieldSet({
-			title: 'Hersteller',
-			instructions: 'Bitte w&auml;hlen Sie hier einen Hersteller aus um nur Produkte von diesen Hersteller angezeigt zu bekommen',
-			items: itms
-		});
-
 		
 		this.fieldSet = new Ext.form.FieldSet({
 			instructions: 'Bitte w&auml;hlen Sie eine Eigenschaft um die Artikelauflistung an Ihre pers&ouml;nlichen Bed&uuml;rfnisse anzupassen.',
@@ -643,8 +636,18 @@ App.views.Shop.filterView = Ext.extend(Ext.form.FormPanel,
 
 		Ext.apply(this, {
 			dockedItems: [this.toolBar],
-			items: [this.fieldSet, this.supplierField]
+			items: [this.fieldSet]
 		});
+
+		if(Ext.isObject(itms)) {
+			this.supplierField = new Ext.form.FieldSet({
+				title: 'Hersteller',
+				instructions: 'Bitte w&auml;hlen Sie hier einen Hersteller aus um nur Produkte von diesen Hersteller angezeigt zu bekommen',
+				items: itms
+			});
+			this.add(this.supplierField);
+		}
+
 		App.views.Shop.filterView.superclass.initComponent.call(this);
 	},
 
