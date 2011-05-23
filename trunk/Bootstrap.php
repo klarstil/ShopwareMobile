@@ -144,9 +144,9 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 			    Shopware()->Session()->Mobile = 0;
 		    }
 	    } else {
-			if($request->sViewport == 'mobile' && $request->sAction == 'useNormal') {
+			if($request->sMobile == '1' && $request->sAction == 'useNormal') {
 				Shopware()->Session()->Mobile = 0;
-			} else if($request->sViewport == 'mobile') {
+			} else if($request->sMobile == '1') {
 				Shopware()->Session()->Mobile = 1;
 			}
 	    }
