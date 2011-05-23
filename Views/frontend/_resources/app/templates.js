@@ -9,7 +9,8 @@ Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Ca
 
 App.views.Shop.detailTpl = new Ext.XTemplate(
 	'<tpl for=".">',
-	
+		'<tpl if="mode == 1"><div class="blog_article"></tpl>',
+
 		// Image
 		'<tpl if="image_url">',
 			'<div class="image" style="background-image: url({image_url})">&nbsp;</div>',
@@ -84,6 +85,7 @@ App.views.Shop.detailTpl = new Ext.XTemplate(
 			'</tpl>',
 			'</div>',
 		'</tpl>',
+		'<tpl if="mode == 1"></div></tpl>',
 	'</tpl>', {
 	compiled: true,
 

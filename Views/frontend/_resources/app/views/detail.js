@@ -199,7 +199,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 
 	initComponent: function() {
 		var me = this, store = App.stores.Detail, tpl = App.views.Shop;
-
+		
 		/** Teaser Panel with main picture */
 		me.info = new Ext.DataView({
 			store: store,
@@ -331,6 +331,13 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 		}
 
 		me.add(me.desc);
+
+		/** Hide buy button and formPnl if it's an blog article */
+		if(me._item.data.mode == '1') {
+			me.buyBtn.hide();
+			me.formPnl.hide();
+		}
+
 		me.doLayout();
 	},
 

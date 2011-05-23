@@ -322,7 +322,7 @@ App.views.Shop.artListing = Ext.extend(Ext.Panel,
 		this.list = new Ext.List({
 			id: 'articleListingList',
 			store: App.stores.Listing,
-			itemTpl: '<div class="image"<tpl if="image_url"> style="background-image:url({image_url})"</tpl>></div><strong>{articleName}</strong><span class="price"><tpl if="!Ext.isEmpty(priceStartingFrom)">ab </tpl>{price} &euro;*</span><div class="desc">{description_long}</div>',
+			itemTpl: '<div class="image"<tpl if="image_url"> style="background-image:url({image_url})"</tpl>></div><strong>{articleName}</strong><tpl if="price > 0"><span class="price"><tpl if="!Ext.isEmpty(priceStartingFrom)">ab </tpl>{price} &euro;*</span></tpl><div class="desc">{description_long}</div>',
 			scroll: false,
 			height: '100%',
 			plugins: [new Ext.ux.touch.PagingToolbar],

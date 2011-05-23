@@ -124,7 +124,8 @@ App.models.Detail = Ext.regModel('Detail', {
 		{ name: 'referenceunit', type: 'string' },
 		{ name: 'purchaseunit', type: 'string' },
 		{ name: 'sUnit', type: 'array' },
-		{ name: 'referenceprice', type: 'string'}
+		{ name: 'referenceprice', type: 'string'},
+		{ name: 'mode', type: 'string' }
 	],
 	proxy: {
 		type: 'ajax',
