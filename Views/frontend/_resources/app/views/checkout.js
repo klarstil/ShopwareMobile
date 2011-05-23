@@ -33,7 +33,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 
 		/** Back button */
 		this.backBtn = new Ext.Button({
-			text: 'Warenkorb',
+			text: 'Waren...',
 			ui: 'back',
 			scope: this,
 			handler: this.onBackBtn
