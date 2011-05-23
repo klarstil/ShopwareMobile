@@ -626,7 +626,6 @@ App.views.Shop.filterView = Ext.extend(Ext.form.FormPanel,
 					}
 				}
 			}));
-
 		});
 		
 		this.fieldSet = new Ext.form.FieldSet({

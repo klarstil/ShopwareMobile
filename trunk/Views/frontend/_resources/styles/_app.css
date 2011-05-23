@@ -507,7 +507,7 @@ strong { font-weight: 700 }
 	max-width: 65%;
 	margin-left: 0.5em;
 }
-.cartlist .info .name { display: block; font-size: 14px; }
+.cartlist .info .name { display: block; font-size: 14px; width: 180px; }
 .cartlist .info .supplier,
 .cartlist .info .ordernumber,
 .cartlist .info .quantity { color: #777; }
@@ -721,3 +721,5 @@ strong { font-weight: 700 }
 #detail .blog_article .info .priceCon, #detail .blog_article .info .tax {
     display: none;
 }
+.x-spinner-body .x-spinner-down { border-left: 0.1em solid #b7b7b7 }
+.x-spinner-body .x-spinner-up { border-right: 0.1em solid #b7b7b7 }

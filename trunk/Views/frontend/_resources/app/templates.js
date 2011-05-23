@@ -199,11 +199,11 @@ App.views.Cart.indexTpl = new Ext.XTemplate(
 				'<strong class="price">{amount} &euro;*</strong>',
 			'</div>',
 			'<div class="clear">&nbsp;</div>',
-			'<div class="action">',
+			'<tpl if="modus == 0"><div class="action">',
 				'<div class="x-button x-button-decline round x-iconalign-left deleteBtn" rel="{id}">',
 					'<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAC8ElEQVR42u3aT0iTYRzA8XcztTaMdhihpYJYztRmhw4RHSU6FPbHg1JdKm9F4Emiuphk0CW6CF3aSuwf/REDMeiSRFCEIf7JbBc1kkZqkebm1vewwXh43mS97/a+i+cHn9vDeL97X/c++L5aPB43kxMlaMQRA46iHi5oZjLzwwpwGiHEYHRWcAvFdgx24izmYeZEcB9ldgouSMQuIhMTxQuzos2IbUMYmZwIHqHM6uDGNc7sD8ynKfqX6H54rQp24IHOAa5iAGdwDE1rYh2acRUzkM0vNFkV7MQIxFnCdXgMfO4ejOv8ct+Ew6rgYckt6KMJt5J8tGJRclnftVvwMxM2DA6UY1oSHLAoGPLgh4aDgSKEJMG3M/03nIdyVMGHqhRjEGcQflQZtEtyhqN4KllbCY8ZwSXoxghC+Cz4DXF+JtcaFEJEdquTrJ3ES5w0EuxGJxaRC7OKUfj/NbgBX5FLs4QeeNMNLkUfosi1mccpONIJbkcYuTrvUZ1O8D6cQxvOI4AFiPMdPQhmQQCPsQxxFtCHAIK4jNJ0gh0pNDRL9rcxXMImuLPABS96Jccxid1wwY3C9C5pkX7wcayDliWF6JIcxwRqxfWZCD4hBG/GNmyHR+dbLoYPlXDrXF1b4EMF8oXgazrBddkOrsNzfMIUelEsRO/A65TNQrfwheVhL4YTa8bQZdfgQ5hDcqZQIwQfEPbeH1AELWEDLgqbiTd2DT6ImZSgcUnwfuFX9i02Qktw4YoQ/Op/D+5QwSpYBatgFayCVbAKVsEqWAWrYBWsglWwClbBKlgFq2AVrILVP+LlwbNIzoRO8AqS804IXo8LQvCQXYNrMIRvCKNf8kaeH6MIJ9bdgVN4mNaAWYTxBTfsGQx4UIs6eHUel5ajHj7k67zhVwE/qqHZKbjFggfinZYEJ6YdBVkMdmPAyuA5PEEAwSwYxLIFwdaOCs5AcEsOBO80M/gwphGz8UulW80M9uAelmx4dufQASe0tfwBaKrLkw66AkcAAAAASUVORK5CYII=" />',
 				'</div>',
-			'</div>',
+			'</div></tpl>',
 		'</div>',
 	'</tpl>',
 	'<div class="amount">',
@@ -214,11 +214,7 @@ App.views.Cart.indexTpl = new Ext.XTemplate(
 		'* Alle Preise inkl. gesetzl. Mehrwertsteuer zzgl. Versandkosten und ggf. Nachnahmegebühren, wenn nicht anders beschrieben',
 	'</div>',
 	{
-		compiled: true,
-		isBundle: function(mode) {
-			console.log(mode);
-			return (~~mode == 10) ? true : false;
-		}
+		compiled: true
 	}
 );
 
