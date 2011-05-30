@@ -330,13 +330,29 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 			App.Helpers.server.init(timeNow);
 			interval = App.Helpers.liveshopping.init(data);
 		}
-
 		me.add(me.desc);
 
 		/** Hide buy button and formPnl if it's an blog article */
 		if(me._item.data.mode == '1') {
 			me.buyBtn.hide();
 			me.formPnl.hide();
+		}
+
+		/** Setup article amount spinner */
+		if(~item.get('laststock')) {
+			me.spinner.maxValue = ~~item.get('instock');
+		} else {
+			me.spinner.maxValue = ~~item.get('maxpurchase');
+		}
+		/** Set min purchase amount */
+		me.spinner.minValue = ~~item.get('minpurchase');
+		me.spinner.setValue(~~item.get('minpurchase'));
+
+		/** Purchase steps */
+		me.spinner.incrementValue = ~~item.get('purchasesteps');
+
+		if(me.spinner.rendered) {
+			me.spinner.doComponentLayout();
 		}
 
 		me.doLayout();
