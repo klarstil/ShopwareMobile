@@ -259,3 +259,8 @@ App.views.Checkout.cartTpl = new Ext.XTemplate(
 		compiled: true
 	}
 );
+
+App.views.Shop.MainCategorylistTpl = '<strong>{name}</strong><tpl if="desc"><div class="desc">{desc}</div></tpl>';
+App.views.Shop.CategorieslistTpl = '<div class="image"<tpl if="image_url"> style="background-image:url({image_url})"</tpl>></div><strong>{articleName}</strong><tpl if="price > 0"><span class="price"><tpl if="!Ext.isEmpty(priceStartingFrom)">ab </tpl>{price} &euro;*</span></tpl><div class="desc">{description_long}</div>';
+App.views.Shop.SubCategorieslistTpl = '<div class="info"><span class="title">{text}</span></div><tpl if="desc"><p class="desc">{desc}</p></tpl>';
+App.views.Info.listTpl = '<strong>{name}</strong>';

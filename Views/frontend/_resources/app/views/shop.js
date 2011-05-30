@@ -101,7 +101,7 @@ App.views.Shop.index = Ext.extend(Ext.Panel,
 			height: '100%',
 			width: '100%',
 			style: 'border-top: 1px solid #c7c7c7',
-			itemTpl: '<strong>{name}</strong><tpl if="desc"><div class="desc">{desc}</div></tpl>',
+			itemTpl: App.views.Shop.MainCategorylistTpl,
 			listeners: {
 				scope: this,
 				selectionchange: this.onSelectionChange,
@@ -322,7 +322,7 @@ App.views.Shop.artListing = Ext.extend(Ext.Panel,
 		this.list = new Ext.List({
 			id: 'articleListingList',
 			store: App.stores.Listing,
-			itemTpl: '<div class="image"<tpl if="image_url"> style="background-image:url({image_url})"</tpl>></div><strong>{articleName}</strong><tpl if="price > 0"><span class="price"><tpl if="!Ext.isEmpty(priceStartingFrom)">ab </tpl>{price} &euro;*</span></tpl><div class="desc">{description_long}</div>',
+			itemTpl: App.views.Shop.CategorieslistTpl ,
 			scroll: false,
 			height: '100%',
 			plugins: [new Ext.ux.touch.PagingToolbar],
@@ -365,7 +365,7 @@ App.views.Shop.artListing = Ext.extend(Ext.Panel,
 				scope: this,
 				handler: this.onFilterBtn
 			});
-			Ext.getCmp('shop').toolBar.add({xtype: 'spacer'}, this.filterBtn);
+			Ext.getCmp('shop').toolBar.add({ xtype: 'spacer' }, this.filterBtn);
 		}
 
 		Ext.apply(this, {
@@ -425,8 +425,7 @@ App.views.Shop.subListing = Ext.extend(Ext.NestedList,
 	useToolbar: true,
 	title: 'Kategorien',
 	getItemTextTpl: function(node) {
-		return '<div class="info"><span class="title">{text}</span></div>'
-			+ '<tpl if="desc"><p class="desc">{desc}</p></tpl>';
+		return App.views.Shop.SubCategorieslistTpl;
 	},
 	listeners: {
 		scope: this,
@@ -563,7 +562,7 @@ App.views.Shop.filterView = Ext.extend(Ext.form.FormPanel,
 			ui: 'dark',
 			title: 'Verfeinern',
 			items: [
-				{xtype: 'spacer'},
+				{ xtype: 'spacer' },
 				{
 					xtype: 'button',
 					ui: 'action',
@@ -585,10 +584,10 @@ App.views.Shop.filterView = Ext.extend(Ext.form.FormPanel,
 				}
 			},
 			options: [
-				{text: '12 Artikel',  value: '12'},
-				{text: '24 Artikel', value: '24'},
-				{text: '36 Artikel',  value: '36'},
-				{text: '48 Artikel', value: '48'}
+				{ text: '12 Artikel',  value: '12' },
+				{ text: '24 Artikel', value: '24' },
+				{ text: '36 Artikel',  value: '36' },
+				{ text: '48 Artikel', value: '48' }
 			]
 		});
 
@@ -603,12 +602,12 @@ App.views.Shop.filterView = Ext.extend(Ext.form.FormPanel,
 				}
 			},
 			options: [
-				{text: 'Erscheinungsdatum',  value: '1'},
-				{text: 'Beliebtheit', value: '2'},
-				{text: 'Niedrigster Preis',  value: '3'},
-				{text: 'H&oouml;chster Preis', value: '4'},
-				{text: 'Erscheinungsdatum',  value: '5'},
-				{text: 'Artikelbezeichnung', value: '6'}
+				{ text: 'Erscheinungsdatum',  value: '1' },
+				{ text: 'Beliebtheit', value: '2' },
+				{ text: 'Niedrigster Preis',  value: '3' },
+				{ text: 'H&ouml;chster Preis', value: '4' },
+				{ text: 'Erscheinungsdatum',  value: '5' },
+				{ text: 'Artikelbezeichnung', value: '6' }
 			]
 		});
 
