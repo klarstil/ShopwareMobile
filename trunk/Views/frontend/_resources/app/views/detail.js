@@ -127,8 +127,9 @@ App.views.Shop.detail = Ext.extend(Ext.Panel,
 	 * @param pressed
 	 */
 	onNavBtn: function(pnl, btn, pressed) {
+		var active = Ext.getCmp('detail').getActiveItem();
 		if (pressed === true) {
-			if (btn.text === 'Detail') {
+			if (btn.text === 'Detail' && active.id !== 'teaser') {
 				Ext.dispatch({
 					controller: 'detail',
 					action: 'showInfo',
