@@ -37,7 +37,6 @@ App.views.Account.index = Ext.extend(Ext.Panel,
 	},
 
 	initComponent: function() {
-
 		/** Back btn */
 		this.backBtn = new Ext.Button({
 			text: this.title,
@@ -65,7 +64,7 @@ App.views.Account.index = Ext.extend(Ext.Panel,
 				var me = this;
 				App.Helpers.getRequest(App.RequestURL.logout, '', function(response) {
 					if(response.success && response.msg) {
-						Ext.Msg.alert('Registrierung erfolgreich', response.msg);
+						Ext.Msg.alert('{s name="MobileAccountRegisterSuccess"}Registrierung erfolgreich{/s}', response.msg);
 					}
 					isUserLoggedIn = 0;
 
@@ -97,10 +96,10 @@ App.views.Account.index = Ext.extend(Ext.Panel,
 					}
 				}
 			},
-			html: '<div class="label x-form-fieldset-title">Bestehender Kunde</div>' +
+			html: '<div class="label x-form-fieldset-title">{s name="MobileAccountExistingCustomer"}Bestehender Kunde{/s}</div>' +
 					'<div id="inner-existing" class="inner x-panel-body">' +
-						'<strong>Login</strong>' +
-						'<p>Sie sind bereits Kunde? Dann loggen Sie sich jetzt mit Ihrer E-Mail-Adresse und Ihrem Passwort ein.</p>' +
+						'<strong>{s name="MobileAccountLoginText"}Login{/s}</strong>' +
+						'<p>{s name="MobileAccountLoginInfoText"}Sie sind bereits Kunde? Dann loggen Sie sich jetzt mit Ihrer E-Mail-Adresse und Ihrem Passwort ein.{/s}</p>' +
 					'</div>'
 		});
 
@@ -122,10 +121,10 @@ App.views.Account.index = Ext.extend(Ext.Panel,
 					}
 				}
 			},
-			html: '<div class="label x-form-fieldset-title">Neuer Kunde</div>' +
+			html: '<div class="label x-form-fieldset-title">{s name="MobileAccountNewCustomer"}Neuer Kunde{/s}</div>' +
 					'<div id="inner-new" class="inner x-panel-body">' +
-						'<strong>Registrierung</strong>' +
-						'<p>Kein Problem, eine Shopbestellung ist einfach und sicher. Die Anmeldung dauert nur wenige Augenblicke.</p>' +
+						'<strong>{s name="MobileAccountRegisterText"}Registrierung{/s}</strong>' +
+						'<p>{s name="MobileAccountRegisterInfoText"}Kein Problem, eine Shopbestellung ist einfach und sicher. Die Anmeldung dauert nur wenige Augenblicke.{/s}</p>' +
 					'</div>'
 		});
 
@@ -171,14 +170,14 @@ App.views.Account.index = Ext.extend(Ext.Panel,
 		this.welcomeCmp = new Ext.Component({
 			id: 'welcomeCmp',
 			cls: 'infoCon',
-			html: '<p class="welcome-teaser">Willkommen, ' + userData.billingaddress.firstname + '&nbsp;' + userData.billingaddress.lastname + '</p>' +
-					'<p>Hier erhalten Sie einen &Uuml;berblick &uuml;ber Ihre Registrierungsinformationen.</p>'
+			html: '<p class="welcome-teaser">{s name="MobileAccountWelcomeText"}Willkommen{/s}, ' + userData.billingaddress.firstname + '&nbsp;' + userData.billingaddress.lastname + '</p>' +
+					'<p>{s name="MobileAccountWelcomeInfoText"}Hier erhalten Sie einen &Uuml;berblick &uuml;ber Ihre Registrierungsinformationen.{/s}</p>'
 		});
 
 		/* User info component */
 		this.userInfoCmp = new Ext.Component({
 			id: 'userInfoCmp',
-			html: '<div class="label x-form-fieldset-title">Benutzerinformationen</div>'+
+			html: '<div class="label x-form-fieldset-title">{s name="MobileAccountUserText"}Benutzerinformationen{/s}</div>'+
 					'<div class="infoCon">' + userData.billingaddress.firstname + '&nbsp;' + userData.billingaddress.lastname + '<br/>' +
 					userData.additional.user.email + '</div>'
 		});
@@ -191,7 +190,7 @@ App.views.Account.index = Ext.extend(Ext.Panel,
 		/* Billing address component */
 		this.billingCmp = new Ext.Component({
 			id: 'billingCmp',
-			html: '<div class="label x-form-fieldset-title">Rechnungsadresse</div>' +
+			html: '<div class="label x-form-fieldset-title">{s name="MobileAccountBillingText"}Rechnungsadresse{/s}</div>' +
 					'<div class="infoCon">' + billingSalutation + '&nbsp;' +
 					userData.billingaddress.firstname + '&nbsp;' + userData.billingaddress.lastname + '<br/> ' +
 					userData.billingaddress.street + '&nbsp;' + userData.billingaddress.streetnumber + '<br/>' +
@@ -201,7 +200,7 @@ App.views.Account.index = Ext.extend(Ext.Panel,
 		/* Shipping address component */
 		this.deliveryCmp = new Ext.Component({
 			id: 'deliverCmp',
-			html: '<div class="label x-form-fieldset-title">Lieferadresse</div>' +
+			html: '<div class="label x-form-fieldset-title">{s name="MobileAccountShippingText"}Lieferadresse{/s}</div>' +
 					'<div class="infoCon">' + shippingSalutation + '&nbsp;' +
 					userData.shippingaddress.firstname + '&nbsp;' + userData.shippingaddress.lastname + '<br/> ' +
 					userData.shippingaddress.street + '&nbsp;' + userData.shippingaddress.streetnumber + '<br/>' +
@@ -338,7 +337,7 @@ App.views.Account.login = Ext.extend(Ext.form.FormPanel,
 	items: [{
 		xtype: 'fieldset',
 		title: 'Login',
-		instructions: 'Bitte geben Sie Ihre Kundendaten ein',
+		instructions: '{s name="MobileLoginInstructions"}Bitte geben Sie Ihre Kundendaten ein{/s}',
 		defaults: { labelWidth: '38%' },
 		items: [
 			{
@@ -349,23 +348,23 @@ App.views.Account.login = Ext.extend(Ext.form.FormPanel,
 			{
 				xtype: 'emailfield',
 				name: 'email',
-				label: 'E-Mail',
+				label: '{s name="MobileLoginMail"}E-Mail{?s}',
 				required: true,
 				autoComplete: false,
-				placeHolder: 'me@shopware.de'
+				placeHolder: '{s name="MobileLoginMailPlaceholder"}me@shopware.de{/s}'
 			},
 			{
 				xtype: 'passwordfield',
 				autoComplete: false,
 				name: 'password',
-				label: 'Passwort',
+				label: '{s name="MobileLoginPassword"}Passwort{/s}',
 				required: true
 			}
 		]
 	}, {
 		id: 'loginBtn',
 		xtype: 'button',
-		text: 'Login absenden',
+		text: '{s name="MobileLoginLoginButton"}Login absenden{/s}',
 		style: 'margin: 0.5em',
 		ui: 'confirm',
 		scope: this,
@@ -433,7 +432,7 @@ App.views.Account.login = Ext.extend(Ext.form.FormPanel,
 		},
 		exception: function(form, response) {
 			if(!response.success && response.msg) {
-				Ext.Msg.alert('Login fehlgeschlagen', response.msg);
+				Ext.Msg.alert('{s name="MobileLoginFailedText"}Login fehlgeschlagen{/s}', response.msg);
 				isUserLoggedIn = 0;
 			}
 		}
@@ -464,7 +463,7 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel,
 {
 	id: 'register',
 	scroll: 'vertical',
-	title: 'Registrierung',
+	title: '{s name="MobileRegisterTitle"}Registrierung{/s}',
 	width: '100%',
 	url: App.RequestURL.register,
 	method: 'post',
@@ -472,24 +471,24 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel,
 	items: [
 		{
 			xtype: 'fieldset',
-			title: 'Pers&ouml;nliche Angaben',
+			title: '{s name="MobileRegisterPersonalTitle"}Pers&ouml;nliche Angaben{/s}',
 			defaults: {
 				labelWidth: '50%'
 			},
 			items: [
 				{
 					xtype: 'selectfield',
-					label: 'Ich bin',
+					label: '{s name="MobileRegisterPersonalIam"}Ich bin{/s}',
 					required: true,
 					name: 'register[personal][customer_type]',
 					options: [
-						{ text: 'Privatkunde', value: 'private' },
-						{ text: 'Firma', value: 'buisness' }
+						{ text: '{s name="MobileRegisterPersonalPrivateCustomer"}Privatkunde{/s}', value: 'private' },
+						{ text: '{s name="MobileRegisterPersonalBusiness"}Firma{/s}', value: 'business' }
 					]
 				},
 				{
 					xtype: 'selectfield',
-					label: 'Anrede',
+					label: '{s name="MobileRegisterPersonalSalutation"}Anrede{/s}',
 					required: true,
 					name: 'register[personal][salutation]',
 					options: [
@@ -499,87 +498,87 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel,
 				},
 				{
 					xtype: 'textfield',
-					label: 'Vorname',
+					label: '{s name="MobileRegisterPersonalFirstname"}Vorname{/s}',
 					name: 'register[personal][firstname]',
 					required: true,
-					placeHolder: 'Max'
+					placeHolder: '{s name="MobileRegisterPersonalFirstnamePlaceholder"}Max{/s}'
 				},
 				{
 					xtype: 'textfield',
-					label: 'Nachname',
+					label: '{s name="MobileRegisterPersonalLastname"}Nachname{/s}',
 					name: 'register[personal][lastname]',
 					required: true,
-					placeHolder: 'Mustermann'
+					placeHolder: '{s name="MobileRegisterPersonalLastnamePlaceholder"}Mustermann{/s}'
 				},
 				{
 					xtype: 'emailfield',
-					label: 'E-Mail',
+					label: '{s name="MobileRegisterPersonalMail"}E-Mail{/s}',
 					name: 'register[personal][email]',
 					required: true,
-					placeHolder: 'me@shopware.de'
+					placeHolder: '{s name="MobileRegisterPersonalMailPlaceholder"}me@shopware.de{/s}'
 				},
 				{
 					id: 'passField',
 					xtype: 'passwordfield',
-					label: 'Passwort',
+					label: '{s name="MobileRegisterPersonalPassword"}Passwort{/s}',
 					name: 'register[personal][password]',
 					required: true
 				},
 				{
 					id: 'passWdhField',
 					xtype: 'passwordfield',
-					label: 'Passwort Wdh.',
+					label: '{s name="MobileRegisterPersonalPasswordRepeat"}Passwort Wdh.{/s}',
 					name: 'register[personal][passwordConfirmation]',
 					required: true
 				},
 				{
 					xtype: 'textfield',
-					label: 'Telefon',
+					label: '{s name="MobileRegisterPersonalPhone"}Telefon{/s}',
 					required: true,
 					name: 'register[personal][phone]',
-					placeHolder: '02555997500'
+					placeHolder: '{s name="MobileRegisterPersonalPhonePlaceholder"}02555997500{/s}'
 				},
 				{
 					xtype: 'localeDatepickerfield',
-					label: 'Geburtstag'
+					label: '{s name="MobileRegisterPersonalBirthday"}Geburtstag{/s}'
 				}
 			]
 		},
 		{
 			xtype: 'fieldset',
-			title: 'Ihre Adresse',
-			instructions: 'Die eingegebene Adresse fungiert als Rechnungsadresse und als Lieferadresse.',
+			title: '{s name="MobileRegisterShippingTitle"}Ihre Adresse{/s}',
+			instructions: '{s name="MobileRegisterShippingInstruction"}Die eingegebene Adresse fungiert als Rechnungsadresse und als Lieferadresse.{/s}',
 			defaults: {
 				labelWidth: '38%'
 			},
 			items: [
 				{
 					xtype: 'textfield',
-					label: 'Stra&szlig;e',
+					label: '{s name="MobileRegisterShippingStreet"}Stra&szlig;e{/s}',
 					name: 'register[billing][street]',
 					required: true
 				},
 				{
 					xtype: 'textfield',
-					label: 'Hausnr.',
+					label: '{s name="MobileRegisterShippingStreetNo"}Hausnr.{/s}',
 					name: 'register[billing][streetnumber]',
 					required: true
 				},
 				{
 					xtype: 'textfield',
-					label: 'PLZ',
+					label: '{s name="MobileRegisterShippingZipcode"}PLZ{/s}',
 					name: 'register[billing][zipcode]',
 					required: true
 				},
 				{
 					xtype: 'textfield',
-					label: 'Stadt',
+					label: '{s name="MobileRegisterShippingCity"}Stadt{/s}',
 					name: 'register[billing][city]',
 					required: true
 				},
 				{
 					xtype: 'selectfield',
-					label: 'Land',
+					label: '{s name="MobileRegisterShippingLand"}Land{/s}',
 					required: true,
 					name: 'register[billing][country]',
 					options: [
@@ -591,7 +590,7 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel,
 		{
 			id: 'registerBtn',
 			xtype: 'button',
-			text: 'Registierung absenden',
+			text: '{s name="MobileRegisterSendButton"}Registierung absenden{/s}',
 			style: 'margin: 0.5em',
 			ui: 'confirm',
 			scope: this,
@@ -605,7 +604,7 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel,
 		},
 		submit: function(form, response) {
 			if(response.success && response.msg) {
-				Ext.Msg.alert('Registrierung erfolgreich', response.msg, function() {
+				Ext.Msg.alert('{s name="MobileRegisterSuccess"}Registrierung erfolgreich{/s}', response.msg, function() {
 					var active = Ext.getCmp('viewport').getActiveItem(),
 						view = 0;
 
@@ -662,7 +661,7 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel,
 		
 		exception: function(form, response) {
 			if(!response.success && response.msg) {
-				Ext.Msg.alert('Registrierung fehlgeschlagen', response.msg + response.errors);
+				Ext.Msg.alert('{s name="MobileRegisterFailed"}Registrierung fehlgeschlagen{/s}', response.msg + response.errors);
 				isUserLoggedIn = 0;
 			}
 		}
