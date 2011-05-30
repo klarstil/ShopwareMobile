@@ -254,6 +254,14 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 			handler: this.onAGBBtn
 		});
 
+		this.cancellationRightBtn = new Ext.Button({
+			text: 'Widerrufsrecht anzeigen',
+			ui: 'small',
+			scope: this,
+			style: 'margin: .6em',
+			handler: this.onCancellationRightBtn
+		});
+
 
 		/** Submit order */
 		this.submitOrderBtn = new Ext.Button({
@@ -266,6 +274,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 
 		this.orderPnl.add(this.agbField);
 		this.orderPnl.add(this.agbBtn);
+		this.orderPnl.add(this.cancellationRightBtn);
 		this.orderPnl.add(this.submitOrderBtn);
 
 		/** Main Pnl */
@@ -278,7 +287,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 				this.billing,
 				this.shipping,
 				this.orderPnl,
-				this.submitOrderBtn,
+				this.submitOrderBtn
 			]
 		});
 
@@ -329,6 +338,54 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 		var me = this;
 		App.Helpers.getRequest(App.RequestURL.customSite, {
 			sCustom: ~~agbID
+		}, function(response) {
+			var view = new Ext.Panel({
+				scroll: 'vertical',
+				listeners: {
+					scope: this,
+					deactivate: function(me) {
+						me.destroy();
+					}
+				},
+				dockedItems: [{
+					xtype: 'toolbar',
+					title: 'AGB',
+					items: [{
+						xtype: 'button',
+						ui: 'back',
+						text: 'Zur&uuml;ck',
+						scope: this,
+						handler: function() {
+							var active = me.getActiveItem();
+
+							me.toolbar.show();
+							me.doComponentLayout();
+							me.setActiveItem(active-1, {
+								type: 'slide',
+								reverse: true,
+								scope: this
+							});
+						}
+					}]
+				}],
+				items: [{
+					cls: 'agbBox',
+					height: '100%',
+					scroll: false,
+					html: response
+				}]
+			});
+			me.add(view);
+			me.toolbar.hide();
+			me.doComponentLayout();
+			me.setActiveItem(view, 'slide');
+		})
+	},
+
+	onCancellationRightBtn: function() {
+		var me = this;
+		App.Helpers.getRequest(App.RequestURL.customSite, {
+			sCustom: ~~cancellationID
 		}, function(response) {
 			var view = new Ext.Panel({
 				scroll: 'vertical',

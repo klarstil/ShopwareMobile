@@ -79,6 +79,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 		$form->setElement('text', 'staticGroup', array('label'=>'Shopseiten-Gruppe, die für den Informations-Bereich genutzt werden soll','value'=>'gMobile', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
 		$form->setElement('checkbox', 'useSrc', array('label'=>'Sencha.io "Src" benutzen','value'=>'0', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
 		$form->setElement('text', 'agbID', array('label'=>'Shopseiten-ID der AGB','value'=>'4', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
+		$form->setElement('text', 'cancelRightID', array('label'=>'Shopseiten-ID des Widerrufsrecht','value'=>'8', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
 
 		/* Order confirmation view settings */
 		$form->setElement('checkbox', 'useVoucher', array('label'=>'Gutscheineingabe auf der Bestellbest&auml;tigungsseite anzeigen','value'=>'0', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
@@ -179,7 +180,8 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 				'startUpPath'    => $config->startUpPath,
 				'statusBarStyle' => $config->statusBarStyle,
 				'payments'       => $config->supportedPayments,
-				'agbID'          => $config->agbID
+				'agbID'          => $config->agbID,
+				'cancellationID' => $config->cancelRightID
 			));
 
 		} else {
