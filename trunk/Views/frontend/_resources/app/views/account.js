@@ -591,8 +591,10 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel,
 					label: 'Land',
 					required: true,
 					name: 'register[billing][country]',
+
+					/** TODO - Change to dynamic list */
 					options: [
-						{text: 'Deutschland', value: '2'}
+						{ text: 'Deutschland', value: '2' }
 					]
 				}
 			]

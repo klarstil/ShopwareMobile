@@ -78,7 +78,7 @@ App.views = {};
 /**
  * Set up router for history support
  *
- * @param {Function} fn - The fn to call
+ * @param fn - The fn to call
  * @class
  */
 App.router = Ext.Router.draw(function(map)

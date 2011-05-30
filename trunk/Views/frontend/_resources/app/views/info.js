@@ -75,7 +75,7 @@ App.views.Info.list = Ext.extend(Ext.List,
 /** @lends App.views.Info.list# */
 {
 	store: App.stores.Info,
-	itemTpl: '<strong>{name}</strong>',
+	itemTpl: App.views.Info.listTpl,
 	id: 'static_list',
 	listeners: {
 		scope: this,
@@ -107,7 +107,7 @@ App.views.Info.list = Ext.extend(Ext.List,
 		}
 
 		Ext.getCmp('info').getToolbar().setTitle(App.Helpers.truncate(item.data.name, 12, '...'));
-		Ext.getCmp('info').setActiveItem(view, {type: 'slide'});
+		Ext.getCmp('info').setActiveItem(view, { type: 'slide' });
 	}
 });
 

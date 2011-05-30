@@ -100,7 +100,9 @@ Ext.regController('category', {
 		type = (Ext.isDefined(options.type)) ? options.type : 'slide';
 		direction = (Ext.isDefined(options.direction)) ? options.direction : 'left';
 
-		this.view.setActiveItem(list, {type: type, direction: direction});
+		this.view.setActiveItem(list, {
+			type: type, direction: direction
+		});
 
 		/* TODO - Needs a better workaround */
 		list.setLoading(true);
@@ -141,7 +143,9 @@ Ext.regController('category', {
 		type = (Ext.isDefined(options.type)) ? options.type : 'slide';
 		direction = (Ext.isDefined(options.direction)) ? options.direction : 'left';
 		
-		this.view.setActiveItem(list, {type: type, direction: direction});
+		this.view.setActiveItem(list, {
+			type: type, direction: direction
+		});
 		store.proxy.extraParams = {};
 		store.proxy.extraParams = { categoryID: options.categoryID };
 		store.load({

@@ -621,16 +621,16 @@ App.views.Shop.commentForm = Ext.extend(Ext.form.FormPanel,
 				required: true,
 				name: 'sVoteStars',
 				options: [
-					{text: '10 sehr gut', value: '10'},
-					{text: '9', value: '9'},
-					{text: '8', value: '8'},
-					{text: '7', value: '7'},
-					{text: '6', value: '6'},
-					{text: '5', value: '5'},
-					{text: '4', value: '4'},
-					{text: '3', value: '3'},
-					{text: '2', value: '2'},
-					{text: '1 sehr schlecht', value: '1'}
+					{ text: '10 sehr gut', value: '10' },
+					{ text: '9', value: '9' },
+					{ text: '8', value: '8' },
+					{ text: '7', value: '7' },
+					{ text: '6', value: '6' },
+					{ text: '5', value: '5' },
+					{ text: '4', value: '4' },
+					{ text: '3', value: '3' },
+					{ text: '2', value: '2' },
+					{ text: '1 sehr schlecht', value: '1' }
 				]
 			}, {
 				xtype: 'textareafield',

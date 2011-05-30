@@ -55,33 +55,34 @@
         <script type="text/javascript" src="{link file='frontend/_resources/app/app.js'}"></script>
         
         <!-- Application Helpers -->
-        <script type="text/javascript" src="{link file='frontend/_resources/app/helpers.js'}"></script>
+        <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='helpers'}"></script>
+
         
         <!-- Models -->
-        <script type="text/javascript" src="{link file='frontend/_resources/app/models.js'}"></script>
+        <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='models'}"></script>
         
         <!-- Stores -->
-        <script type="text/javascript" src="{link file='frontend/_resources/app/stores.js'}"></script>
+        <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='stores'}"></script>
         
         <!-- Templates -->
         <script type="text/javascript" src="{link file='frontend/_resources/app/templates.js'}"></script>
         
         <!-- Controllers -->
-        <script type="text/javascript" src="{link file='frontend/_resources/app/controllers/main_controller.js'}"></script>
-        <script type="text/javascript" src="{link file='frontend/_resources/app/controllers/category_controller.js'}"></script>
-        <script type="text/javascript" src="{link file='frontend/_resources/app/controllers/detail_controller.js'}"></script>
-        <script type="text/javascript" src="{link file='frontend/_resources/app/controllers/account_controller.js'}"></script>
-        <script type="text/javascript" src="{link file='frontend/_resources/app/controllers/checkout_controller.js'}"></script>
+        <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='main_controller' type='con'}"></script>
+        <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='category_controller' type='con'}"></script>
+        <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='detail_controller' type='con'}"></script>
+        <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='account_controller' type='con'}"></script>
+        <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='checkout_controller' type='con'}"></script>
         
         <!-- Views -->
-        <script type="text/javascript" src="{link file='frontend/_resources/app/views/main.js'}"></script>
-        <script type="text/javascript" src="{link file='frontend/_resources/app/views/shop.js'}"></script>
-        <script type="text/javascript" src="{link file='frontend/_resources/app/views/detail.js'}"></script>
-        <script type="text/javascript" src="{link file='frontend/_resources/app/views/search.js'}"></script>
-        <script type="text/javascript" src="{link file='frontend/_resources/app/views/cart.js'}"></script>
-        <script type="text/javascript" src="{link file='frontend/_resources/app/views/account.js'}"></script>
-        <script type="text/javascript" src="{link file='frontend/_resources/app/views/info.js'}"></script>
-        <script type="text/javascript" src="{link file='frontend/_resources/app/views/checkout.js'}"></script>
+        <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='main' type='view'}"></script>
+        <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='shop' type='view'}"></script>
+        <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='detail' type='view'}"></script>
+        <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='search' type='view'}"></script>
+        <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='cart' type='view'}"></script>
+        <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='account' type='view'}"></script>
+        <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='info' type='view'}"></script>
+        <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='checkout' type='view'}"></script>
     </div>
 </body>
 </html>
