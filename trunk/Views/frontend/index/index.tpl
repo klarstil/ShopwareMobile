@@ -53,6 +53,9 @@
 
 		<!-- Initialize Application -->
         <script type="text/javascript" src="{link file='frontend/_resources/app/app.js'}"></script>
+
+		<!-- Locale -->
+        <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='locale'}"></script>
         
         <!-- Application Helpers -->
         <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='helpers'}"></script>
