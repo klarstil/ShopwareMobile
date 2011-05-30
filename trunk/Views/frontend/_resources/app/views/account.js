@@ -348,7 +348,7 @@ App.views.Account.login = Ext.extend(Ext.form.FormPanel,
 			{
 				xtype: 'emailfield',
 				name: 'email',
-				label: '{s name="MobileLoginMail"}E-Mail{?s}',
+				label: '{s name="MobileLoginMail"}E-Mail{/s}',
 				required: true,
 				autoComplete: false,
 				placeHolder: '{s name="MobileLoginMailPlaceholder"}me@shopware.de{/s}'
