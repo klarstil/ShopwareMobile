@@ -7,6 +7,33 @@
 
 Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Cart', 'App.views.Account', 'App.views.Info', 'App.views.Checkout');
 
+/** Localized day names */
+Date.dayNames = [
+	'Sonntag',
+	'Montag',
+	'Dienstag',
+	'Mittwoch',
+	'Donnerstag',
+	'Freitag',
+	'Samstag'
+];
+
+/** Localized month names */
+Date.monthNames = [
+	'Januar',
+	'Februar',
+	'M&auml;rz',
+	'April',
+	'Mai',
+	'Juni',
+	'Juli',
+	'August',
+	'September',
+	'Oktober',
+	'November',
+	'Dezember'
+];
+
 /**
  * @class Ext.util.localeFormat
  * Reusable data formatting functions
@@ -46,10 +73,13 @@ Ext.reg('localePicker', Ext.form.Select);
  * A localized date picker component
  */
 Ext.localeDatePicker = Ext.extend(Ext.DatePicker, {
+	yearFrom: 1920,
 	monthText: 'Monat',
 	dayText: 'Tag',
 	yearText: 'Jahr',
 	slotOrder: ['day', 'month', 'year'],
+	doneButton: 'Fertig',
+	cancelButton: 'Abbrechen',
 	initComponent: function() {
 		Ext.localeDatePicker.superclass.initComponent.call(this);
 	}
@@ -70,6 +100,7 @@ Ext.form.localeDatePicker = Ext.extend(Ext.form.DatePicker, {
             if (this.picker instanceof Ext.localeDatePicker ) {
                 this.datePicker = this.picker;
             } else {
+				alert('create new localPicker');
                 this.datePicker = new Ext.localeDatePicker(Ext.apply(this.picker || {}));
             }
 
