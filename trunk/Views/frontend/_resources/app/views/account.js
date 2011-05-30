@@ -540,17 +540,8 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel,
 					placeHolder: '02555997500'
 				},
 				{
-					xtype: 'datepickerfield',
-					label: 'Geburtstag',
-					picker: {
-						name: 'birthday',
-						yearFrom: 1900,
-						yearTo: 1999,
-						dayText: 'Tag',
-						yearText: 'Jahr',
-						monthText: 'Monat',
-						slotOrder: ['day', 'month', 'year']
-					}
+					xtype: 'localeDatepickerfield',
+					label: 'Geburtstag'
 				}
 			]
 		},

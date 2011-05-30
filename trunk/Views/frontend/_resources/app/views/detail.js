@@ -616,7 +616,7 @@ App.views.Shop.commentForm = Ext.extend(Ext.form.FormPanel,
 				placeHolder: 'Sch&ouml;nes Produkt',
 				name: 'sVoteSummary'
 			}, {
-				xtype: 'selectfield',
+				xtype: 'localeSelectfield',
 				label: 'Bewertung',
 				required: true,
 				name: 'sVoteStars',
