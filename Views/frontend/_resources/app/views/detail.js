@@ -426,7 +426,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 				title: group.groupname,
 				instructions: group.groupdescription,
 				items: [{
-					xtype: 'selectfield',
+					xtype: 'localeSelectfield',
 					options: options,
 					name: 'group['+groupIdx+']',
 					listeners: {

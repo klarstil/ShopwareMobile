@@ -357,7 +357,9 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 		$id = (int) $this->Request()->getParam('articleId');
 		$article = Shopware()->Modules()->Articles()->sGetArticleById($id);
 
-		$article['articleName'] = utf8_encode($this->truncate($article['articleName'], 30));
+		$article['articleName'] = $this->utf8encode($this->truncate($article['articleName'], 30));
+		$article['description'] = $this->utf8encode($article['description']);
+		
 		$article['priceNumeric'] = preg_replace('/,/', '.', $article['price']);
 		if(!empty($article['pseudoprice'])) {
 			$article['pseudoPriceNumeric'] = preg_replace('/,/', '.', $article['pseudoprice']);
@@ -373,15 +375,15 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 		if(!empty($article['sVoteComments'])) {
 			$i = 0;
 			foreach($article['sVoteComments'] as $comment) {
-				$article['sVoteComments'][$i]['headline'] = utf8_encode($comment['headline']);
-				$article['sVoteComments'][$i]['comment'] = utf8_encode($comment['comment']);
+				$article['sVoteComments'][$i]['headline'] = $this->utf8encode($comment['headline']);
+				$article['sVoteComments'][$i]['comment'] = $this->utf8encode($comment['comment']);
 				$i++;
 			}
 		}
 
 		// Base price
 		if(!empty($article['sUnit'])) {
-			$article['sUnit']['description'] = utf8_encode($article['sUnit']['description']);
+			$article['sUnit']['description'] = $this->utf8encode($article['sUnit']['description']);
 		}
 
 		// Bundles
@@ -962,11 +964,28 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	private function utf8decode($str) {
 		if(function_exists('mb_convert_encoding')) {
-		   $str = mb_convert_encoding($str, 'HTML-ENTITIES', 'UTF-8');
-		   $str = html_entity_decode($str, ENT_NOQUOTES);
-		  } else {
-		   $str = utf8_decode($str );
-		 }
+			$str = mb_convert_encoding($str, 'HTML-ENTITIES', 'UTF-8');
+			$str = html_entity_decode($str, ENT_NOQUOTES);
+		} else {
+			$str = utf8_decode($str);
+		}
+		return $str;
+	}
+
+	/**
+	 * utf8encode
+	 *
+	 * Encodiert einen UTF8 String
+	 *
+	 * @param  $str
+	 * @return string
+	 */
+	private function utf8encode($str) {
+		if(function_exists('mb_convert_encoding')) {
+			$str = mb_convert_encoding($str, 'UTF-8', 'HTML-ENTITIES');
+		} else {
+			$str = utf8_encode($str);
+		}
 		return $str;
 	}
 
