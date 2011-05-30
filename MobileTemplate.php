@@ -71,7 +71,6 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 		$this->Response()->setHeader('Content-Type', 'text/javascript');
 		$this->View()->loadTemplate($path);
 		$this->View()->render();
-
 	}
 
 	/**
