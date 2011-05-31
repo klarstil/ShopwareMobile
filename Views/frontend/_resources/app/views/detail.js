@@ -129,7 +129,7 @@ App.views.Shop.detail = Ext.extend(Ext.Panel,
 	onNavBtn: function(pnl, btn, pressed) {
 		var active = Ext.getCmp('detail').getActiveItem();
 		if (pressed === true) {
-			if (btn.text === '{MobileDetailSplitButtonDetail}Detail{/s}' && active.id !== 'teaser') {
+			if (btn.text === '{s name="MobileDetailSplitButtonDetail"}Detail{/s}' && active.id !== 'teaser') {
 				Ext.dispatch({
 					controller: 'detail',
 					action: 'showInfo',
@@ -265,7 +265,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 		/** Bundle support */
 		me.bundle = new Ext.DataView({
 			store: store,
-			tpl: tpl.bundleTpl,
+			tpl: Ext.XTemplate.from('ShopbundleTpl'),
 			itemSelector: '#bundleBtn',
 			scroll: false,
 			width: '100%',
@@ -283,7 +283,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 		/** Article description */
 		me.desc = new Ext.DataView({
 			store: store,
-			tpl: tpl.descTpl,
+			tpl: Ext.XTemplate.from('Shopdesctpl'),
 			scroll: false,
 			autoWidth: true,
 			itemSelector: '.desc'
@@ -555,7 +555,7 @@ App.views.Shop.commentsView = Ext.extend(Ext.DataView,
 	store: App.stores.Detail,
 	scroll: false,
 	height: '100%',
-	tpl: App.views.Shop.commentsTpl,
+	tpl: Ext.XTemplate.from('Shopcommenttpl'),
 	itemSelector: '.headline',
 	initComponent:  function() {
 		var me = this;
@@ -586,9 +586,9 @@ App.views.Shop.commentsView = Ext.extend(Ext.DataView,
 		if (store) {
 			var item = store.getAt(0);
 			if (item.data.sVoteComments.length > 0) {
-				this.tpl = App.views.Shop.commentsTpl;
+				this.tpl = Ext.XTemplate.from('Shopcommenttpl');
 			} else {
-				this.tpl = App.views.Shop.emptyTpl;
+				this.tpl = Ext.XTemplate.from('Shopemptycommenttpl');
 			}
 		}
 		App.views.Shop.commentsView.superclass.update.apply(this, arguments);

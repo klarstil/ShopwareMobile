@@ -117,7 +117,7 @@ App.views.Cart.list = Ext.extend(Ext.Panel,
 	cls: 'cartlist',
 	layout: 'fit',
 	flex: 1,
-	tpl: App.views.Cart.indexTpl,
+	tpl: Ext.XTemplate.from('CartitemTpl'),
 	data: App.stores.Cart,
 	store: App.stores.Cart,
 	autoHeight: true,
@@ -162,7 +162,7 @@ App.views.Cart.list = Ext.extend(Ext.Panel,
      */
 	update: function (store) {
 		if (store.items.length) {
-			this.tpl = App.views.Cart.indexTpl;
+			this.tpl = Ext.XTemplate.from('CartitemTpl');
 
 			if(this.ownerCt && this.ownerCt.ownerCt && this.ownerCt.ownerCt.checkoutBtn) {
 				this.ownerCt.ownerCt.checkoutBtn.show();
@@ -170,7 +170,7 @@ App.views.Cart.list = Ext.extend(Ext.Panel,
 
 			this.hideCheckoutBtn(false);
 		} else {
-			this.tpl = App.views.Cart.emptyTpl;
+			this.tpl = Ext.XTemplate.from('CartemptyTpl');
 			
 			if(this.ownerCt && this.ownerCt.ownerCt && this.ownerCt.ownerCt.checkoutBtn) {
 				this.ownerCt.ownerCt.checkoutBtn.hide();

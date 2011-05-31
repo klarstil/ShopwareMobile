@@ -135,7 +135,7 @@ App.views.Search.list = Ext.extend(Ext.List,
 {
 	id: 'searchList',
 	store: App.stores.Search,
-	itemTpl: App.views.Search.itemTpl,
+	itemTpl: Ext.XTemplate.from('Searchitemtpl'),
 	itemtap: this.onItemTap,
 	scope: this,
 	initComponent: function() {
