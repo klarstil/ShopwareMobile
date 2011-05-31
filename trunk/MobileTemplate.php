@@ -134,6 +134,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 			FROM s_categories c
 			LEFT JOIN s_categories c2 ON c2.parent=c.id
 			WHERE c.parent=?
+			AND c.active = 1
 			GROUP BY c.id
 			ORDER BY c.position, c.description
 		";
