@@ -20,7 +20,7 @@ App.views.Cart.index = Ext.extend(Ext.Panel,
 /** @lends App.views.Cart.index# */
 {
 	id: 'cart',
-	title: 'Warenkorb',
+	title: '{s name="MobileCartTitle"}Warenkorb{/s}',
 	iconCls: 'cart',
 	layout: 'card',
 	autoHeight: true,
@@ -60,7 +60,7 @@ App.views.Cart.index = Ext.extend(Ext.Panel,
 		this.checkoutBtn = new Ext.Button({
 			id: 'checkoutBtn',
 			ui: 'forward action',
-			text: 'Checkout',
+			text: '{s name="MobileCartCheckoutButton"}Zur Kasse{/s}',
 			scope: this,
 			handler: this.onCheckoutBtn
 		});
