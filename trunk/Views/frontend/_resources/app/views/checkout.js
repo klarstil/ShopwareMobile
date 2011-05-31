@@ -51,7 +51,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 			html: '<div class="x-form-fieldset-title">{s name="MobileCheckoutCartTitle"}Ihr Warenkorb{/s}</div>'
 		});
 		this.cartView = new App.views.Cart.list;
-		this.cartView.tpl = App.views.Checkout.cartTpl;
+		this.cartView.tpl = Ext.XTemplate.from('CheckoutcartTpl');
 
 		/** Contains all price related informations */
 		me.orderInfo = new Ext.Container({});

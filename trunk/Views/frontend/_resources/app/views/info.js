@@ -75,7 +75,7 @@ App.views.Info.list = Ext.extend(Ext.List,
 /** @lends App.views.Info.list# */
 {
 	store: App.stores.Info,
-	itemTpl: App.views.Info.listTpl,
+	itemTpl: Ext.XTemplate.from('InfolistTpl'),
 	id: 'static_list',
 	listeners: {
 		scope: this,
