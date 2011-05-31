@@ -48,7 +48,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 		/** Cart listing */
 		this.cartLabel = new Ext.Container({
 			id: 'cartListLabel',
-			html: '<div class="x-form-fieldset-title">{s name="MobileCheckoutCartTitle"}Ihr Warenkorb</div>'
+			html: '<div class="x-form-fieldset-title">{s name="MobileCheckoutCartTitle"}Ihr Warenkorb{/s}</div>'
 		});
 		this.cartView = new App.views.Cart.list;
 		this.cartView.tpl = App.views.Checkout.cartTpl;
