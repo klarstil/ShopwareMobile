@@ -19,7 +19,7 @@ App.views.Search.index = Ext.extend(Ext.Panel,
 /** @lends App.views.Search.index# */
 {
 	id: 'search',
-	title: 'Suche',
+	title: '{s name="MobileSearchTitle"}Suche{/s}',
 	iconCls: 'search',
 	layout: 'card',
 	listeners: {
@@ -44,7 +44,7 @@ App.views.Search.index = Ext.extend(Ext.Panel,
 					hasFocus: true,
 					width: '78%',
 					autoComplete: false,
-					placeHolder: 'Ihr Suchbegriff',
+					placeHolder: '{s name="MobileSearchFieldPlaceholder"}Ihr Suchbegriff{/s}',
 					listeners: {
 						scope: this,
 						keyup: this.onKeyUp
@@ -64,7 +64,7 @@ App.views.Search.index = Ext.extend(Ext.Panel,
 		});
 
 		this.emptyHtml = '<div class="emptySearch">'+
-			'Bitte geben Sie einen Suchbefehl ein, um die Artikelsuche zu starten.'+
+			'{s name="MobileSearchStartupText"}Bitte geben Sie einen Suchbefehl ein, um die Artikelsuche zu starten.{/s}'+
 			'</div>';
 
 		Ext.apply(this, {
@@ -156,7 +156,7 @@ App.views.Search.list = Ext.extend(Ext.List,
 		if(store.data.items.length >= 1) {
 			this.refresh();
 		} else {
-			this.ownerCt.update('<div class="emptySearch">Es wurden keine Ergebnisse zu Ihren Suchbegriff gefunden.</div>');
+			this.ownerCt.update('<div class="emptySearch">{s name="MobileSearchNothingFoundText"}Es wurden keine Ergebnisse zu Ihren Suchbegriff gefunden.{/s}</div>');
 			this.destroy();
 		}
 	},
