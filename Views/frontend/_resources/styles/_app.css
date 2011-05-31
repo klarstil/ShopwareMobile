@@ -723,3 +723,31 @@ strong { font-weight: 700 }
 }
 .x-spinner-body .x-spinner-down { border-left: 0.1em solid #b7b7b7 }
 .x-spinner-body .x-spinner-up { border-right: 0.1em solid #b7b7b7 }
+
+/*  BLOG DETAIL
+	------------------------------------------------------------------ */
+#detail .blog_article_details .image {
+	background: transparent;
+	width: 100%;
+	float: none;
+	border: 0 none;
+	padding: 0;
+	border-radius: 0;
+	display: inline-block;
+	margin: 0;
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+}
+#detail .blog_article_details .info {
+	margin: 0 .8em 1.2em;
+	width: auto;
+	display: block;
+	background: #fff;
+	border: 1px solid #ddd;
+	border-radius: .8em;
+	padding: .8em;
+}
+#detail .blog_article_details .info  .name {
+	margin-bottom: 6px;
+	font-size: 16px;
+}
