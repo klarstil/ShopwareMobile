@@ -327,12 +327,26 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 		$i = 0;
 		foreach($articles['sArticles'] as $article) {
 			$articles['sArticles'][$i]['image_url'] = '';
-			$articles['sArticles'][$i]['articleName'] = utf8_encode($article['articleName']);
-			$articles['sArticles'][$i]['description_long'] = utf8_encode($this->truncate($article['description_long'], 80));
+			$articles['sArticles'][$i]['articleName'] = $this->utf8encode($article['articleName']);
+			$articles['sArticles'][$i]['description_long'] = $this->utf8encode($this->truncate($article['description_long'], 80));
 			if(isset($article['image']['src'])) {
 				$articles['sArticles'][$i]['image_url'] = $this->stripBasePath($article['image']['src'][1]);
 			}
 			$i++;
+		}
+
+		/** Remove some unneeded junk =)  */
+		if(!empty($articles['sPerPage'])) {
+			unset($articles['sPerPage']);
+		}
+		if(!empty($articles['sPropertiesGrouped'])) {
+			unset($articles['sPropertiesGrouped']);
+		}
+		if(!empty($articles['sPropertiesOptionsOnly'])) {
+			unset($articles['sPropertiesOptionsOnly']);
+		}
+		if(!empty($articles['sPages'])) {
+			unset($articles['sPages']);
 		}
 
 		$articles = array_merge($articles, array('sSuppliers' => $suppliers), array('sBanner' => $banner));

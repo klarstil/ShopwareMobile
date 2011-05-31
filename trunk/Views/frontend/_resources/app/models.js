@@ -82,6 +82,7 @@ App.models.Articles = Ext.regModel('Articles', {
 		{ name: 'description_long', type: 'string' },
 		{ name: 'articleName', type: 'string' },
 		{ name: 'price', type: 'string' },
+		{ name: 'priceNumeric', type: 'float' },
 		{ name: 'image_url', type: 'string' },
 		{ name: 'priceStartingFrom', type: 'string' }
 	],
@@ -94,6 +95,7 @@ App.models.Articles = Ext.regModel('Articles', {
 		}
 	}
 });
+
 /** Model for the article details */
 App.models.Detail = Ext.regModel('Detail', {
 	fields: [
