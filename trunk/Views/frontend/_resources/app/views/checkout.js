@@ -19,7 +19,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 /** @lends App.views.Checkout.index# */
 {
 	id: 'orderConfirmation',
-	title: 'Bestellbest&auml;tigung',
+	title: '{s name="MobileCheckoutTitle"}Bestellbest&auml;tigung{/s}',
 	scroll: 'vertical',
 	layout: 'card',
 	
@@ -48,7 +48,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 		/** Cart listing */
 		this.cartLabel = new Ext.Container({
 			id: 'cartListLabel',
-			html: '<div class="x-form-fieldset-title">Ihr Warenkorb</div>'
+			html: '<div class="x-form-fieldset-title">{s name="MobileCheckoutCartTitle"}Ihr Warenkorb</div>'
 		});
 		this.cartView = new App.views.Cart.list;
 		this.cartView.tpl = App.views.Checkout.cartTpl;
@@ -58,13 +58,13 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 
 		/** Payment methods fieldset */
 		this.paymentField = new Ext.form.FieldSet({
-			title: 'Zahlungsart ausw&auml;hlen'
+			title: '{s name="MobileCheckoutSelectPaymentTitle"}Zahlungsart ausw&auml;hlen{/s}'
 		});
 
 		/** shipping type fieldset */
 		this.shippingTypeField = new Ext.form.FieldSet({
 			id: 'shippingTypeField',
-			title: 'Ausgew&auml;hlte Versandart',
+			title: '{s name="MobileCheckoutSelectedDispatch"}Ausgew&auml;hlte Versandart{/s}',
 			items: [{
 				xtype: 'textfield',
 				value: dispatch.name,
@@ -85,7 +85,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 		/** Billing address */
 		this.billing = new Ext.Container({
 			id: 'billingAddress',
-			html: '<div class="label x-form-fieldset-title">Rechnungsadresse</div>' +
+			html: '<div class="label x-form-fieldset-title">{s name="MobileCheckoutBillingAddressTitle"}Rechnungsadresse{/s}</div>' +
 				  '<div class="inner">' +
 				    '<p>' + billing.firstname + '&nbsp;' + billing.lastname + '</p>' +
 					'<p>' + billing.street + '&nbsp;' + billing.streetnumber + '</p>' +
@@ -96,7 +96,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 		/** Shipping address */
 		this.shipping = new Ext.Container({
 			id: 'shippingAddress',
-			html: '<div class="label x-form-fieldset-title">Lieferadresse</div>' +
+			html: '<div class="label x-form-fieldset-title">{s name="MobileCheckoutShippingAddressTitle"}Lieferadresse{/s}</div>' +
 				  '<div class="inner">' +
 				    '<p>' + shipping.firstname + '&nbsp;' + shipping.lastname + '</p>' +
 					'<p>' + shipping.street + '&nbsp;' + shipping.streetnumber + '</p>' +
@@ -147,7 +147,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 
 				exception: function(form, response) {
 					if(!response.success && response.msg) {
-						Ext.Msg.alert('Bestellung fehlgeschlagen', response.msg);
+						Ext.Msg.alert('{s name="MobileCheckoutOrderFailedTitle"}Bestellung fehlgeschlagen{/s}', response.msg);
 					}
 				}
 			}
@@ -163,7 +163,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 			}
 
 			if(userData.additional.charge_vat) {
-				net = '<p class="grey"><strong>Gesamtsumme ohne MwSt.:</strong><span>' + response.amountNet  + '&nbsp;</span></p>';
+				net = '<p class="grey"><strong>{s name="MobileCheckoutAmountWithoutTax"}Gesamtsumme ohne MwSt.:{/s}</strong><span>' + response.amountNet  + '&nbsp;</span></p>';
 				for(idx in response.taxRates) {
 					net += '<p class="grey"><strong>zzgl. '+ idx +'&nbsp;% MwSt.:</strong><span>'+ App.Helpers.number_format(response.taxRates[idx], 2, ',', '.') +'&nbsp;&euro;&nbsp;</span></p>'
 				}
@@ -173,12 +173,12 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 
 			me.orderInfo.update(
 				'<div class="deliveryInfo">' +
-					'<p class="grey"><strong>Summe:</strong><span>' + response.basketAmount + '*</span></p>' +
-					'<p class="doubleborder grey"><strong>Versandkosten:</strong><span>' + response.shippingCosts + '*</span></p>' +
-					'<p class="totalSum"><strong>Gesamtsumme:</strong><span>' + totalAmount + '&nbsp;</span></p>' +
+					'<p class="grey"><strong>{s name="MobileCheckoutSum"}Summe:{/s}</strong><span>' + response.basketAmount + '*</span></p>' +
+					'<p class="doubleborder grey"><strong>{s name="MobileCheckoutShippingCosts"}Versandkosten:{/s}</strong><span>' + response.shippingCosts + '*</span></p>' +
+					'<p class="totalSum"><strong>{s name="MobileCheckoutTotalSum"}Gesamtsumme:{/s}</strong><span>' + totalAmount + '&nbsp;</span></p>' +
 					net +
 					'</div>' +
-					'<div class="priceNotice x-form-fieldset-instructions">* Alle Preise inkl. gesetzl. Mehrwertsteuer zzgl. Versandkosten und ggf. Nachnahmegebühren, wenn nicht anders beschrieben</div>'
+					'<div class="priceNotice x-form-fieldset-instructions">{s name="MobileCheckoutPriceNotice"}* Alle Preise inkl. gesetzl. Mehrwertsteuer zzgl. Versandkosten und ggf. Nachnahmegebühren, wenn nicht anders beschrieben{/s}</div>'
 			);
 			me.orderInfo.doLayout();
 			me.doComponentLayout();
@@ -188,12 +188,12 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 		if(~~useComment) {
 			this.commentField = new Ext.form.FieldSet({
 				id: 'commentFieldset',
-				title: 'Ihr Kommentar',
-				instructions: 'Bitte geben Sie hier Ihr Kommentar zu Ihrer Bestellung ein.',
+				title: '{s name="MobileCheckoutYourCommentTitle"}Ihr Kommentar{/s}',
+				instructions: '{s name="MobileCheckoutYourCommentInstruction"}Bitte geben Sie hier Ihr Kommentar zu Ihrer Bestellung ein.{/s}',
 				items: [{
 					xtype: 'textareafield',
 					name: 'sComment',
-					label: 'Kommentar',
+					label: '{s name="MobileCheckoutYourCommentLabel"}Kommentar{/s}',
 					value: ''
 				}]
 			});
@@ -203,11 +203,11 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 		/** Voucher field */
 		if(~~useVoucher) {
 			this.voucherField = new Ext.form.FieldSet({
-				title: 'Gutschein hinzuf&uuml;gen',
-				instructions: 'M&ouml;chten Sie einen Gutschein zu Ihrer Bestellung hinzuf&uuml;gen?',
+				title: '{s name="MobileCheckoutVoucherTitle"}Gutschein hinzuf&uuml;gen{/s}',
+				instructions: '{s name="MobileCheckoutVoucherInstruction"}M&ouml;chten Sie einen Gutschein zu Ihrer Bestellung hinzuf&uuml;gen?{/s}',
 				items: [{
 					xtype: 'textfield',
-					label: 'Gutschein',
+					label: '{s name="MobileCheckoutVoucherLabel"}Gutschein{/s}',
 					name: 'sVoucher'
 				}]
 			});
@@ -218,12 +218,12 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 		if(~~useNewsletter) {
 			this.newsletterField = new Ext.form.FieldSet({
 				id: 'newsletterFieldset',
-				title: 'Newsletter abonnieren',
-				instructions: 'M?chten Sie den kostenlosen ' + shopName + ' Newsletter erhalten? Sie k?nnen sich jederzeit wieder abmelden! ',
+				title: '{s name="MobileCheckoutNewsletterTitle"}Newsletter abonnieren{/s}',
+				instructions: '{s name="MobileCheckoutNewsletterInstruction"}M&ouml;chten Sie den kostenlosen ' + shopName + ' Newsletter erhalten? Sie k?nnen sich jederzeit wieder abmelden!{/s}',
 				items: [{
 					xtype: 'checkboxfield',
 					name: 'sNewsletter',
-					label: 'Newsletter',
+					label: '{s name="MobileCheckoutNewsletterLabel"}Newsletter{/s}',
 					checked: false,
 					value: 'active'
 				}]
@@ -234,20 +234,19 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 		/** AGB checkbox */
 		this.agbField = new Ext.form.FieldSet({
 			id: 'agbFieldset',
-			title: 'AGB akzeptieren',
-			instructions: 'Bitte best&auml;tigen Sie die geltenden Allgemeinen Gesch&auml;ftsbedingungen.',
+			title: '{s name="MobileCheckoutAGBTitle"}AGB akzeptieren{/s}',
+			instructions: '{s name="MobileCheckoutAGBInstruction"}Bitte best&auml;tigen Sie die geltenden Allgemeinen Gesch&auml;ftsbedingungen.{/s}',
 			items: [{
 				xtype: 'checkboxfield',
 				checked: false,
-				label: 'AGB',
+				label: '{s name="MobileCheckoutAGBLabel"}AGB{/s}',
 				name: 'sAGB',
-				//required: true,
 				value: 'active'
 			}]
 		});
 
 		this.agbBtn = new Ext.Button({
-			text: 'AGB anzeigen',
+			text: '{s name="MobileCheckoutAGBButton"}AGB anzeigen{/s}',
 			ui: 'small',
 			scope: this,
 			style: 'margin: .6em',
@@ -255,7 +254,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 		});
 
 		this.cancellationRightBtn = new Ext.Button({
-			text: 'Widerrufsrecht anzeigen',
+			text: '{s name="MobileCheckoutRightOfRevocationButton"}Widerrufsrecht anzeigen{/s}',
 			ui: 'small',
 			scope: this,
 			style: 'margin: .6em',
@@ -267,7 +266,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 		this.submitOrderBtn = new Ext.Button({
 			id: 'submitOrderBtn',
 			ui: 'confirm',
-			text: 'Bestellung absenden',
+			text: '{s name="MobileCheckoutSubmitOrderButton"}Bestellung absenden{/s}',
 			scope: this,
 			handler: this.onSubmitOrderBtn
 		});
@@ -438,12 +437,12 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 			formVal = form.getValues();
 
 		if(Ext.isEmpty(formVal.paymentMethod)) {
-			Ext.Msg.alert('Fehler', 'Bitte w&auml;hlen Sie eine Zahlungsart aus um Ihre Bestellung durchzuf&uuml;hren.');
+			Ext.Msg.alert('{s name="MobileCheckoutError"}Fehler{/s}', '{s name="MobileCheckoutEmptyPaymentMethod"}Bitte w&auml;hlen Sie eine Zahlungsart aus um Ihre Bestellung durchzuf&uuml;hren.{/s}');
 			return false;
 		}
 
 		if(Ext.isEmpty(values.sAGB)) {
-			Ext.Msg.alert('Fehler', 'Bitte best&auml;tigen Sie die AGB um Ihre Bestellung durchzuf&uuml;hren.');
+			Ext.Msg.alert('{s name="MobileCheckoutError"}Fehler{/s}', '{s name="MobileCheckoutEmptyAGB"}Bitte best&auml;tigen Sie die AGB um Ihre Bestellung durchzuf&uuml;hren.{/s}');
 			return false;
 		}
 		pnl.submit();
