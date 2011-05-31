@@ -425,7 +425,7 @@ App.views.Shop.subListing = Ext.extend(Ext.NestedList,
 	useToolbar: true,
 	title: '{s name="MobileShopSubcategoriesListingTitle"}Kategorien{/s}',
 	getItemTextTpl: function(node) {
-		return App.views.Shop.SubCategorieslistTpl;
+		return {literal}'<div class="info"><span class="title">{text}</span></div><tpl if="desc"><p class="desc">{desc}</p></tpl>'{/literal}
 	},
 	listeners: {
 		scope: this,

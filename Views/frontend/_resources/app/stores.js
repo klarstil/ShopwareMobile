@@ -129,6 +129,7 @@ App.CartClass = Ext.extend(Ext.util.Observable,
             if(Ext.isDefined(options.sAdd)) {
                 options.sOrdernumber = options.sAdd;
             }
+
             App.Helpers.postRequest(App.RequestURL.addArticle, {
                 sAdd: options.sOrdernumber,
                 sQuantity: options.sQuantity
