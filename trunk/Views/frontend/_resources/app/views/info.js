@@ -19,14 +19,14 @@ App.views.Info.index = Ext.extend(Ext.Panel,
 /** @lends App.views.Info.index# */
 {
 	id: 'info',
-	title: 'Informationen',
+	title: '{s name="MobileInfoTitle"}Informationen{/s}',
 	iconCls: 'info',
 	layout: 'card',
 	initComponent: function() {
 
 		this.toolbar = new Ext.Toolbar({
 			dock: 'top',
-			title: 'Informationen',
+			title: '{s name="MobileInfoToolbarTitle"}Informationen{/s}',
 			id: 'info_toolbar',
 			items: [
 				{
@@ -51,7 +51,7 @@ App.views.Info.index = Ext.extend(Ext.Panel,
 	 * Handles the back button behavior
 	 */
 	onBackBtn: function() {
-		Ext.getCmp('info').getToolbar().setTitle('Informationen');
+		Ext.getCmp('info').getToolbar().setTitle('{s name="MobileInfoToolbarTitle"}Informationen{/s}');
 		Ext.getCmp('info').setActiveItem('static_list', { type: 'slide', direction: 'right' });
 	},
 
