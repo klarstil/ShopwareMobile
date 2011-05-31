@@ -17,7 +17,7 @@ App.views.Shop.index = Ext.extend(Ext.Panel,
 /** @lends App.views.Shop.index# */
 {
 	id: 'shop',
-	title: 'Shop',
+	title: '{s name="MobileShopTitle"}Shop{/s}',
 	iconCls: 'home',
 	layout: 'card',
 	listeners: {
@@ -116,7 +116,7 @@ App.views.Shop.index = Ext.extend(Ext.Panel,
 			cls: 'normalView',
 			hidden: (Ext.isEmpty(useNormalSite)) ? true : false,
 			items: [{
-				html: '<div id="clickNormal">Zur normalen Ansicht wechseln</div>'
+				html: '<div id="clickNormal">{s name="MobileShopNormalViewTitle"}Zur normalen Ansicht wechseln{/s}</div>'
 			}],
 			listeners: {
 				scope: this,
@@ -128,7 +128,7 @@ App.views.Shop.index = Ext.extend(Ext.Panel,
 		});
 
 		this.starNotice = new Ext.Container({
-			html: '<div class="priceNotice x-form-fieldset-instructions">* Alle Preise inkl. gesetzl. Mehrwertsteuer zzgl. Versandkosten und ggf. Nachnahmegebühren, wenn nicht anders beschrieben</div>'
+			html: '<div class="priceNotice x-form-fieldset-instructions">{s name="MobileShopPriceNoticeText"}* Alle Preise inkl. gesetzl. Mehrwertsteuer zzgl. Versandkosten und ggf. Nachnahmegebühren, wenn nicht anders beschrieben{/s}</div>'
 		});
 
 		/** Renders the promotion carousel after the store has changes */
@@ -347,7 +347,7 @@ App.views.Shop.artListing = Ext.extend(Ext.Panel,
 		});
 
 		this.starNotice = new Ext.Container({
-			html: '<div class="priceNotice x-form-fieldset-instructions">* Alle Preise inkl. gesetzl. Mehrwertsteuer zzgl. Versandkosten und ggf. Nachnahmegebühren, wenn nicht anders beschrieben</div>'
+			html: '<div class="priceNotice x-form-fieldset-instructions">{s name="MobileShopPriceNoticeText"}* Alle Preise inkl. gesetzl. Mehrwertsteuer zzgl. Versandkosten und ggf. Nachnahmegebühren, wenn nicht anders beschrieben{/s}</div>'
 		});
 
 		this.banner = new Ext.Panel({
@@ -423,7 +423,7 @@ App.views.Shop.subListing = Ext.extend(Ext.NestedList,
 	displayField: 'text',
 	updateTitleText: true,
 	useToolbar: true,
-	title: 'Kategorien',
+	title: '{s name="MobileShopSubcategoriesListingTitle"}Kategorien{/s}',
 	getItemTextTpl: function(node) {
 		return App.views.Shop.SubCategorieslistTpl;
 	},
@@ -560,13 +560,13 @@ App.views.Shop.filterView = Ext.extend(Ext.form.FormPanel,
 
 		this.toolBar = new Ext.Toolbar({
 			ui: 'dark',
-			title: 'Verfeinern',
+			title: '{s name="MobileShopFilterViewToolbarTitle"}Verfeinern{/s}',
 			items: [
 				{ xtype: 'spacer' },
 				{
 					xtype: 'button',
 					ui: 'action',
-					text: 'Fertig',
+					text: '{s name="MobileShopFilterViewToolbarFinishButton"}Fertig{/s}',
 					scope: this,
 					handler: this.onBackBtn
 				}
@@ -574,7 +574,7 @@ App.views.Shop.filterView = Ext.extend(Ext.form.FormPanel,
 		});
 
 		this.perPage = new Ext.form.Select({
-			label: 'Pro Seite',
+			label: '{s name="MobileShopFilterViewPerPageLabel"}Pro Seite{/s}',
 			name: 'sPerPage',
 			labelWidth: '40%',
 			listeners: {
@@ -584,10 +584,9 @@ App.views.Shop.filterView = Ext.extend(Ext.form.FormPanel,
 				}
 			},
 			options: [
-				{ text: '12 Artikel',  value: '12' },
-				{ text: '24 Artikel', value: '24' },
-				{ text: '36 Artikel',  value: '36' },
-				{ text: '48 Artikel', value: '48' }
+				{foreach [12, 24, 36, 48] as $pageNum}
+					{ text: '{s name="MobileShopFilterViewPerPageArticles"}{$pageNum} Artikel{/s}',  value: '{$pageNum}' }{if !$pageNum@last},{/if}
+				{/foreach}
 			]
 		});
 
@@ -602,12 +601,11 @@ App.views.Shop.filterView = Ext.extend(Ext.form.FormPanel,
 				}
 			},
 			options: [
-				{ text: 'Erscheinungsdatum',  value: '1' },
-				{ text: 'Beliebtheit', value: '2' },
-				{ text: 'Niedrigster Preis',  value: '3' },
-				{ text: 'H&ouml;chster Preis', value: '4' },
-				{ text: 'Erscheinungsdatum',  value: '5' },
-				{ text: 'Artikelbezeichnung', value: '6' }
+				{ text: '{s name="MobileShopFilterViewReleaseDate"}Erscheinungsdatum{/s}',  value: '1' },
+				{ text: '{s name="MobileShopFilterViewPopularity"}Beliebtheit{/s}', value: '2' },
+				{ text: '{s name="MobileShopFilterViewLowestPrice"}Niedrigster Preis{/s}',  value: '3' },
+				{ text: '{s name="MobileShopFilterViewHighestPrice"}H&ouml;chster Preis{/s}', value: '4' },
+				{ text: '{s name="MobileShopFilterViewArticlename"}Artikelbezeichnung{/s}', value: '5' }
 			]
 		});
 
@@ -628,7 +626,7 @@ App.views.Shop.filterView = Ext.extend(Ext.form.FormPanel,
 		});
 		
 		this.fieldSet = new Ext.form.FieldSet({
-			instructions: 'Bitte w&auml;hlen Sie eine Eigenschaft um die Artikelauflistung an Ihre pers&ouml;nlichen Bed&uuml;rfnisse anzupassen.',
+			instructions: '{s name="MobileShopFilterViewInstruction"}Bitte w&auml;hlen Sie eine Eigenschaft um die Artikelauflistung an Ihre pers&ouml;nlichen Bed&uuml;rfnisse anzupassen.{/s}',
 			items: [this.perPage, this.sort]
 		})
 
@@ -639,8 +637,8 @@ App.views.Shop.filterView = Ext.extend(Ext.form.FormPanel,
 
 		if(Ext.isObject(itms)) {
 			this.supplierField = new Ext.form.FieldSet({
-				title: 'Hersteller',
-				instructions: 'Bitte w&auml;hlen Sie hier einen Hersteller aus um nur Produkte von diesen Hersteller angezeigt zu bekommen',
+				title: '{s name="MobileShopFilterViewSupplierTitle"}Hersteller{/s}',
+				instructions: '{s name="MobileShopFilterViewSupplierInstruction"}Bitte w&auml;hlen Sie hier einen Hersteller aus um nur Produkte von diesen Hersteller angezeigt zu bekommen{/s}',
 				items: itms
 			});
 			this.add(this.supplierField);
