@@ -83,9 +83,9 @@ App.views.Shop.detail = Ext.extend(Ext.Panel,
 			allowMultiple: false,
 			ui: 'light',
 			items: [
-				{ text: 'Detail', pressed: true },
-				{ text: 'Kommentare' },
-				{ text: 'Bilder' }
+				{ text: '{s name="MobileDetailSplitButtonDetail"}Detail{/s}', pressed: true },
+				{ text: '{s name="MobileDetailSplitButtonComments"}Kommentare{/s}' },
+				{ text: '{s name="MobileDetailSplitButtonPictures"}Bilder{/s}' }
 			],
 			listeners: {
 				scope: this,
@@ -129,7 +129,7 @@ App.views.Shop.detail = Ext.extend(Ext.Panel,
 	onNavBtn: function(pnl, btn, pressed) {
 		var active = Ext.getCmp('detail').getActiveItem();
 		if (pressed === true) {
-			if (btn.text === 'Detail' && active.id !== 'teaser') {
+			if (btn.text === '{MobileDetailSplitButtonDetail}Detail{/s}' && active.id !== 'teaser') {
 				Ext.dispatch({
 					controller: 'detail',
 					action: 'showInfo',
@@ -138,14 +138,14 @@ App.views.Shop.detail = Ext.extend(Ext.Panel,
 
 				Ext.getCmp('detail').setActiveItem('teaser', 'fade');
 			}
-			if (btn.text === 'Kommentare') {
+			if (btn.text === '{s name="MobileDetailSplitButtonComments"}Kommentare{/s}') {
 				Ext.dispatch({
 					controller: 'detail',
 					action: 'showComments'
 				});
 				Ext.getCmp('detail').setActiveItem('votes', 'fade');
 			}
-			if (btn.text === 'Bilder') {
+			if (btn.text === '{s name="MobileDetailSplitButtonPictures"}Bilder{/s}') {
 				Ext.dispatch({
 					controller: 'detail',
 					action: 'showPictures'
@@ -227,7 +227,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 		/** Amount spinner */
 		me.spinner = new Ext.form.Spinner({
 			value: 1,
-			label: 'Anzahl',
+			label: '{s name="MobileDetailAmountLabel"}Anzahl{/s}',
 			required: true,
 			xtype: 'spinnerfield',
 			minValue: 1,
@@ -256,7 +256,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 		me.buyBtn = new Ext.Button({
 			id: 'buyBtn',
 			ui: 'confirm round',
-			text: 'In den Warenkorb legen',
+			text: '{s name="MobileDetailBuyButton"}In den Warenkorb legen{/s}',
 			scope: this,
 			handler: me.onBuyBtn,
 			height: '33px'
@@ -411,7 +411,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 			});
 		}
 		me.variant = new Ext.form.Select({
-			label: 'Bitte w&auml;hlen',
+			label: '{s name="MobileDetailSelectVariantLabel"}Bitte w&auml;hlen{/s}',
 			required: true,
 			options: options,
 			name: 'sAdd'
@@ -611,47 +611,47 @@ App.views.Shop.commentForm = Ext.extend(Ext.form.FormPanel,
 	width: '100%',
 	items: [{
 		xtype: 'fieldset',
-		title: 'Kommentar abgeben',
+		title: '{s name="MobileDetailCommentTitle"}Kommentar abgeben{/s}',
 		defaults: { labelWidth: '40%' },
 		items: [
 			{
 				xtype: 'textfield',
-				label: 'Name',
+				label: '{s name="MobileDetailCommentNameLabel"}Name{/s}',
 				required: true,
-				placeHolder: 'Max Mustermann',
+				placeHolder: '{s name="MobileDetailCommentNamePlaceholder"}Max Mustermann{/s}',
 				name: 'sVoteName'
 			}, {
 				xtype: 'emailfield',
-				label: 'E-Mail',
+				label: '{s name="MobileDetailCommentMailLabel"}E-Mail{/s}',
 				required: true,
-				placeHolder: 'me@shopware.ag',
+				placeHolder: '{s name="MobileDetailCommentMailPlaceholder"}me@shopware.ag{/s}',
 				name: 'sVoteMail'
 			}, {
 				xtype: 'textfield',
-				label: 'Titel',
+				label: '{s name="MobileDetailCommentSummaryTitle"}Titel{/s}',
 				required: true,
-				placeHolder: 'Sch&ouml;nes Produkt',
+				placeHolder: '{s name="MobileDetailCommentSummaryPlaceholder"}Sch&ouml;nes Produkt{/s}',
 				name: 'sVoteSummary'
 			}, {
 				xtype: 'localeSelectfield',
-				label: 'Bewertung',
+				label: '{s name="MobileDetailCommentRateTitle"}Bewertung{/s}',
 				required: true,
 				name: 'sVoteStars',
 				options: [
-					{ text: '10 sehr gut', value: '10' },
-					{ text: '9', value: '9' },
-					{ text: '8', value: '8' },
-					{ text: '7', value: '7' },
-					{ text: '6', value: '6' },
-					{ text: '5', value: '5' },
-					{ text: '4', value: '4' },
-					{ text: '3', value: '3' },
-					{ text: '2', value: '2' },
-					{ text: '1 sehr schlecht', value: '1' }
+					{ text: '{s name="MobileDetailCommentRate10"}10 sehr gut{/s}', value: '10' },
+					{ text: '{s name="MobileDetailCommentRate9"}9{/s}', value: '9' },
+					{ text: '{s name="MobileDetailCommentRate8"}8{/s}', value: '8' },
+					{ text: '{s name="MobileDetailCommentRate7"}7{/s}', value: '7' },
+					{ text: '{s name="MobileDetailCommentRate6"}6{/s}', value: '6' },
+					{ text: '{s name="MobileDetailCommentRate5"}5{/s}', value: '5' },
+					{ text: '{s name="MobileDetailCommentRate4"}4{/s}', value: '4' },
+					{ text: '{s name="MobileDetailCommentRate3"}3{/s}', value: '3' },
+					{ text: '{s name="MobileDetailCommentRate2"}2{/s}', value: '2' },
+					{ text: '{s name="MobileDetailCommentRate1"}1 sehr schlecht{/s}', value: '1' }
 				]
 			}, {
 				xtype: 'textareafield',
-				label: 'Ihre Meinung',
+				label: '{s name="MobileDetailCommentMessageTitle"}Ihre Meinung{/s}',
 				required: true,
 				name: 'sVoteComment'
 			}
@@ -660,7 +660,9 @@ App.views.Shop.commentForm = Ext.extend(Ext.form.FormPanel,
 		xtype: 'button',
 		id: 'voteBtn',
 		ui: 'confirm round',
-		text: 'Bewertung abgeben',
+		text: '{s name="MobileDetailCommentSendCommentButton"}Bewertung abgeben{/s}',
+
+		/** TODO - Check fields before submit */
 		handler: function() {
 			var me = Ext.getCmp('commentForm'),
 			    store = App.stores.Detail,
@@ -670,7 +672,7 @@ App.views.Shop.commentForm = Ext.extend(Ext.form.FormPanel,
 			values.articleID = articleID;
 
 			App.Helpers.postRequest(App.RequestURL.addComment, values, function() {
-				Ext.Msg.alert('Erfolg', 'Ihr Kommentar wurde erfolgreich hinzugef&uuml;gt');
+				Ext.Msg.alert('{s name="MobileDetailCommentSuccess"}Erfolg{/s}', '{s name="MobileDetailCommentSuccessMessage"}Ihr Kommentar wurde erfolgreich hinzugef&uuml;gt{/s}');
 				store.load({
 					params: {
 						articleID: articleID
