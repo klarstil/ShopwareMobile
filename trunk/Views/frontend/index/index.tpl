@@ -82,7 +82,7 @@
 		<textarea id="CheckoutcartTpl" class="hidden">
 			<tpl for="items.items">
 				<div class="item" rel="{ordernumber}">
-					<div class="image" style="background-image: url({image_url})"></div>
+					<tpl if="!Ext.isEmpty(image_url)"><div class="image" style="background-image: url({image_url})"></div></tpl>
 					<div class="info">
 						<span class="supplier">{supplierName}</span>
 						<strong class="name">{articlename}</strong>
@@ -124,7 +124,7 @@
 		<textarea id="CartitemTpl" class="hidden">
 			<tpl for="items.items">
 				<div class="item" rel="{ordernumber}">
-					<div class="image" style="background-image: url({image_url})"></div>
+					<tpl if="!Ext.isEmpty(image_url)"><div class="image" style="background-image: url({image_url})"></div></tpl>
 					<div class="info">
 					<span class="supplier">{supplierName}</span>
 						<strong class="name">{articlename}</strong>

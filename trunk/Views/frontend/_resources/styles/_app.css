@@ -492,8 +492,9 @@ strong { font-weight: 700 }
     border-bottom-left-radius: .4em; 
 }
 .cartlist .image {
-    height: 57px;
-    width: 57px;
+	margin-top: 15px;
+    height: 30px;
+    width: 30px;
     background-color: #fff;
     background-repeat: no-repeat;
     background-position: center center;
@@ -746,6 +747,7 @@ strong { font-weight: 700 }
 	border: 1px solid #ddd;
 	border-radius: .8em;
 	padding: .8em;
+	float: none;
 }
 #detail .blog_article_details .info  .name {
 	margin-bottom: 6px;

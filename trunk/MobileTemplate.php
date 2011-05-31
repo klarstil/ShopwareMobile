@@ -619,7 +619,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 			));
 			$basket['content'][$i]['supplierName'] = utf8_encode($row['name']);
 			$basket['content'][$i]['articlename'] = utf8_encode($item['articlename']);
-			$basket['content'][$i]['image_url'] = $this->stripBasePath($item['image']['src'][1]);
+			$basket['content'][$i]['image_url'] = $this->stripBasePath($item['image']['src'][0]);
 			$i++;
 		}
 		$this->jsonOutput($basket);
