@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" class="no-js">
 <head>
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
     <title>{$sShopname}</title>
     
     {block name='frontend_index_header_meta_tags'}
@@ -60,7 +60,7 @@
 		{* Categories list item template *}
 		{block name="frontend_mobile_template_categories"}{literal}
 		<textarea id="CategorieslistTpl" class="hidden">
-			<div class="image"<tpl if="image_url"> style="background-image:url({image_url})"</tpl>></div><strong>{articleName}</strong><tpl if="price > 0"><span class="price"><tpl if="!Ext.isEmpty(priceStartingFrom)">ab </tpl>{price} &euro;*</span></tpl><div class="desc">{description_long}</div>
+			<div class="image"<tpl if="image_url"> style="background-image:url({image_url})"</tpl>></div><strong>{articleName}</strong><tpl if="!Ext.isEmpty(priceNumeric) && priceNumeric &gt; 0"><span class="price"><tpl if="!Ext.isEmpty(priceStartingFrom)">ab </tpl>{price} &euro;*</span></tpl><div class="desc">{description_long}</div>
 		</textarea>
 		{/literal}{/block}
 
