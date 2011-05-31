@@ -104,3 +104,17 @@ App.views.Shop.detailTpl = new Ext.XTemplate(
 		return App.Helpers.number_format(number, 2, ',', ',', '.');
 	}
 });
+
+App.views.Shop.blogTpl = new Ext.XTemplate(
+	'<tpl for=".">',
+		'<div class="blog_article_details">',
+			'<tpl if="image_url">',
+				'<div class="image" style="background-image: url({image_url})">&nbsp;</div>',
+			'</tpl>',
+			'<div class="info">',
+				'<strong class="name">{articleName}</strong>',
+				'<span class="supplier"><strong>Autor:</strong> {supplierName}</span>',
+			'</div>',
+		'</div>',
+	'</tpl>', { compiled: true }
+);

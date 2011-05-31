@@ -350,9 +350,17 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 
 		/** Purchase steps */
 		me.spinner.incrementValue = ~~item.get('purchasesteps');
-
 		if(me.spinner.rendered) {
 			me.spinner.doComponentLayout();
+		}
+		
+		/** Change template for blog articles */
+		if(~~item.get('mode') == 1) {
+			me.info.tpl = App.views.Shop.blogTpl;
+			me.info.refresh();
+			me.buyBtn.destroy();
+			me.desc.style = 'display:inline-block;';
+			me.desc.refresh();
 		}
 
 		me.doLayout();
@@ -365,8 +373,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 		var store = App.stores.Detail,
 			item = store.getAt(0),
 			bundle = item.data.sBundles;
-
-
+			
 		App.stores.Cart.addBundle(item.data.ordernumber, bundle[0].id);
 	},
 
@@ -410,7 +417,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 				value: varArticle.ordernumber
 			});
 		}
-		me.variant = new Ext.form.Select({
+		me.variant = new Ext.form.localeSelect({
 			label: '{s name="MobileDetailSelectVariantLabel"}Bitte w&auml;hlen{/s}',
 			required: true,
 			options: options,

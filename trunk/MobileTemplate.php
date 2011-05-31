@@ -369,8 +369,13 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 
 		$id = (int) $this->Request()->getParam('articleId');
 		$article = Shopware()->Modules()->Articles()->sGetArticleById($id);
-
-		$article['articleName'] = $this->utf8encode($this->truncate($article['articleName'], 30));
+		
+		$article['mode'] = (int) $article['mode'];
+		if($article['mode'] !== 1) {
+			$article['articleName'] = $this->utf8encode($this->truncate($article['articleName'], 30));
+		} else {
+			$article['articleName'] = $this->utf8encode($article['articleName']);
+		}
 		$article['description'] = $this->utf8encode($article['description']);
 		
 		$article['priceNumeric'] = preg_replace('/,/', '.', $article['price']);
@@ -381,7 +386,11 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 		// Images
 		if(isset($article['image']['src'])) {
 			$article['small_image'] = $this->stripBasePath($article['image']['src'][2]);
-			$article['image_url'] = $this->stripBasePath($article['image']['src'][3]);
+			if($article['mode'] !== 1) {
+				$article['image_url'] = $this->stripBasePath($article['image']['src'][3]);
+			} else {
+				$article['image_url'] = $this->stripBasePath($article['image']['src'][4]);
+			}
 		}
 
 		// Comments
