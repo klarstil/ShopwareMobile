@@ -46,7 +46,7 @@
     </script>
 </head>
 <body>
-    <script type="text/javascript" src="{link file='frontend/_resources/app/_sencha/sencha-touch.js'}"></script>
+    <script type="text/javascript" src="{link file='frontend/_resources/app/_sencha/sencha-touch-debug.js'}"></script>
     <script type="text/javascript" src="{link file='frontend/_resources/app/_sencha/Ext.ux.touch.PagingToolbar.js'}"></script>
 
 	<div id="templates">
