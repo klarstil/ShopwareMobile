@@ -46,7 +46,7 @@
     </script>
 </head>
 <body>
-    <script type="text/javascript" src="{link file='frontend/_resources/app/_sencha/sencha-touch-debug.js'}"></script>
+    <script type="text/javascript" src="{link file='frontend/_resources/app/_sencha/sencha-touch.js'}"></script>
     <script type="text/javascript" src="{link file='frontend/_resources/app/_sencha/Ext.ux.touch.PagingToolbar.js'}"></script>
 
 	<div id="templates">
@@ -60,7 +60,7 @@
 		{* Categories list item template *}
 		{block name="frontend_mobile_template_categories"}{literal}
 		<textarea id="CategorieslistTpl" class="hidden">
-			<div class="image"<tpl if="image_url"> style="background-image:url({image_url})"</tpl>></div><strong>{articleName}</strong><tpl if="!Ext.isEmpty(priceNumeric) && priceNumeric &gt; 0"><span class="price"><tpl if="!Ext.isEmpty(priceStartingFrom)">ab </tpl>{price} &euro;*</span></tpl><div class="desc">{description_long}</div>
+			<div class="image"<tpl if="image_url"> style="background-image:url({image_url})"</tpl>></div><strong>{articleName}</strong><tpl if="!Ext.isEmpty(priceNumeric) && priceNumeric != 0"><span class="price"><tpl if="!Ext.isEmpty(priceStartingFrom)">ab </tpl>{price} &euro;*</span></tpl><div class="desc">{description_long}</div>
 		</textarea>
 		{/literal}{/block}
 
@@ -227,29 +227,30 @@
 		{* Initialize Application *}
         <script type="text/javascript" src="{link file='frontend/_resources/app/app.js'}"></script>
 
+
 		{* Locale *}
         <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='locale'}"></script>
-        
+
 		{*  Application Helpers *}
         <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='helpers'}"></script>
 
-        
+
         {*  Models *}
         <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='models'}"></script>
-        
+
         {*  Stores *}
         <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='stores'}"></script>
-        
+
         {*  Templates *}
         <script type="text/javascript" src="{link file='frontend/_resources/app/templates.js'}"></script>
-        
+
         {*  Controllers *}
         <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='main_controller' type='con'}"></script>
         <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='category_controller' type='con'}"></script>
         <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='detail_controller' type='con'}"></script>
         <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='account_controller' type='con'}"></script>
         <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='checkout_controller' type='con'}"></script>
-        
+
         {*  Views *}
         <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='main' type='view'}"></script>
         <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='shop' type='view'}"></script>

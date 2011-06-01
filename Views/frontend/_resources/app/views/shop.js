@@ -127,7 +127,8 @@ App.views.Shop.index = Ext.extend(Ext.Panel,
 			}
 		});
 
-		this.starNotice = new Ext.Container({
+		this.starNotice = new Ext.Component({
+			style: 'height: 45px',
 			html: '<div class="priceNotice x-form-fieldset-instructions">{s name="MobileShopPriceNoticeText"}* Alle Preise inkl. gesetzl. Mehrwertsteuer zzgl. Versandkosten und ggf. Nachnahmegebühren, wenn nicht anders beschrieben{/s}</div>'
 		});
 

@@ -23,7 +23,7 @@ payments = payments.split(',');
  * @date 05-11-11
  * @class
  */
-var App = Ext.regApplication(
+App = Ext.regApplication(
 	/** @lends App# */
 	{
 		/** Name of the application */
