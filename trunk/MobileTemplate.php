@@ -353,6 +353,20 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	{
 
 		$id = (int) $this->Request()->getParam('articleId');
+
+		/** Replace configurator groups due to a bug in safari mobile
+		 *  which fires the following JS error:
+		 *  Invalid ComponentQuery selector: "]" */
+		if(isset($_POST) && !empty($_POST)) {
+			foreach($this->system->_POST as $key => $value) {
+				preg_match('/group.([0-9]+)/i', $key, $matches);
+				if(!empty($matches)) {
+					$this->system->_POST['group'][$matches[1]] = $value;
+					unset($this->system->_POST[$key]);
+				}
+			}
+		}
+
 		$article = Shopware()->Modules()->Articles()->sGetArticleById($id);
 		
 		$article['mode'] = (int) $article['mode'];

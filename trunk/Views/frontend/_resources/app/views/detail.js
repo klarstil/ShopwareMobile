@@ -234,7 +234,11 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 			maxValue: 100,
 			width: '100%',
 			cycle: false,
-			name: 'sQuantity'
+			name: 'sQuantity',
+			listeners: {
+				scope: this,
+				spin: me.onSpinnerSpin
+			}
 		});
 
 		/** "Buy now" form panel */
@@ -300,6 +304,20 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 		App.views.Shop.info.superclass.initComponent.call(this);
 	},
 
+	onSpinnerSpin: function(field, newValue, oldValue) {
+		var price, newPrice;
+
+		/** Calulate new price */
+		price = document.getElementById('priceNumericDetail').getAttribute('value');
+		price = parseFloat(price) * 100;
+		
+		newPrice = (price * newValue) / 100;
+
+		/** Update price */
+		document.getElementById('priceDetail').innerHTML = App.Helpers.number_format(newPrice, 2, ',', '');
+
+	},
+
 	/**
 	 * Handles the different article types and creates the needed elements (e.g. variants, configurator, bundles)
 	 */
@@ -339,7 +357,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 		}
 
 		/** Setup article amount spinner */
-		if(~item.get('laststock')) {
+		if(~~item.get('laststock')) {
 			me.spinner.maxValue = ~~item.get('instock');
 		} else {
 			me.spinner.maxValue = ~~item.get('maxpurchase');
@@ -450,9 +468,9 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 				title: group.groupname,
 				instructions: group.groupdescription,
 				items: [{
-					xtype: 'localeSelectfield',
+					xtype: 'selectfield',
 					options: options,
-					name: 'group['+groupIdx+']',
+					name: 'group-'+groupIdx,
 					listeners: {
 						scope: me,
 						change: me.onConfiguratorChange
@@ -492,18 +510,22 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 			groupId, active, values = this.formPnl.getValues(),
 			me = this;
 
-		console.log('values: ', values);
-
 		this.setLoading(true);
 		values.articleId = item.data.articleID;
 		App.Helpers.postRequest(App.RequestURL.getDetail, values, function(response) {
-				console.log(response);
 				if(!Ext.isEmpty(response.sArticle)) {
+
+					var article = response.sArticle[0];
+
 					/** Update ordnumber */
-					me.hiddenOrdernumber.setValue(response.sArticle[0].ordernumber);
+					me.hiddenOrdernumber.setValue(article.ordernumber);
+					document.getElementById('ordernumberDetail').innerHTML = article.ordernumber;
 
 					/** Update price */
-					document.getElementById('priceDetail').innerHTML = response.sArticle[0].price;
+					document.getElementById('priceDetail').innerHTML = article.price;
+					document.getElementById('priceNumericDetail').setAttribute('value', article.priceNumeric);
+
+					me.spinner.setValue(1);
 					me.setLoading(false);
 				}
 			}

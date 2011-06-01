@@ -19,9 +19,10 @@ App.views.Shop.detailTpl = new Ext.XTemplate(
 		// Article Informations
 		'<tpl if="Ext.isEmpty(liveshoppingData)">',
 		'<div class="info">',
+			'<input type="hidden" name="priceNumeric" value="{priceNumeric}" id="priceNumericDetail" />',
 			'<strong class="name">{articleName}</strong>',
 			'<span class="supplier">von {supplierName}</span>',
-			'<span class="ordernumber">Bestell-Nr.: {ordernumber}</span>',
+			'<span class="ordernumber">Bestell-Nr.: <span id="ordernumberDetail">{ordernumber}</span></span>',
 			'<strong class="priceCon">',
 				'<tpl if="this.isPseudoprice(pseudoprice)"><span class="pseudoprice">Statt: {pseudoprice} &euro;*</span>',
 				'<span class="pricePercent">({pseudopricePercent.float} % gespart)</span></tpl>',
