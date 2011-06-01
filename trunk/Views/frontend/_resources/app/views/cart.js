@@ -50,7 +50,6 @@ App.views.Cart.index = Ext.extend(Ext.Panel,
 				}
 				me.doComponentLayout();
 				me.pnl.show();
-				//view.show();
 			}
 		}
 	},
@@ -65,6 +64,15 @@ App.views.Cart.index = Ext.extend(Ext.Panel,
 			handler: this.onCheckoutBtn
 		});
 
+		this.checkoutBtn2 = new Ext.Button({
+			id: 'checkoutBtn2',
+			ui: 'confirm',
+			text: '{s name="MobileCartCheckoutButton"}Zur Kasse{/s}',
+			style: 'margin: 1em',
+			scope: this,
+			handler: this.onCheckoutBtn
+		})
+
 		this.toolbar = new Ext.Toolbar({
 			dock: 'top',
 			title: this.title,
@@ -74,7 +82,7 @@ App.views.Cart.index = Ext.extend(Ext.Panel,
 		this.pnl = new Ext.Panel({
 			scroll: 'vertical',
 			height: '100%',
-			items: [new App.views.Cart.list]
+			items: [new App.views.Cart.list, this.checkoutBtn2]
 		});
 
 		Ext.apply(this, {
@@ -166,6 +174,7 @@ App.views.Cart.list = Ext.extend(Ext.Panel,
 
 			if(this.ownerCt && this.ownerCt.ownerCt && this.ownerCt.ownerCt.checkoutBtn) {
 				this.ownerCt.ownerCt.checkoutBtn.show();
+				this.ownerCt.ownerCt.checkoutBtn2.show();
 			}
 
 			this.hideCheckoutBtn(false);
@@ -174,6 +183,7 @@ App.views.Cart.list = Ext.extend(Ext.Panel,
 			
 			if(this.ownerCt && this.ownerCt.ownerCt && this.ownerCt.ownerCt.checkoutBtn) {
 				this.ownerCt.ownerCt.checkoutBtn.hide();
+				this.ownerCt.ownerCt.checkoutBtn2.hide();
 			}
 			this.hideCheckoutBtn(true);
 		}
