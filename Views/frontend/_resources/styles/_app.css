@@ -577,7 +577,7 @@ strong { font-weight: 700 }
     margin-bottom: 0;
     padding-bottom: 0;
 }
-#submitOrderBtn { margin: 0 1.5em 1em }
+#submitOrderBtn { margin: 0 1.5em 1em; height: 2.4em; }
 
 /*  SEARCH VIEW
 	------------------------------------------------------------------ */
@@ -753,4 +753,4 @@ strong { font-weight: 700 }
 	margin-bottom: 6px;
 	font-size: 16px;
 }
-.priceNotice { font-size: 11px; }
+.priceNotice, .price-notice { font-size: 11px; }

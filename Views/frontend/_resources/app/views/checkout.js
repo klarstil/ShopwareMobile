@@ -245,22 +245,25 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 			}]
 		});
 
+		/** AGB button */
 		this.agbBtn = new Ext.Button({
 			text: '{s name="MobileCheckoutAGBButton"}AGB anzeigen{/s}',
 			ui: 'small',
 			scope: this,
-			style: 'margin: .6em',
+			height: '1.8em',
+			style: 'padding: 0.5em 0.4em;margin-left: 2%;display: inline-block;width:44%; border-top-right-radius: 0px; border-bottom-right-radius: 0px;border-right: 0px;',
 			handler: this.onAGBBtn
 		});
 
+		/** Right of revocation button */
 		this.cancellationRightBtn = new Ext.Button({
 			text: '{s name="MobileCheckoutRightOfRevocationButton"}Widerrufsrecht anzeigen{/s}',
 			ui: 'small',
 			scope: this,
-			style: 'margin: .6em',
+			height: '1.8em',
+			style: 'padding: 0.5em 0.4em;margin-right: 2%;display: inline-block;width:52%;border-top-left-radius: 0px; border-bottom-left-radius: 0px; text-overflow: none;',
 			handler: this.onCancellationRightBtn
 		});
-
 
 		/** Submit order */
 		this.submitOrderBtn = new Ext.Button({
@@ -271,6 +274,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 			handler: this.onSubmitOrderBtn
 		});
 
+		/** Add components */
 		this.orderPnl.add(this.agbField);
 		this.orderPnl.add(this.agbBtn);
 		this.orderPnl.add(this.cancellationRightBtn);
@@ -396,7 +400,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 				},
 				dockedItems: [{
 					xtype: 'toolbar',
-					title: 'AGB',
+					title: 'Widerruf...',
 					items: [{
 						xtype: 'button',
 						ui: 'back',
