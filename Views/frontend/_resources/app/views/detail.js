@@ -304,6 +304,13 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 		App.views.Shop.info.superclass.initComponent.call(this);
 	},
 
+	/**
+	 * Changes the displayed price based on the amount and base price
+	 *
+	 * @param field
+	 * @param newValue
+	 * @param oldValue
+	 */
 	onSpinnerSpin: function(field, newValue, oldValue) {
 		var price, newPrice;
 
@@ -439,7 +446,11 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 			label: '{s name="MobileDetailSelectVariantLabel"}Bitte w&auml;hlen{/s}',
 			required: true,
 			options: options,
-			name: 'sAdd'
+			name: 'sAdd',
+			listeners: {
+				scope: me,
+				change: me.onVariantChange
+			}
 		});
 		Ext.getCmp('buyFieldset').add(me.variant);
 	},
@@ -530,7 +541,29 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 				}
 			}
 		);
+	},
 
+	onVariantChange: function(select, value) {
+		var store = App.stores.Detail, item = store.getAt(0), me = this;
+		item = item.data;
+		
+		for(var idx in item.sVariants) {
+			var variant = item.sVariants[idx];
+
+			if(variant.ordernumber == value) {
+
+				/** Update ordernumber */
+				document.getElementById('ordernumberDetail').innerHTML = variant.ordernumber;
+				me.hiddenOrdernumber.setValue(variant.ordernumber);
+
+				/** Update price */
+				variant.priceNumeric = variant.price.replace(',', '.');
+				variant.priceNumeric = parseFloat(variant.priceNumeric);
+				document.getElementById('priceDetail').innerHTML = variant.price;
+				document.getElementById('priceNumericDetail').setAttribute('value', variant.priceNumeric);
+				me.spinner.setValue(1);
+			}
+		}
 	}
 });
 
