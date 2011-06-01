@@ -492,11 +492,18 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 			groupId, active, values = this.formPnl.getValues(),
 			me = this;
 
+		console.log('values: ', values);
+
 		this.setLoading(true);
 		values.articleId = item.data.articleID;
 		App.Helpers.postRequest(App.RequestURL.getDetail, values, function(response) {
+				console.log(response);
 				if(!Ext.isEmpty(response.sArticle)) {
+					/** Update ordnumber */
 					me.hiddenOrdernumber.setValue(response.sArticle[0].ordernumber);
+
+					/** Update price */
+					document.getElementById('priceDetail').innerHTML = response.sArticle[0].price;
 					me.setLoading(false);
 				}
 			}

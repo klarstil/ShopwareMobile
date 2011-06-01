@@ -25,7 +25,7 @@ App.views.Shop.detailTpl = new Ext.XTemplate(
 			'<strong class="priceCon">',
 				'<tpl if="this.isPseudoprice(pseudoprice)"><span class="pseudoprice">Statt: {pseudoprice} &euro;*</span>',
 				'<span class="pricePercent">({pseudopricePercent.float} % gespart)</span></tpl>',
-				'<span class="price">{price} &euro;*</span>',
+				'<span class="price"><span id="priceDetail">{price}</span> &euro;*</span>',
 			'</strong>',
 			// Base price
 			'<tpl if="!Ext.isEmpty(purchaseunit)">',

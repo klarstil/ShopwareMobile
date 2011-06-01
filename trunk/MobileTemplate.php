@@ -83,8 +83,6 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	public function getMainCategoriesAction()
 	{
-		/* No view needed */
-		$this->ViewRenderer->setNoRender();
 		$main_categories = Shopware()->Modules()->Categories()->sGetCategoriesAsArrayById();
 		$i = 0;
 		foreach($main_categories as $cat) {
@@ -109,9 +107,6 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	public function getCategoriesTreeAction()
 	{
-
-		$this->ViewRenderer->setNoRender();
-
 		/* Set node */
 		if(!empty($this->Request()->node) && $this->Request()->node !== 'root') {
 			$node = intval($this->Request()->node);
@@ -203,10 +198,6 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	public function getPromotionCarouselAction($cat_id = 3)
 	{
-
-		/* No view needed */
-		$this->ViewRenderer->setNoRender();
-
 		$cat_id = (int) $cat_id;
 		$promotion_articles = Shopware()->Modules()->Articles()->sGetPromotions($cat_id);
 		
@@ -246,8 +237,6 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	public function getBannersByCategoryIdAction($cat_id=3, $limit=10)
 	{
-		/* No view needed */
-		$this->ViewRenderer->setNoRender();
 
 		$params = Shopware()->Front()->Request();
 		
@@ -286,9 +275,6 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	public function getArticlesByCategoryIdAction()
 	{
-		/* No view needed */
-		$this->ViewRenderer->setNoRender();
-
 		// Handle category id
 		$id = $this->Request()->getParam('categoryID');
 		if(empty($id)) {
@@ -365,8 +351,6 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	public function getArticleDetailsAction()
 	{
-		/* No view needed */
-		$this->ViewRenderer->setNoRender();
 
 		$id = (int) $this->Request()->getParam('articleId');
 		$article = Shopware()->Modules()->Articles()->sGetArticleById($id);
@@ -448,9 +432,6 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	public function searchAction()
 	{
 
-		/* No view needed */
-		$this->ViewRenderer->setNoRender();
-
 		// Handle page
 		$page = $this->Request()->getParam('page');
 		if(!empty($page)) {
@@ -520,9 +501,6 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	public function getArticleImagesAction()
 	{
-		/* No view needed */
-		$this->ViewRenderer->setNoRender();
-
 		$id = (int) $this->Request()->getParam('articleId');
 		$article = Shopware()->Modules()->Articles()->sGetArticleById($id);
 		$images = array();
@@ -559,9 +537,6 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	public function addCommentAction()
 	{
-		/* No view needed */
-		$this->ViewRenderer->setNoRender();
-
 		$articleID = (int) $this->Request()->getParam('articleID');
 		Shopware()->System()->_POST["sVoteName"] =  $this->utf8decode(Shopware()->System()->_POST["sVoteName"]);
 		Shopware()->System()->_POST["sVoteSummary"] = $this->utf8decode(Shopware()->System()->_POST["sVoteSummary"]);
@@ -581,9 +556,6 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	public function addBundleToCartAction()
 	{
-		/* No view needed */
-		$this->ViewRenderer->setNoRender();
-
 		$id = (int) $this->Request()->getParam('id');
 		$ordernumber = $this->Request()->getParam('ordernumber');
 
@@ -603,10 +575,6 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	public function getBasketAction()
 	{
-
-		/* No view needed */
-		$this->ViewRenderer->setNoRender();
-
 		$basket = Shopware()->Modules()->Basket()->sGetBasket();
 		
 		$i = 0;
@@ -637,8 +605,6 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	public function getBasketAmountAction()
 	{
-		/* No view needed */
-		$this->ViewRenderer->setNoRender();
 
 		$amount = Shopware()->Modules()->Basket()->sGetAmountArticles();
 		$this->jsonOutput($amount);
@@ -655,8 +621,6 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	public function removeArticleFromCartAction()
 	{
-		/* No view needed */
-		$this->ViewRenderer->setNoRender();
 
 		$id = (int) $this->Request()->getParam('articleId');
 		Shopware()->Modules()->Basket()->sDeleteArticle($id);
@@ -675,8 +639,6 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	public function deleteBasketAction()
 	{
-		/* No view needed */
-		$this->ViewRenderer->setNoRender();
 
 		Shopware()->Modules()->Basket()->sDeleteBasket();
 		Shopware()->Modules()->Order()->sDeleteTemporaryOrder();
@@ -694,8 +656,6 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	public function getInfoSitesAction()
 	{
-		/* No view needed */
-		$this->ViewRenderer->setNoRender();
 
 		$config = Shopware()->Plugins()->Frontend()->SwagMobileTemplate()->Config();
 		if(!empty($config->staticgroup)) {
@@ -733,9 +693,8 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 *
 	 * @return void
 	 */
-	public function getPaymentMethodsAction() {
-		/* No view needed */
-		$this->ViewRenderer->setNoRender();
+	public function getPaymentMethodsAction()
+	{
 
 		$paymentMethods = Shopware()->Modules()->Admin()->sGetPaymentMeans();
 		$this->jsonOutput(array('sPaymentMethods' => $paymentMethods));
@@ -750,8 +709,6 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	private function getActiveDispatchMethod()
 	{
-		/* No view needed */
-		$this->ViewRenderer->setNoRender();
 
 		if(empty(Shopware()->Session()->sCountry)) {
 			return false;
@@ -786,9 +743,6 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	public function isUserLoggedInAction()
 	{
-		/* No view needed */
-		$this->ViewRenderer->setNoRender();
-
 		$userLoggedIn = Shopware()->Modules()->Admin()->sCheckUser();
 
 		if($userLoggedIn) {
@@ -812,9 +766,6 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	public function getUserDataAction()
 	{
-		/* No view needed */
-		$this->ViewRenderer->setNoRender();
-
 		$userData = Shopware()->Modules()->Admin()->sGetUserData();
 
 		if(!empty($userData['additional']['countryShipping']))
@@ -847,7 +798,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 			Shopware()->Session()->sCountry = $userData['additional']['country']['id'];
 		}
 
-		// UTF8 encode user data
+		/* UTF8 encode user data */
 		foreach($userData as $group => $array) {
 			foreach($array as $groupname => $value) {
 				if(!empty($value)) {
@@ -876,9 +827,6 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	public function loginAction()
 	{
-
-		/* No view needed */
-		$this->ViewRenderer->setNoRender();
 
 		if($this->Request()->isPost()) {
 			$login = Shopware()->Modules()->Admin()->sLogin();
@@ -939,9 +887,16 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	private function jsonOutput($json_str)
 	{
+		/* No view needed */
+		$this->ViewRenderer->setNoRender();
+
+		/* Set proper mime type for json reponse */
+		$this->Response()->setHeader('Content-Type', 'application/json');
+
+		/* Add callback for jsonp requests */
 		$callback = $this->Request()->getParam('callback');
-		$callback = preg_replace('#[^0-9a-z]+#i', '', (string) $callback);
 		if(!empty($callback)) {
+			$callback = preg_replace('#[^0-9a-z]+#i', '', (string) $callback);
 			echo $callback."(" . json_encode($json_str) . ");";
 		} else {
 			echo json_encode($json_str);
