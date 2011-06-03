@@ -51,6 +51,20 @@ return array(
 			'Auto destroy registration and login after deactivate',
 			'Fix small bug on the checkout section',
 			'Fix bug in the customer center'
+		)),
+		'1.1.0'=> array('releasedate'=>'2011-06-03', 'lines' => array(
+			'Feature: All texts are snippets now and could be edit in the backend',
+			'Feature: Ext.XTemplate in Smarty Block-Tags for easier customizing',
+			'Feature: Blog categories are official supported now',
+			'Feature: Add support for min. purchase, max. purchase, sale function and purchase steps',
+			'Feature: Dynamic price changing on amount, configurator and variant change',
+ 			'Bugfix: Proper encoding for article informations on the detail view',
+			'Bugfix: Remove "/mobile" from URL',
+			'Bugfix: Localization for the components Ext.Picker, Ext.DatePicker, Ext.form.DatePicker and Ext.form.Select',
+			'Bugfix: Add right of revocation button on the checkout view',
+			'Bugfix: Hide price in blog categories',
+			'Bugfix: Proper hiding of inactive categories',
+			'Bugfix: Remove delete button from rate decrease, rate increase and delivery costs articles in the cart view'
 		))
 	)
 );
