@@ -100,7 +100,6 @@ Ext.form.localeDatePicker = Ext.extend(Ext.form.DatePicker, {
             if (this.picker instanceof Ext.localeDatePicker ) {
                 this.datePicker = this.picker;
             } else {
-				alert('create new localPicker');
                 this.datePicker = new Ext.localeDatePicker(Ext.apply(this.picker || {}));
             }
 
