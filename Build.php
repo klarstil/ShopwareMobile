@@ -65,6 +65,9 @@ return array(
 			'Bugfix: Hide price in blog categories',
 			'Bugfix: Proper hiding of inactive categories',
 			'Bugfix: Remove delete button from rate decrease, rate increase and delivery costs articles in the cart view'
+		)),
+		'1.1.1'=> array('releasedate'=>'2011-06-16', 'lines' => array(
+			'Remove debug message in locale.js'
 		))
 	)
 );

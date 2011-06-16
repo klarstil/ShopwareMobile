@@ -39,7 +39,6 @@ Ext.regController('detail', {
 	    store.load({
             params: { articleId: options.articleID},
 		    callback: function() {
-			    console.log();
 			    this.lastRecord = store.getAt(0);
 			    store.fireEvent('storeLoaded');
 			    Ext.getCmp('teaser').doLayout();
