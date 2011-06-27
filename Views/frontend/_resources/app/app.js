@@ -38,7 +38,7 @@ App = Ext.regApplication(
 		autoInitViewport: true,
 		
 		/** Base path - will be needed for the native app */
-		basePath: '',
+		basePath: '/shop',
 		/** Default URL for the router */
 		defaultUrl: '#home',
 		/** Activate histroy support */
@@ -125,5 +125,6 @@ App.RequestURL = {
 	logout:        App.basePath + '/account/ajaxLogout',
 	confirm:       App.basePath + '/checkout/confirm',
 	changePayment: App.basePath + '/account/savePayment',
-	customSite:    App.basePath + '/custom/'
+	customSite:    App.basePath + '/custom/',
+	getTree: 	   App.basePath + '/MobileTemplate/getCategoriesTree'
 };

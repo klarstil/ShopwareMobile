@@ -49,11 +49,14 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 		);
 		$this->subscribeEvent($event);
 
-		$event = $this->createEvent(
-			'Enlight_Controller_Front_DispatchLoopStartup',
-			'onDispatchLoopStartup'
+		$hook = $this->createHook(
+			'Shopware_Controllers_Frontend_Register',
+			'saveRegister',
+			'onSaveRegister',
+			Enlight_Hook_HookHandler::TypeBefore,
+			0
 		);
-		$this->subscribeEvent($event);
+		$this->subscribeHook($hook);
 
 		/* Add menu entry */
 		/* $parent = $this->Menu()->findOneBy('label', 'Marketing');
@@ -71,7 +74,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 		$form = $this->Form();
 		
 		/* Use Shopware Mobile as subshop */
-		$form->setElement('checkbox', 'useSubshop', array('label'=>'Shopware Mobile als Subshop verwenden','value'=>'1', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
+		$form->setElement('checkbox', 'useSubshop', array('label'=>'Shopware Mobile als Subshop verwenden','value'=>'0', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
 		$form->setElement('text', 'subshopId', array('label'=>'Subshop ID','value'=>'2', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
 
 		/* General settings */
@@ -93,9 +96,44 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 		$form->setElement('text', 'iconPath', array('label'=> 'Icon - nur iOS (Gr&ouml;&szlig;e: 57px x 57px, wird angezeigt wenn der Benutzer die Seite zum Home-Screen hinzuf&uuml;gt)','value'=>'', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
 		$form->setElement('checkbox', 'glossOnIcon', array('label'=>'Glanz &uuml;ber Icon anzeigen - nur iOS','value'=>'1', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
 		$form->setElement('text', 'startUpPath', array('label'=> 'Startup Screen - nur iOS (wird angezeigt wenn der Benutzer die Seite zum Home-Screen hinzuf&uuml;gt)','value'=>'', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
-		$form->setElement('text', 'statusBarStyle', array('label'=> 'Statusbar Style (w&auml;hlbar: default, black, black-translucent)','value'=>'default', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
+
 		$form->setElement('checkbox', 'useNormalSite', array('label'=>'Link zur normalen Ansicht anzeigen','value'=>'1', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
-		$form->setElement('text', 'colorStyle', array('label'=> 'Farbtemplate (w&auml;hlbar: android, blue, brown, default, green, grey, ios, orange, pink, red, turquoise)','value'=>'default', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
+
+		$form->setElement('combo', 'statusBarStyle',
+						  array('label' => 'Statusbar Style','value' => 'black', 'attributes' => array(
+							  'valueField' => 'statusBarStyle', 'displayField' => 'displayText', 'mode' => 'local', 'triggerAction' => 'all',
+							  'store' => 'new Ext.data.ArrayStore({
+							  	id: 1, fields: [
+							  		"statusBarStyle",
+							  		"displayText"
+							  	],
+							  	data: [
+							  		["default", "default"],
+							  		["black", "black"],
+							  		["black-translucent", "black-translucent"]
+							  	]})')));
+
+		$form->setElement('combo', 'colorStyle',
+						  array('label' => 'Farbtemplate', 'value' => 'default', 'attributes' =>
+						  array('valueField' => 'colorStyle', 'displayField' => 'displayText', 'mode' => 'local', 'triggerAction' => 'all',
+								'store' => 'new Ext.data.ArrayStore({
+									id: 0, fields: [
+									"colorStyle",
+									"displayText"
+								],
+								data: [
+									["android", "android"],
+									["blue", "blue"],
+									["brown", "brown"],
+									["default", "default"],
+									["green", "green"],
+									["ios", "ios"],
+									["orange", "orange"],
+									["pink", "pink"],
+									["red", "red"],
+									["turquoise", "turquoise"]
+								]})')));
+
 		$form->setElement('textarea', 'additionalCSS', array('label'=>'Zusätzliche CSS-Eigenschaften','value'=>'', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
 
 		$form->save();
@@ -165,6 +203,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 			$newDirs = array_merge(array(dirname(__FILE__) . '/Views/'), $dirs);
 			Shopware()->Template()->setTemplateDir($newDirs);
 
+			// Assign plugin configuration
 			$view->assign('shopwareMobile',array(
 				'additionalCSS'  => $config->additionalCSS,
 				'isUserLoggedIn' => Shopware()->Modules()->sAdmin()->sCheckUser(),
@@ -226,8 +265,6 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
     	return dirname(__FILE__) . '/MobileTemplateAdmin.php';
     }
 
-
-
 	/**
 	 * onPostDispatchRegister()
 	 *
@@ -259,34 +296,28 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 	}
 
 	/**
-	 * onDispatchLoopStartup()
+	 * onSaveRegister
 	 *
-	 * Wandelt alle Umlaute in der Registrierung um
+	 * Hook-Methode - Setzt das richtige Encoding fuer die Registrierungsdaten
 	 *
 	 * @static
-	 * @param Enlight_Event_EventArgs $args
-	 * @return
+	 * @param Enlight_Hook_HookArgs $args
+	 * @return void
 	 */
-	public static function onDispatchLoopStartup(Enlight_Event_EventArgs $args)
+	public static function onSaveRegister(Enlight_Hook_HookArgs $args)
 	{
-		$request = $args->getSubject()->Request();
-		$post = $request->getPost();
+		$subject = $args->getSubject();
+		$request = $subject->Request();
+		$session = Shopware()->Session();
 
-		// UTF8 decode personal informations
-		if(!empty($post['register']['personal'])) {
-			foreach($post['register']['personal'] as $k => $v) {
-				$post['register']['personal'][$k] = utf8_decode($v);
+		if(Shopware()->Session()->Mobile == 1 && !empty($session['sRegister']['billing'])) {
+			foreach($session['sRegister']['billing'] as $key => $value) {
+				$value = utf8_decode($value);
+				$value = htmlentities($value);
+				$session['sRegister']['billing'][$key] = $value;
 			}
-		}
 
-		// UTF8 decode billing informations
-		if(!empty($post['register']['billing'])) {
-			foreach($post['register']['billing'] as $k => $v) {
-				$post['register']['billing'][$k] = utf8_decode($v);
-			}
 		}
-
-		$request->setPost($post);
 	}
     
     /**

@@ -1,6 +1,6 @@
 {
 	"init": {
-		"title": "Shopware Mobile Template",
+		"title": "Shopware Mobile Beta 2",
 		"width": 900,
 		"height": 650,
 		"id": "mobile_template",

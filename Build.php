@@ -68,6 +68,10 @@ return array(
 		)),
 		'1.1.1'=> array('releasedate'=>'2011-06-16', 'lines' => array(
 			'Remove debug message in locale.js'
+		)),
+		'1.1.2'=> array('releasedate'=>'2011-06-27', 'lines' => array(
+			'Improve support for shops in subdirectories',
+			'Fix encoding bug in registration process'
 		))
 	)
 );
