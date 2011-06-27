@@ -812,23 +812,12 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 			Shopware()->Session()->sCountry = $userData['additional']['country']['id'];
 		}
 
-		/* UTF8 encode user data */
-		foreach($userData as $group => $array) {
-			foreach($array as $groupname => $value) {
-				if(!empty($value)) {
-					if(is_array($value)) {
-						foreach($value as $k => $v) {
-							$userData[$group][$groupname][$k] = utf8_encode($v);
-						}
-					} else {
-						$userData[$group][$groupname] = utf8_encode($value);	
-					}
-				}
-			}
-		}
-
 		$userData['activeDispatch'] = $this->getActiveDispatchMethod();
-		$this->jsonOutput(array('sUserData' => $userData));
+
+		$this->View()->assign('sUserData', $userData);
+		$path = dirname(__FILE__) . '/Views/frontend/plugins/swag_mobiletemplate/';
+		$this->View()->loadTemplate($path . 'get_user_data.tpl');
+		//$this->jsonOutput(array('sUserData' => $userData));
 	}
 	
 	/**
@@ -883,6 +872,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 			}
 			$path .= $this->config->BasePath;
 			$url = str_ireplace($path, '', $url);
+			
 		} else {
 			$url = $this->senchaIo . $url;
 		}
