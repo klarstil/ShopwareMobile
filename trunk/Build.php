@@ -72,6 +72,9 @@ return array(
 		'1.1.2'=> array('releasedate'=>'2011-06-27', 'lines' => array(
 			'Improve support for shops in subdirectories',
 			'Fix encoding bug in registration process'
+		)),
+		'1.1.3'=> array('releasedate'=>'2011-06-27', 'lines' => array(
+			'Fix basepath issue'
 		))
 	)
 );
