@@ -38,7 +38,7 @@ App = Ext.regApplication(
 		autoInitViewport: true,
 		
 		/** Base path - will be needed for the native app */
-		basePath: '/shop',
+		basePath: '',
 		/** Default URL for the router */
 		defaultUrl: '#home',
 		/** Activate histroy support */
