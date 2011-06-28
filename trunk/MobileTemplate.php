@@ -46,7 +46,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	public function loadFileAction()
 	{
-		$path = dirname(__FILE__) . '/Views/frontend/_resources/app/';
+		$path = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Views' . DIRECTORY_SEPARATOR . 'frontend' . DIRECTORY_SEPARATOR . '_resources' . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR;
 		$file = $this->Request()->getParam('file');
 		$type = $this->Request()->getParam('type');
 		$ext = '.js';
@@ -57,11 +57,11 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 
 		if(!empty($type)) {
 			if($type === 'controller' || $type === 'con') {
-				$path .= 'controllers/' . $file . $ext;
+				$path .= 'controllers' . DIRECTORY_SEPARATOR . $file . $ext;
 			} elseif($type === 'sencha' || $type === 'sen') {
-				$path .= 'sencha/' . $file . $ext;
+				$path .= 'sencha' . DIRECTORY_SEPARATOR . $file . $ext;
 			} else {
-				$path .= 'views/' . $file .$ext;
+				$path .= 'views' . DIRECTORY_SEPARATOR . $file .$ext;
 			}
 		} else {
 			$path .= $file . $ext;
@@ -814,10 +814,22 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 
 		$userData['activeDispatch'] = $this->getActiveDispatchMethod();
 
+		// Proper handle encoding
+		foreach($userData as $group => $array) {
+			foreach($array as $key => $value) {
+				if(is_array($value)) {
+					foreach($value as $k => $v)	{
+						$userData[$group][$key][$k] = $this->utf8encode($v);
+					}
+				} else {
+					$userData[$group][$key] = $this->utf8encode($value);
+				}
+			}
+		}
+
 		$this->View()->assign('sUserData', $userData);
-		$path = dirname(__FILE__) . '/Views/frontend/plugins/swag_mobiletemplate/';
+		$path = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Views' . DIRECTORY_SEPARATOR . 'frontend' . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'swag_mobiletemplate' . DIRECTORY_SEPARATOR;
 		$this->View()->loadTemplate($path . 'get_user_data.tpl');
-		//$this->jsonOutput(array('sUserData' => $userData));
 	}
 	
 	/**
@@ -849,6 +861,25 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 				'basket'  => $basket
 			);
 		}
+
+		$this->jsonOutput($output);
+	}
+
+	/**
+	 * logoutAction()
+	 *
+	 * Loggt den Benutzer aus dem System aus
+	 *
+	 * @return void
+	 */
+	public function logoutAction()
+	{
+		Shopware()->Modules()->Admin()->sLogout();
+
+		$output = array(
+			'success' => true,
+			'msg'     => 'Ihr Logout war erfolgreich.'
+		);
 
 		$this->jsonOutput($output);
 	}
