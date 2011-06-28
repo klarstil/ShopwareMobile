@@ -49,14 +49,12 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 		);
 		$this->subscribeEvent($event);
 
-		$hook = $this->createHook(
-			'Shopware_Controllers_Frontend_Register',
-			'saveRegister',
-			'onSaveRegister',
-			Enlight_Hook_HookHandler::TypeBefore,
-			0
+
+		$event = $this->createEvent(
+			'Shopware_Modules_Admin_SaveRegister_Start',
+			'onSaveRegisterStart'
 		);
-		$this->subscribeHook($hook);
+		$this->subscribeEvent($event);
 
 		/* Add menu entry */
 		/* $parent = $this->Menu()->findOneBy('label', 'Marketing');
@@ -96,7 +94,6 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 		$form->setElement('text', 'iconPath', array('label'=> 'Icon - nur iOS (Gr&ouml;&szlig;e: 57px x 57px, wird angezeigt wenn der Benutzer die Seite zum Home-Screen hinzuf&uuml;gt)','value'=>'', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
 		$form->setElement('checkbox', 'glossOnIcon', array('label'=>'Glanz &uuml;ber Icon anzeigen - nur iOS','value'=>'1', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
 		$form->setElement('text', 'startUpPath', array('label'=> 'Startup Screen - nur iOS (wird angezeigt wenn der Benutzer die Seite zum Home-Screen hinzuf&uuml;gt)','value'=>'', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
-
 		$form->setElement('checkbox', 'useNormalSite', array('label'=>'Link zur normalen Ansicht anzeigen','value'=>'1', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
 
 		$form->setElement('combo', 'statusBarStyle',
@@ -151,7 +148,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 	 */
 	public function getInfo()
     {
-    	return include(dirname(__FILE__).'/Meta.php');
+    	return include(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Meta.php');
     }
     
     /**
@@ -190,6 +187,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 			}
 	    }
 
+
 	    // Add icon for Backend module
 		if($request->getModuleName() != 'frontend') {
 			$view->extendsBlock('backend_index_css', '<style type="text/css">a.iphone { background-image: url("'. self::$icnBase64 .'"); background-repeat: no-repeat; }</style>', 'append');
@@ -200,15 +198,17 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 	    $mobileSession = Shopware()->Session()->Mobile;
 		if($version === 'mobile' && $mobileSession === 1) {
 			$dirs = Shopware()->Template()->getTemplateDir();
-			$newDirs = array_merge(array(dirname(__FILE__) . '/Views/'), $dirs);
+			$newDirs = array_merge(array(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Views' . DIRECTORY_SEPARATOR), $dirs);
 			Shopware()->Template()->setTemplateDir($newDirs);
 
+			$basepath = Shopware()->Config()->BasePath;
+
 			// Assign plugin configuration
-			$view->assign('shopwareMobile',array(
+			$view->assign('shopwareMobile', array(
 				'additionalCSS'  => $config->additionalCSS,
 				'isUserLoggedIn' => Shopware()->Modules()->sAdmin()->sCheckUser(),
 				'useNormalSite'  => $config->useNormalSite,
-				'template'       => 'frontend/_resources/styles/' . trim($config->colorStyle) . '.css',
+				'template'       => 'frontend'. DIRECTORY_SEPARATOR . '_resources'.DIRECTORY_SEPARATOR.'styles' . DIRECTORY_SEPARATOR . trim($config->colorStyle) . '.css',
 				'useVoucher'     => $config->useVoucher,
 				'useNewsletter'  => $config->useNewsletter,
 				'useComment'     => $config->useComment,
@@ -220,13 +220,14 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 				'statusBarStyle' => $config->statusBarStyle,
 				'payments'       => $config->supportedPayments,
 				'agbID'          => $config->agbID,
-				'cancellationID' => $config->cancelRightID
+				'cancellationID' => $config->cancelRightID,
+				'basePath'       => $basepath
 			));
 
 		} else {
 			if(!empty($mobileSession) && $mobileSession == 0) { $active = 1; } else { $active = 0; }
 
-			$view->addTemplateDir(dirname(__FILE__). '/Views/');
+			$view->addTemplateDir(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Views' . DIRECTORY_SEPARATOR);
 			$view->assign('shopwareMobile', array(
 				'active'     => $active,
 				'useSubShop' => $config->useSubshop,
@@ -235,7 +236,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 				'basePath'   => $request->getBasePath()
 			));
 
-			$view->extendsTemplate('frontend/plugins/swag_mobiletemplate/index.tpl');
+			$view->extendsTemplate('frontend' . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'swag_mobiletemplate' . DIRECTORY_SEPARATOR . 'index.tpl');
 		}
     }
 
@@ -249,7 +250,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
      */
     public static function onGetControllerPath()
     {
-    	return dirname(__FILE__) . '/MobileTemplate.php';
+    	return dirname(__FILE__) . DIRECTORY_SEPARATOR . 'MobileTemplate.php';
     }
     
     /**
@@ -262,7 +263,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
      */
     public static function onGetControllerPathBackend()
     {
-    	return dirname(__FILE__) . '/MobileTemplateAdmin.php';
+    	return dirname(__FILE__) . DIRECTORY_SEPARATOR . 'MobileTemplateAdmin.php';
     }
 
 	/**
@@ -296,18 +297,17 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 	}
 
 	/**
-	 * onSaveRegister
+	 * onSaveRegisterStart
 	 *
-	 * Hook-Methode - Setzt das richtige Encoding fuer die Registrierungsdaten
+	 * Event-Methode - Setzt das richtige Encoding fuer die Registrierungsdaten
 	 *
 	 * @static
 	 * @param Enlight_Hook_HookArgs $args
 	 * @return void
 	 */
-	public static function onSaveRegister(Enlight_Hook_HookArgs $args)
+	public static function onSaveRegisterStart(Enlight_Event_EventArgs $args)
 	{
 		$subject = $args->getSubject();
-		$request = $subject->Request();
 		$session = Shopware()->Session();
 
 		if(Shopware()->Session()->Mobile == 1 && !empty($session['sRegister']['billing'])) {
@@ -316,7 +316,6 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 				$value = htmlentities($value);
 				$session['sRegister']['billing'][$key] = $value;
 			}
-
 		}
 	}
     

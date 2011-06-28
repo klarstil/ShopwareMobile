@@ -20,7 +20,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 {
 	id: 'orderConfirmation',
 	title: '{s name="MobileCheckoutTitle"}Bestellbest&auml;tigung{/s}',
-	scroll: 'vertical',
+	scroll: false,
 	layout: 'card',
 	
 	initComponent: function() {
@@ -51,19 +51,22 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 			html: '<div class="x-form-fieldset-title">{s name="MobileCheckoutCartTitle"}Ihr Warenkorb{/s}</div>'
 		});
 		this.cartView = new App.views.Cart.list;
+		this.cartView.scroll = false;
 		this.cartView.tpl = Ext.XTemplate.from('CheckoutcartTpl');
 
 		/** Contains all price related informations */
-		me.orderInfo = new Ext.Container({});
+		me.orderInfo = new Ext.Container({ scroll: false });
 
 		/** Payment methods fieldset */
 		this.paymentField = new Ext.form.FieldSet({
-			title: '{s name="MobileCheckoutSelectPaymentTitle"}Zahlungsart ausw&auml;hlen{/s}'
+			title: '{s name="MobileCheckoutSelectPaymentTitle"}Zahlungsart ausw&auml;hlen{/s}',
+			scroll: false
 		});
 
 		/** shipping type fieldset */
 		this.shippingTypeField = new Ext.form.FieldSet({
 			id: 'shippingTypeField',
+			scroll: false,
 			title: '{s name="MobileCheckoutSelectedDispatch"}Ausgew&auml;hlte Versandart{/s}',
 			items: [{
 				xtype: 'textfield',
@@ -85,6 +88,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 		/** Billing address */
 		this.billing = new Ext.Container({
 			id: 'billingAddress',
+			scroll: false,
 			html: '<div class="label x-form-fieldset-title">{s name="MobileCheckoutBillingAddressTitle"}Rechnungsadresse{/s}</div>' +
 				  '<div class="inner">' +
 				    '<p>' + billing.firstname + '&nbsp;' + billing.lastname + '</p>' +
@@ -96,6 +100,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 		/** Shipping address */
 		this.shipping = new Ext.Container({
 			id: 'shippingAddress',
+			scroll: false,
 			html: '<div class="label x-form-fieldset-title">{s name="MobileCheckoutShippingAddressTitle"}Lieferadresse{/s}</div>' +
 				  '<div class="inner">' +
 				    '<p>' + shipping.firstname + '&nbsp;' + shipping.lastname + '</p>' +
@@ -108,6 +113,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 		this.orderPnl = new Ext.form.FormPanel({
 			id: 'orderPnl',
 			url: App.RequestURL.saveOrder,
+			scroll: false,
 			listeners: {
 				submit: function(form, response) {
 					if(response.success && response.msg) {
