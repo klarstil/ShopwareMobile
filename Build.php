@@ -75,6 +75,14 @@ return array(
 		)),
 		'1.1.3'=> array('releasedate'=>'2011-06-27', 'lines' => array(
 			'Fix basepath issue'
+		)),
+		'1.1.4'=>array('releasedate'=>'2011-06-29', 'lines' => array(
+			'Fix smarty plugin problem on windows servers',
+			'Fix 500 http error code if a previous version was installed',
+			'Setting absolute basepath for proper subfolder handling',
+			'Remove loadFile-Action',
+			'Use events instead of hooks',
+			'Replace static directory seperators witht the php constants "DIRECTORY_SEPERATOR"'
 		))
 	)
 );
