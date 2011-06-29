@@ -24,9 +24,9 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 	 */
 	public function install()
 	{
+		$this->deletePreviousEntries();
 		$this->createEvents();
 		$this->createPluginForm();
-		$this->deletePreviousEntries();
 
 		/* Add menu entry */
 		/* $parent = $this->Menu()->findOneBy('label', 'Marketing');
