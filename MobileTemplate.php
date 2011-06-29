@@ -38,42 +38,6 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	}
 
 	/**
-	 * loadFileAction()
-	 *
-	 * Laedt eine JS Datei und parst diese mit Smarty
-	 *
-	 * @return bool
-	 */
-	public function loadFileAction()
-	{
-		$path = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Views' . DIRECTORY_SEPARATOR . 'frontend' . DIRECTORY_SEPARATOR . '_resources' . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR;
-		$file = $this->Request()->getParam('file');
-		$type = $this->Request()->getParam('type');
-		$ext = '.js';
-		
-		if(empty($file)) {
-			return false;
-		}
-
-		if(!empty($type)) {
-			if($type === 'controller' || $type === 'con') {
-				$path .= 'controllers' . DIRECTORY_SEPARATOR . $file . $ext;
-			} elseif($type === 'sencha' || $type === 'sen') {
-				$path .= 'sencha' . DIRECTORY_SEPARATOR . $file . $ext;
-			} else {
-				$path .= 'views' . DIRECTORY_SEPARATOR . $file .$ext;
-			}
-		} else {
-			$path .= $file . $ext;
-		}
-
-		// Set proper mime type
-		$this->Response()->setHeader('Content-Type', 'text/javascript');
-		$this->View()->loadTemplate($path);
-		$this->View()->render();
-	}
-
-	/**
 	 * getMainCategoriesAction()
 	 *
 	 * Liest alle Hauptkategorien des Shops aus

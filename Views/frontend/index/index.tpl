@@ -225,41 +225,39 @@
     <div id="sencha-app">
 
 		{* Initialize Application *}
-        <script type="text/javascript" src="{link file='frontend/_resources/app/app.js'}"></script>
-
+		{include file="frontend/plugins/swag_mobiletemplate/app/app.tpl"}
 
 		{* Locale *}
-        <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='locale'}"></script>
+		{include file="frontend/plugins/swag_mobiletemplate/app/locale.tpl"}
 
-		{*  Application Helpers *}
-        <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='helpers'}"></script>
+		{* Application Helpers *}
+        {include file="frontend/plugins/swag_mobiletemplate/app/helpers.tpl"}
 
+        {* Models *}
+        {include file="frontend/plugins/swag_mobiletemplate/app/models.tpl"}
 
-        {*  Models *}
-        <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='models'}"></script>
+        {* Stores *}
+        {include file="frontend/plugins/swag_mobiletemplate/app/stores.tpl"}
 
-        {*  Stores *}
-        <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='stores'}"></script>
+        {* Templates *}
+        {include file="frontend/plugins/swag_mobiletemplate/app/templates.tpl"}
 
-        {*  Templates *}
-        <script type="text/javascript" src="{link file='frontend/_resources/app/templates.js'}"></script>
+        {* Controllers *}
+        {include file="frontend/plugins/swag_mobiletemplate/app/controllers/main_controller.tpl"}
+        {include file="frontend/plugins/swag_mobiletemplate/app/controllers/category_controller.tpl"}
+        {include file="frontend/plugins/swag_mobiletemplate/app/controllers/detail_controller.tpl"}
+        {include file="frontend/plugins/swag_mobiletemplate/app/controllers/account_controller.tpl"}
+        {include file="frontend/plugins/swag_mobiletemplate/app/controllers/checkout_controller.tpl"}
 
-        {*  Controllers *}
-        <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='main_controller' type='con'}"></script>
-        <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='category_controller' type='con'}"></script>
-        <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='detail_controller' type='con'}"></script>
-        <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='account_controller' type='con'}"></script>
-        <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='checkout_controller' type='con'}"></script>
-
-        {*  Views *}
-        <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='main' type='view'}"></script>
-        <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='shop' type='view'}"></script>
-        <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='detail' type='view'}"></script>
-        <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='search' type='view'}"></script>
-        <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='cart' type='view'}"></script>
-        <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='account' type='view'}"></script>
-        <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='info' type='view'}"></script>
-        <script type="text/javascript" src="{url controller='MobileTemplate' action="loadFile" file='checkout' type='view'}"></script>
+        {* Views *}
+        {include file="frontend/plugins/swag_mobiletemplate/app/views/main_view.tpl"}
+        {include file="frontend/plugins/swag_mobiletemplate/app/views/shop_view.tpl"}
+        {include file="frontend/plugins/swag_mobiletemplate/app/views/detail_view.tpl"}
+        {include file="frontend/plugins/swag_mobiletemplate/app/views/search_view.tpl"}
+        {include file="frontend/plugins/swag_mobiletemplate/app/views/cart_view.tpl"}
+        {include file="frontend/plugins/swag_mobiletemplate/app/views/account_view.tpl"}
+        {include file="frontend/plugins/swag_mobiletemplate/app/views/info_view.tpl"}
+        {include file="frontend/plugins/swag_mobiletemplate/app/views/checkout_view.tpl"}
     </div>
 </body>
 </html>
