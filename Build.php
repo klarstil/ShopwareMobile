@@ -83,6 +83,9 @@ return array(
 			'Remove loadFile-Action',
 			'Use events instead of hooks',
 			'Replace static directory seperators witht the php constants "DIRECTORY_SEPERATOR"'
+		)),
+		'1.1.5'=>array('releasedate'=>'2011-06-29', 'lines' => array(
+			'Fix install order'
 		))
 	)
 );
