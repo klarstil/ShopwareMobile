@@ -24,13 +24,56 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 	 */
 	public function install()
 	{
+		$this->createEvents();
+		$this->createPluginForm();
+		$this->deletePreviousEntries();
+
+		/* Add menu entry */
+		/* $parent = $this->Menu()->findOneBy('label', 'Marketing');
+        $item = $this->createMenuItem(array(
+		        'label' => 'Shopware Mobile',
+	            'onclick' => 'openAction(\'MobileTemplate\');',
+	            'class' => 'ico2 iphone',
+	            'active' => 1,
+	            'parent' => $parent,
+	            'style' => 'background-position: 5px 5px;'
+		));
+		$this->Menu()->addItem($item);
+		$this->Menu()->save(); */
+
+
+		return true;
+	}
+
+	/**
+	 * uninstall()
+	 *
+	 * Deinstallationsroutine des Plugins
+	 *
+	 * @return void
+	 */
+	public function uninstall()
+	{
+		$this->deletePreviousEntries();
+		return true;
+	}
+
+	/**
+	 * createEvents()
+	 *
+	 * Erstellt die benoetigten Events fuer dieses Plugin
+	 *
+	 * @return void
+	 */
+	public function createEvents()
+	{
 		/* Subscribe events */
 		$event = $this->createEvent(
 	 		'Enlight_Controller_Dispatcher_ControllerPath_Frontend_MobileTemplate',
 	 		'onGetControllerPath'
 	 	);
 	 	$this->subscribeEvent($event);
-	 	
+
 		$event = $this->createEvent(
  			'Enlight_Controller_Dispatcher_ControllerPath_Backend_MobileTemplate',
  			'onGetControllerPathBackend'
@@ -55,22 +98,19 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 			'onSaveRegisterStart'
 		);
 		$this->subscribeEvent($event);
+	}
 
-		/* Add menu entry */
-		/* $parent = $this->Menu()->findOneBy('label', 'Marketing');
-        $item = $this->createMenuItem(array(
-		        'label' => 'Shopware Mobile',
-	            'onclick' => 'openAction(\'MobileTemplate\');',
-	            'class' => 'ico2 iphone',
-	            'active' => 1,
-	            'parent' => $parent,
-	            'style' => 'background-position: 5px 5px;'
-		));
-		$this->Menu()->addItem($item);
-		$this->Menu()->save(); */
-
+	/**
+	 * createPluginForm
+	 *
+	 * Erstellt die Pluginkonfiguration
+	 *
+	 * @return void
+	 */
+	public function createPluginForm()
+	{
 		$form = $this->Form();
-		
+
 		/* Use Shopware Mobile as subshop */
 		$form->setElement('checkbox', 'useSubshop', array('label'=>'Shopware Mobile als Subshop verwenden','value'=>'0', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
 		$form->setElement('text', 'subshopId', array('label'=>'Subshop ID','value'=>'2', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
@@ -134,8 +174,19 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 		$form->setElement('textarea', 'additionalCSS', array('label'=>'Zusätzliche CSS-Eigenschaften','value'=>'', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
 
 		$form->save();
+	}
 
-		return true;
+	/**
+	 * deletePreviousEntries()
+	 *
+	 * Loescht alte Eintraege in der DB
+	 *
+	 * @return void
+	 */
+	public function deletePreviousEntries()
+	{
+		$sql = "DELETE FROM s_core_subscribes WHERE listener LIKE 'Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap%';";
+		Shopware()->Db()->query($sql);
 	}
 	
 	/**
