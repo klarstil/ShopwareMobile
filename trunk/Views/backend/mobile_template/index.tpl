@@ -54,9 +54,9 @@ Ext.ns('Shopware.SwagMobileTemplate');
 						items: [
 							{ boxLabel: 'iPhone', name: 'iphone', checked: true},
 							{ boxLabel: 'iPod', name: 'ipod', checked: true },
-							{ boxLabel: 'iPad', name: 'ipad' },
+							{ boxLabel: 'iPad (experimental)', name: 'ipad' },
 							{ boxLabel: 'Android', name: 'android', checked: true },
-							{ boxLabel: 'BlackBerry', name: 'blackberry' }
+							{ boxLabel: 'BlackBerry (experimental)', name: 'blackberry' }
 						]
 					}, {
 						// Shopsite ID AGB
@@ -82,34 +82,35 @@ Ext.ns('Shopware.SwagMobileTemplate');
 						fieldLabel: 'Link zur normalen Ansicht',
 						name: 'showNormalVersionLink',
 						checked: {if $showNormalVersionLink}true{else}false{/if}
-					}]
-				}],
-				buttons: [{
-		        	text: 'Allgemeine Anpassungen speichern',
-		        	scope: this,
-		        	handler: function() {
-		        		this.designFormPnl.getForm().submit({
-		        			url: '{url controller="MobileTemplate" action="processGenerellForm"}',
-		        			waitMsg: 'Sende Daten...',
-		        			success: function(form, response) {
-		        				Ext.Msg.show({
-		        					title: 'Speichern erfolgreich',
-		        					msg: response.result.message,
-		        					buttons: Ext.Msg.OK,
-		        					icon: Ext.MessageBox.INFO
-		        				});
-		        			},
-		        			failure: function(form, response) {
-		        				Ext.Msg.show({
-		        					title: 'Es ist ein Fehler aufgetreten',
-		        					msg: response.result.message,
-		        					buttons: Ext.Msg.OK,
-		        					icon: Ext.MessageBox.ERROR
-		        				});
-		        			}
-		        		})
-		        	}
-		        }]
+					}],
+					buttons: [{
+			        	text: 'Allgemeine Anpassungen speichern',
+			        	name: 'saveGenerell',
+			        	scope: this,
+			        	handler: function() {
+			        		this.generellPnl.getForm().submit({
+			        			url: '{url controller="MobileTemplate" action="processGenerellForm"}',
+			        			waitMsg: 'Sende Daten...',
+			        			success: function(form, response) {
+			        				Ext.Msg.show({
+			        					title: 'Speichern erfolgreich',
+			        					msg: response.result.message,
+			        					buttons: Ext.Msg.OK,
+			        					icon: Ext.MessageBox.INFO
+			        				});
+			        			},
+			        			failure: function(form, response) {
+			        				Ext.Msg.show({
+			        					title: 'Es ist ein Fehler aufgetreten',
+			        					msg: response.result.message,
+			        					buttons: Ext.Msg.OK,
+			        					icon: Ext.MessageBox.ERROR
+			        				});
+			        			}
+			        		})
+			        	}
+			        }]
+				}]
 			});
 			
 			/** Subshop settings form panel */
@@ -133,34 +134,34 @@ Ext.ns('Shopware.SwagMobileTemplate');
 						fieldLabel: 'Subshop-ID',
 						name: 'subshopID',
 						value: '{$subshopID}'
-					}]
-				}],
-				buttons: [{
-		        	text: 'Subshop Anpassungen speichern',
-		        	scope: this,
-		        	handler: function() {
-		        		this.designFormPnl.getForm().submit({
-		        			url: '{url controller="MobileTemplate" action="processSubshopForm"}',
-		        			waitMsg: 'Sende Daten...',
-		        			success: function(form, response) {
-		        				Ext.Msg.show({
-		        					title: 'Speichern erfolgreich',
-		        					msg: response.result.message,
-		        					buttons: Ext.Msg.OK,
-		        					icon: Ext.MessageBox.INFO
-		        				});
-		        			},
-		        			failure: function(form, response) {
-		        				Ext.Msg.show({
-		        					title: 'Es ist ein Fehler aufgetreten',
-		        					msg: response.result.message,
-		        					buttons: Ext.Msg.OK,
-		        					icon: Ext.MessageBox.ERROR
-		        				});
-		        			}
-		        		})
-		        	}
-		        }]
+					}],
+					buttons: [{
+			        	text: 'Subshop Anpassungen speichern',
+			        	scope: this,
+			        	handler: function() {
+			        		this.shopPnl.getForm().submit({
+			        			url: '{url controller="MobileTemplate" action="processSubshopForm"}',
+			        			waitMsg: 'Sende Daten...',
+			        			success: function(form, response) {
+			        				Ext.Msg.show({
+			        					title: 'Speichern erfolgreich',
+			        					msg: response.result.message,
+			        					buttons: Ext.Msg.OK,
+			        					icon: Ext.MessageBox.INFO
+			        				});
+			        			},
+			        			failure: function(form, response) {
+			        				Ext.Msg.show({
+			        					title: 'Es ist ein Fehler aufgetreten',
+			        					msg: response.result.message,
+			        					buttons: Ext.Msg.OK,
+			        					icon: Ext.MessageBox.ERROR
+			        				});
+			        			}
+			        		})
+			        	}
+			        }]
+				}]
 			});
 			
 			/** Design related settings form panel */
@@ -194,7 +195,7 @@ Ext.ns('Shopware.SwagMobileTemplate');
 					}, {
 						// Commentfield on confirm page
 						xtype: 'checkbox',
-						fieldName: 'Kommentarfeld auf der Bestellbest&auml;tigungsseite anzeigen',
+						fieldLabel: 'Kommentarfeld auf der Bestellbest&auml;tigungsseite anzeigen',
 						name: 'useComment',
 						checked: {if $useComment}true{else}false{/if}
 					}, {

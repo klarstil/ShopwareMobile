@@ -92,7 +92,68 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 	 */
 	public function processGenerellFormAction()
 	{
-		//.. empty function
+		$request = $this->Request();
+		
+		// Supported devices
+		$supportedDevices = array();
+		$iphone = $request->getParam('iphone');
+		if(!empty($iphone)) {
+			$supportedDevices[] = 'iPhone';
+		}
+		
+		$ipod = $request->getParam('ipod');
+		if(!empty($ipod)) {
+			$supportedDevices[] = 'iPod';
+		}
+		$ipad = $request->getParam('ipad');
+		if(!empty($ipad)) {
+			$supportedDevices[] = 'iPad';
+		}
+		$android = $request->getParam('android');
+		if(!empty($android)) {
+			$supportedDevices[] = 'Android';
+		}
+		$blackBerry = $request->getParam('blackberry');
+		if(!empty($blackBerry)) {
+			$supportedDevices[] = 'BlackBerry';
+		}
+		$supportedDevices = implode('|', $supportedDevices);
+		$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$supportedDevices' WHERE `name` LIKE 'supportedDevices';");
+		
+		//Shopsite-ID AGB
+		$agbInfoID = $request->getParam('agbInfoID');
+		if(!empty($agbInfoID)) {
+			$agbInfoID = (int) $agbInfoID;
+			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$agbInfoID' WHERE `name` LIKE 'agbInfoID';");
+		}
+		
+		//Shopsite-ID Right of Revocation
+		$cancelRightID = $request->getParam('cancelRightID');
+		if(!empty($cancelRightID)) {
+			$cancelRightID = (int) $cancelRightID;
+			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$cancelRightID' WHERE `name` LIKE 'cancelRightID';");
+		}
+		
+		//Infosite group name
+		$infoGroupName = $request->getParam('infoGroupName');
+		if(!empty($infoGroupName)) {
+			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$infoGroupName' WHERE `name` LIKE 'infoGroupName';");
+		}
+		
+		// Show normal version link
+		$showNormalVersionLink = $request->getParam('showNormalVersionLink');
+		if(!empty($showNormalVersionLink)) {
+			if($showNormalVersionLink == 'on') {
+				$showNormalVersionLink = 1;
+			} else {
+				$showNormalVersionLink = 0;
+			}
+			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$showNormalVersionLink' WHERE `name` LIKE 'showNormalVersionLink';");
+		}
+		
+		$message = 'Das Formular wurde erfolgreich gespeichert.';
+		echo Zend_Json::encode(array('success' => true, 'message' => $message));
+		die();
 	}
 	
 	/**
@@ -105,7 +166,29 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 	 */
 	public function processSubshopFormAction()
 	{
-		//.. empty function
+		$request = $this->Request();
+		
+		// Use Shopware Mobile as Subshop
+		$useAsSubshop = $request->getParam('useAsSubshop');
+		if(!empty($useAsSubshop)) {
+			if($useAsSubshop == 'on') {
+				$useAsSubshop = 1;
+			} else {
+				$useAsSubshop = 0;
+			}
+			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$useAsSubshop' WHERE `name` LIKE 'useAsSubshop';");
+		}
+		
+		//Subshop-ID
+		$subshopID = $request->getParam('subshopID');
+		if(!empty($subshopID)) {
+			$subshopID = (int) $subshopID;
+			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$subshopID' WHERE `name` LIKE 'subshopID';");
+		}
+		
+		$message = 'Das Formular wurde erfolgreich gespeichert.';
+		echo Zend_Json::encode(array('success' => true, 'message' => $message));
+		die();
 	}
 	
 	/**
@@ -121,7 +204,7 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 		$logoUpload    = $_FILES['logoUpload'];
 		$startupUpload = $_FILES['startupUpload'];
 		$iconUpload    = $_FILES['iconUpload'];
-		$request = $this->Request();
+		$request       = $this->Request();
 		
 		// Check if the user chooses a new logo
 		if(is_array($logoUpload) && !empty($logoUpload) && $logoUpload['size'] > 0) {
@@ -138,7 +221,71 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 			$this->processUpload($startupUpload, 'startip', 'startup');
 		}
 		
-		// ... save form data in db
+		// Sencha.IO
+		$useSenchaIO = $request->getParam('useSenchaIO');
+		if(!empty($useSenchaIO)) {
+			if($useSenchaIO == 'on') {
+				$useSenchaIO = 1;
+			} else {
+				$useSenchaIO = 0;
+			}
+			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$useSenchaIO' WHERE `name` LIKE 'useSenchaIO';");
+		}
+		
+		// Voucher on confirm page
+		$useVoucher = $request->getParam('useVoucher');
+		if(!empty($useVoucher)) {
+			if($useVoucher == 'on') {
+				$useVoucher = 1;
+			} else {
+				$useVoucher = 0;
+			}
+			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$useVoucher' WHERE `name` LIKE 'useVoucher';");
+		}
+		
+		// Newsletter signup on confirm page
+		$useNewsletterr = $request->getParam('useNewsletter');
+		if(!empty($useNewsletter)) {
+			if($useNewsletter == 'on') {
+				$useNewsletter = 1;
+			} else {
+				$useNewsletter = 0;
+			}
+			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$useNewsletter' WHERE `name` LIKE 'useNewsletter';");
+		}
+		
+		// Commentfield on confirm page
+		$useComment = $request->getParam('useComment');
+		if(!empty($useComment)) {
+			if($useComment == 'on') {
+				$useComment = 1;
+			} else {
+				$useComment = 0;
+			}
+			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$useComment' WHERE `name` LIKE 'useComment';");
+		}
+		
+		// TODO: Colortemplate ...need some work :(
+		
+		// Additional CSS
+		$additionalCSS = $request->getParam('additionalCSS');
+		if(!empty($additionalCSS)) {
+			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$additionalCSS' WHERE `name` LIKE 'additionalCSS';");
+		}
+		
+		// TODO: Statusbar style ...need some work :(
+		
+		// Gloss on icon
+		$glossOnIcon = $request->getParam('glossOnIcon');
+		if(!empty($glossOnIcon)) {
+			if($glossOnIcon == 'on') {
+				$glossOnIcon = 1;
+			} else {
+				$glossOnIcon = 0;
+			}
+			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$uglossOnIcon' WHERE `name` LIKE 'glossOnIcon';");
+		}
+		
 		$message = 'Das Formular wurde erfolgreich gespeichert.';
 		echo Zend_Json::encode(array('success' => true, 'message' => $message));
 		die();
