@@ -10,12 +10,20 @@
  */
 class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Action
 {
+	/** {obj} Shopware configuration object */
 	protected $config;
+	
+	/** {obj} Shopware database object */
 	protected $db;
+	
+	/** {str} Upload path for the logo, icon and startup screen */
 	protected $uploadPath;
+	
+	/** {int} Max. upload size of a file */
 	protected $maxFileSize;
+	
+	/** {arr} Allowed file extension */
 	protected $fileExtensions;
-	protected $maxLogoWidth;
 	
 	/**
 	 * init()
@@ -42,9 +50,6 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 		
 		// Set allowed file extensions
 		$this->fileExtensions = array("jpg", "jpeg", "tif", "tiff", "gif", 'png');
-		
-		// Set max logo width
-		$this->maxLogoWidth = 320;
 		
 		$this->View()->addTemplateDir(dirname(__FILE__) . "/Views/");
 	}
@@ -100,7 +105,6 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 		if(!empty($iphone)) {
 			$supportedDevices[] = 'iPhone';
 		}
-		
 		$ipod = $request->getParam('ipod');
 		if(!empty($ipod)) {
 			$supportedDevices[] = 'iPod';
