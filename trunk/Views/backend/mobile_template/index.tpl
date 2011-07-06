@@ -15,12 +15,16 @@
 .success a {color:#264409;}
 strong { font-weight: 700 }
 .swag_notice .x-panel-body-noheader { border: 0 none }
-#iphonePreview .x-panel-body img {
+#iphonePreview .x-panel-body .preview img {
 	width: 198px;
 	height: 372px;
 	margin: 0 auto;
 	display: block;
 }
+#iphonePreview .x-panel-body { padding: 15px; }
+#iphonePreview .x-panel-body h3 {
+	font: 700 14px tahoma,arial,helvetica,sans-serif; margin: 0 0 1em;
+} 
 p.desc { font: 12px tahoma,arial,helvetica,sans-serif; margin: 0 0 1em; }
 </style>
 {/literal}
@@ -51,17 +55,19 @@ Ext.ns('Shopware.SwagMobileTemplate');
 						fieldLabel: 'Unterst&uuml;tzte Ger&auml;te',
 						name: 'supportedDevices',
 						columns: 2,
-						items: [
-							{ boxLabel: 'iPhone', name: 'iphone', checked: true},
-							{ boxLabel: 'iPod', name: 'ipod', checked: true },
-							{ boxLabel: 'iPad (experimental)', name: 'ipad' },
-							{ boxLabel: 'Android', name: 'android', checked: true },
-							{ boxLabel: 'BlackBerry (experimental)', name: 'blackberry' }
-						]
+						items: {$supportedDevicesJSON}
+					}, {
+						// Supported Paymentmeans
+						xtype: 'checkboxgroup',
+						fieldLabel: 'Unterst&uuml;tzte Zahlungsarten',
+						name: 'supportedPaymentmeans',
+						columns: 2,
+						items: {$supportedPaymentmeansJSON}
 					}, {
 						// Shopsite ID AGB
 						xtype: 'textfield',
 						fieldLabel: 'Shopseiten-ID zu den AGB',
+						width: 200,
 						name: 'agbInfoID',
 						value: '{$agbInfoID}'
 					}, {
@@ -69,12 +75,14 @@ Ext.ns('Shopware.SwagMobileTemplate');
 						xtype: 'textfield',
 						fieldLabel: 'Shopseiten-ID zum Wiederrufsrecht',
 						name: 'cancelRightID',
+						width: 200,
 						value: '{$cancelRightID}'
 					}, {
 						// Shopsite group name
 						xtype: 'textfield',
 						fieldLabel: 'Shopseiten-Gruppe',
 						name: 'infoGroupName',
+						width: 200,
 						value: '{$infoGroupName}'
 					}, {
 						// Show Link to normal version of the shop
@@ -133,6 +141,7 @@ Ext.ns('Shopware.SwagMobileTemplate');
 						xtype: 'textfield',
 						fieldLabel: 'Subshop-ID',
 						name: 'subshopID',
+						width: 200,
 						value: '{$subshopID}'
 					}],
 					buttons: [{
@@ -164,12 +173,38 @@ Ext.ns('Shopware.SwagMobileTemplate');
 				}]
 			});
 			
+			this.colorTemplateStore = new Ext.data.JsonStore({
+				autoLoad: true,
+				url: '{url controller="MobileTemplate" action="getColorTemplateStore"}',
+				storeId: 'colorTemplateStore',
+				root: 'data',
+				idProperty: 'id',
+				successProperty: 'success',
+				totalProperty: 'totalCount',
+				fields: [ 'id', 'value', 'displayText', 'previewImage' ],
+				valueField: 'value',
+				displayField: 'displayText'
+			});
+			
+			this.statusbarStyleStore = new Ext.data.JsonStore({
+				autoLoad: true,
+				url: '{url controller="MobileTemplate" action="getStatusbarStyleStore"}',
+				storeId: 'statusbarStyleStore',
+				root: 'data',
+				idProperty: 'id',
+				successProperty: 'success',
+				totalProperty: 'totalCount',
+				fields: [ 'id', 'value', 'displayText' ],
+				valueField: 'value',
+				displayField: 'displayText'
+			});
+			
 			/** Design related settings form panel */
 			this.designFormPnl = new Ext.FormPanel({
 				bodyBorder: false,
 				id: 'designForm',
 				labelWidth: 250,
-				width: '80%',
+				width: '70%',
 				fileUpload: true,
 				items: [{
 					xtype: 'fieldset',
@@ -205,39 +240,26 @@ Ext.ns('Shopware.SwagMobileTemplate');
 			            mode: 'local',
 			            triggerAction: 'all',
 			            name: 'colorTemplate',
-			            selected: '{$colorTemplate}',
-			            store: new Ext.data.ArrayStore({
-			            	id: 0,
-			            	fields: ['id', 'displayText', 'previewImage'],
-			            	data: [
-			            		['android', 'Android-Style', '{link file="backend/mobile_template/img/colortemplates/android.jpg"}'],
-			            		['blue', 'Blau', '{link file="backend/mobile_template/img/colortemplates/blue.jpg"}'],
-			            		['brown', 'Braun','{link file="backend/mobile_template/img/colortemplates/brown.jpg"}'],
-			            		['default', 'Standard', '{link file="backend/mobile_template/img/colortemplates/default.jpg"}'],
-			            		['green', 'Grün', '{link file="backend/mobile_template/img/colortemplates/green.jpg"}'],
-			            		['ios', 'iOS-Style', '{link file="backend/mobile_template/img/colortemplates/ios.jpg"}'],
-			            		['orange', 'Orange', '{link file="backend/mobile_template/img/colortemplates/orange.jpg"}'],
-			            		['pink', 'Pink','{link file="backend/mobile_template/img/colortemplates/pink.jpg"}'],
-			            		['red', 'Rot', '{link file="backend/mobile_template/img/colortemplates/red.jpg"}'],
-			            		['turquoise', 'Türkis', '{link file="backend/mobile_template/img/colortemplates/turquoise.jpg"}']	
-			            	]
-			            }),
+			            value: '{$colorTemplate}',
+			            store: this.colorTemplateStore,
+			            hiddenName: 'hiddenColorTemplate',
 			            listeners: {
 			            	scope: this,
 			            	
 			            	/** Change preview image on select */
 			            	select: function(combo, rec, idx) {
-			          
-			            		var previewImgPnl = Ext.getCmp('iphonePreview'),
-			            			html = '<img src="'+ rec.data.previewImage +'" alt="Farbtemplate '+ rec.data.displayText +'" title="Farbtemplate '+ rec.data.displayText +'" />';
+			          		
+			            		var previewImgPnl = Ext.getCmp('iphonePreview');
+			            		var html = '<img src="'+ rec.data.previewImage +'" alt="Farbtemplate '+ rec.data.displayText +'" title="Farbtemplate '+ rec.data.displayText +'" />'
 			            		
 			            		previewImgPnl.body.update(html);
 			            		previewImgPnl.doLayout();
 			            		
 			            	}
 			            },
-			            valueField: 'id',
-   						displayField: 'displayText'
+			            valueField: 'value',
+   						displayField: 'displayText',
+   						width: 300
 			        }, {
 			        	// Shoplogo - Uploadfield
 			        	xtype: 'fileuploadfield',
@@ -245,7 +267,9 @@ Ext.ns('Shopware.SwagMobileTemplate');
 			        	fieldLabel: 'Shoplogo-Upload',
 			        	buttonText: 'Logo auswählen',
 			        	name: 'logoUpload',
-			        	id: 'logoUpload'
+			        	width: 390,
+			        	id: 'logoUpload',
+			        	value: '{$logoUpload}'
 			        }, {
 			        	// Additional CSS settings
 			        	xtype: 'textarea',
@@ -296,8 +320,9 @@ Ext.ns('Shopware.SwagMobileTemplate');
 						fieldLabel: 'Homescreen-Icon Upload',
 						buttonText: 'Icon auswählen',
 						name: 'iconUpload',
+						width: 390,
 						id: 'iconUpload',
-						tabTip: 'Das Icon muss eine Größe von exakt 57px x 57px aufweisen.'
+						value: '{$iconUpload}'
 					}, {
 						// Startup screen upload
 						xtype: 'fileuploadfield',
@@ -305,26 +330,23 @@ Ext.ns('Shopware.SwagMobileTemplate');
 						fieldLabel: 'iOS Startupscreen Upload',
 						buttonText: 'Screen auswählen',
 						name: 'startupUpload',
-						id: 'startupUpload'
+						width: 405,
+						id: 'startupUpload',
+						value: '{$startupUpload}'
 					}, {
 			        	// Statusbar style
 			        	xtype: 'combo',
 			        	mode: 'local',
 			        	triggerAction: 'all',
 			        	fieldLabel: 'Statusbar-Style',
-			        	store: new Ext.data.ArrayStore({
-			        		id: 1,
-			        		fields: ['id', 'displayText'],
-			        		data: [
-			        			["default", "default"],
-							  	["black", "black"],
-							  	["black-translucent", "black-translucent"]
-			        		],
-			        	}),
-			        	valueField: 'id',
-   						displayField: 'displayText',
+			        	hiddenName: 'hiddenStatusbarStyle',
+			        	hiddenValue: 'value',
+			        	store: this.statusbarStyleStore,
+			        	valueField: 'value',
+						displayField: 'displayText',
    						name: 'statusbarStyle',
-   						selected: '{$statusbarStyle}'
+   						value: '{$statusbarStyle}',
+   						width: 303
 			        }, {
 			        	// Gloss over icon
 			        	xtype: 'checkbox',
@@ -361,13 +383,51 @@ Ext.ns('Shopware.SwagMobileTemplate');
 				}]
 			});
 			
-			/** iPhone design preview panel */
-			this.designPreviewPnl = new Ext.Panel({
-				width: '20%',
+			this.designPreviewPnl = new Ext.TabPanel({
+				activeTab: 0,
 				bodyBorder: false,
-				id: 'iphonePreview',
-				html: '<img src="{link file="backend/mobile_template/img/colortemplates/default.jpg"}" />'
+				title: 'Vorschau',
+				padding: 10
 			});
+			
+			this.iphonePreview = new Ext.Panel({
+				title: 'Farbtemplate',
+				id: 'iphonePreview',
+				height: 372,
+				bodyBorder: false,
+				html: '<img src="{$pluginBase|cat:$colorTemplate}.jpg" />'
+			});
+			this.designPreviewPnl.add(this.iphonePreview);
+			
+			{if $logoUpload}
+				this.logoPreview = new Ext.Panel({
+					title: 'Logo',
+					id: 'logoPreview',
+					bodyBorder: false,
+					html: '<img src="{$logoUpload}" />'
+				});
+				this.designPreviewPnl.add(this.logoPreview);
+			{/if}
+			
+			{if $iconUpload}
+				this.iconPreview = new Ext.Panel({
+					title: 'Icon',
+					id: 'iconPreview',
+					bodyBorder: false,
+					html: '<img src="{$iconUpload}" />'
+				});
+				this.designPreviewPnl.add(this.iconPreview);
+			{/if}
+			
+			{if $startupUpload}
+				this.startupPreview = new Ext.Panel({
+					title: 'Startup',
+					id: 'startupPreview',
+					bodyBorder: false,
+					html: '<img src="{$startupUpload}" />'
+				});
+				this.designPreviewPnl.add(this.startupPreview);
+			{/if}
 			
 			/** Container panel for the both design panels */
 			this.designPnl = new Ext.Panel({
@@ -381,7 +441,7 @@ Ext.ns('Shopware.SwagMobileTemplate');
 			
 			/** Main tabpanel navigation */
 			this.tabPnl = new Ext.TabPanel({
-				activeTab: 2,
+				activeTab: 0,
 				region: 'center',
 				autoWidth: false,
 				items: [this.generellPnl, this.shopPnl, this.designPnl]
@@ -399,7 +459,7 @@ Ext.ns('Shopware.SwagMobileTemplate');
 			
 			this.items = [this.betaNoticePnl, this.tabPnl];
 			
-	    	View.superclass.initComponent.call(this); 	
+	    	View.superclass.initComponent.call(this);
 	    }
 	});
 	Shopware.SwagMobileTemplate.View = View;
