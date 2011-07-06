@@ -13,6 +13,9 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 	/** {obj} Shopware configuration object */
 	protected $config;
 	
+	/** {arr} Plugin configuration */
+	protected $props;
+	
 	/** {obj} Shopware database object */
 	protected $db;
 	
@@ -24,6 +27,15 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 	
 	/** {arr} Allowed file extension */
 	protected $fileExtensions;
+	
+	/** {str} HTTP base path */
+	protected $basePath;
+	
+	/** {str} HTTP plugin views path */
+	protected $pluginPath;
+	
+	/** {arr} Color templates */
+	protected $colorTemplates;
 	
 	/**
 	 * init()
@@ -51,6 +63,41 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 		// Set allowed file extensions
 		$this->fileExtensions = array("jpg", "jpeg", "tif", "tiff", "gif", 'png');
 		
+		// Get all settings
+		$props = $this->db->query('SELECT * FROM `s_plugin_mobile_settings`');
+		$props = $props->fetchAll();
+		
+		$properties = array();
+		foreach($props as $prop) {
+			$properties[$prop['name']] = $prop['value'];
+		}
+		
+		$this->props = $properties;
+		
+		// Set plugin base path
+		$docPath = Enlight::Instance()->DocPath();
+		$request = Enlight::Instance()->Front()->Request();
+		$this->basePath = $request->getScheme().'://'. $request->getHttpHost() . $request->getBasePath() . '/';
+		
+		$path = explode($docPath, dirname(__FILE__));
+		$path = $path[1];
+		$this->pluginPath = $this->basePath . $path . '/Views/backend/mobile_template/img/colortemplates/';
+		
+		// Set colorTemplates array
+		$this->colorTemplates = array(
+			'data' => array(
+				array('value' => 'android', 'displayText' => 'Android-Style'),
+				array('value' => 'blue', 'displayText' => 'Blau'),
+				array('value' => 'default', 'displayText' => 'Standard'),
+				array('value' => 'green', 'displayText' => utf8_encode('Grün')),
+				array('value' => 'ios', 'displayText' => 'iOS-Style'),
+				array('value' => 'orange', 'displayText' => 'Orange'),
+				array('value' => 'pink', 'displayText' => 'Pink'),
+				array('value' => 'red', 'displayText' => 'Rot'),
+				array('value' => 'turquoise', 'displayText' => utf8_encode('Türkis'))
+			)
+		);
+
 		$this->View()->addTemplateDir(dirname(__FILE__) . "/Views/");
 	}
  	
@@ -65,14 +112,55 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
  	 */
 	public function indexAction()
 	{
-		// Get all settings
-		$props = $this->db->query('SELECT * FROM `s_plugin_mobile_settings`');
-		$props = $props->fetchAll();
-		
-		// ...and assign them to the view
-		foreach($props as $prop) {
-			$this->View()->assign($prop['name'], $prop['value']);
+		// Assign plugin props to view
+		foreach($this->props as $k => $v) {
+			$this->View()->assign($k, $v);
 		}
+		
+		$this->View()->assign('pluginBase', $this->pluginPath);
+		
+		// Supported devices
+		$data = array(
+			array('boxLabel' => 'iPhone', 'name' => 'iphone'),
+			array('boxLabel' => 'iPod', 'name' => 'ipod'),
+			array('boxLabel' => 'iPad (experimental)', 'name' => 'ipad'),
+			array('boxLabel' => 'Android', 'name' => 'android'),
+			array('boxLabel' => 'BlackBerry (experimental)', 'name' => 'blackberry')
+		);
+		$properties = strtolower($this->props['supportedDevices']);
+		$properties = explode('|', $properties);
+		
+		// Set checked attribute
+		foreach($data as $k => $v) {
+			if(in_array($v['name'], $properties)) {
+				$data[$k]['checked'] = true;
+			}
+		}
+		$this->View()->assign('supportedDevicesJSON', Zend_Json::encode($data));
+		
+		// Get paymentmeans
+		$paymentmeans = $this->db->query("SELECT `id`, `name`, `description`, `additionaldescription` FROM `s_core_paymentmeans`");
+		$paymentmeans = $paymentmeans->fetchAll();
+		
+		// Supported paymentmeans
+		$supportedPaymentmeans = explode('|', $this->props['supportedPayments']);
+		$payments = array();
+		foreach($paymentmeans as $k => $v) {
+			if(in_array($v['id'], $supportedPaymentmeans)) {
+				$payments[] = array(
+					'boxLabel' => utf8_encode($v['description']),
+					'checked' => true,
+					'name' => utf8_encode($v['name'])
+				);
+			} else {
+				$payments[] = array(
+					'boxLabel' => utf8_encode($v['description'] . ' (noch nicht unterstützt)'),
+					'disabled' => true,
+					'name' => utf8_encode($v['name'])
+				);
+			}
+		}
+		$this->View()->assign('supportedPaymentmeansJSON', Zend_Json::encode($payments));
 	}
  	
  	/**
@@ -124,29 +212,46 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 		$supportedDevices = implode('|', $supportedDevices);
 		$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$supportedDevices' WHERE `name` LIKE 'supportedDevices';");
 		
+		// Supported paymentmeans
+		$supportedPaymentmeans =  array();
+		$cash = $request->getParam('cash');
+		if(!empty($cash)) {
+			$supportedPaymentmeans[] = 3;
+		}
+		$invoice = $request->getParam('invoice');
+		if(!empty($invoice)) {
+			$supportedPaymentmeans[] = 4;
+		}
+		$prepayment = $request->getParam('prepayment');
+		if(!empty($prepayment)) {
+			$supportedPaymentmeans[] = 5;
+		}
+		$supportedPaymentmeans = implode('|', $supportedPaymentmeans);
+		$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$supportedPaymentmeans' WHERE `name` LIKE 'supportedPayments';");
+		
 		//Shopsite-ID AGB
 		$agbInfoID = $request->getParam('agbInfoID');
-		if(!empty($agbInfoID)) {
+		if(isset($agbInfoID)) {
 			$agbInfoID = (int) $agbInfoID;
 			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$agbInfoID' WHERE `name` LIKE 'agbInfoID';");
 		}
 		
 		//Shopsite-ID Right of Revocation
 		$cancelRightID = $request->getParam('cancelRightID');
-		if(!empty($cancelRightID)) {
+		if(isset($cancelRightID)) {
 			$cancelRightID = (int) $cancelRightID;
 			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$cancelRightID' WHERE `name` LIKE 'cancelRightID';");
 		}
 		
 		//Infosite group name
 		$infoGroupName = $request->getParam('infoGroupName');
-		if(!empty($infoGroupName)) {
+		if(isset($infoGroupName)) {
 			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$infoGroupName' WHERE `name` LIKE 'infoGroupName';");
 		}
 		
 		// Show normal version link
 		$showNormalVersionLink = $request->getParam('showNormalVersionLink');
-		if(!empty($showNormalVersionLink)) {
+		if(isset($showNormalVersionLink)) {
 			if($showNormalVersionLink == 'on') {
 				$showNormalVersionLink = 1;
 			} else {
@@ -174,7 +279,7 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 		
 		// Use Shopware Mobile as Subshop
 		$useAsSubshop = $request->getParam('useAsSubshop');
-		if(!empty($useAsSubshop)) {
+		if(isset($useAsSubshop)) {
 			if($useAsSubshop == 'on') {
 				$useAsSubshop = 1;
 			} else {
@@ -185,8 +290,8 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 		
 		//Subshop-ID
 		$subshopID = $request->getParam('subshopID');
-		if(!empty($subshopID)) {
-			$subshopID = (int) $subshopID;
+		if(isset($subshopID)) {
+			$subshopID = intval($subshopID);
 			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$subshopID' WHERE `name` LIKE 'subshopID';");
 		}
 		
@@ -212,22 +317,25 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 		
 		// Check if the user chooses a new logo
 		if(is_array($logoUpload) && !empty($logoUpload) && $logoUpload['size'] > 0) {
-			$this->processUpload($logoUpload, 'logo', 'logo');
+			$logo = $this->processUpload($logoUpload, 'logo', 'logo');
+			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$logo' WHERE `name` LIKE 'logoUpload';");
 		}
 		
 		// Check if the user chooses a new icon
 		if(is_array($iconUpload) && !empty($iconUpload) && $iconUpload['size'] > 0) {
-			$this->processUpload($iconUpload, 'icon', 'icon');
+			$icon = $this->processUpload($iconUpload, 'icon', 'icon');
+			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$icon' WHERE `name` LIKE 'iconUpload';");
 		}
 		
 		// Check if the user chooses a new startup screen
 		if(is_array($startupUpload) && !empty($startupUpload) && $startupUpload['size'] > 0) {
-			$this->processUpload($startupUpload, 'startip', 'startup');
+			$startup = $this->processUpload($startupUpload, 'startup', 'startup');
+			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$startup' WHERE `name` LIKE 'startupUpload';");
 		}
 		
 		// Sencha.IO
 		$useSenchaIO = $request->getParam('useSenchaIO');
-		if(!empty($useSenchaIO)) {
+		if(isset($useSenchaIO)) {
 			if($useSenchaIO == 'on') {
 				$useSenchaIO = 1;
 			} else {
@@ -238,7 +346,7 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 		
 		// Voucher on confirm page
 		$useVoucher = $request->getParam('useVoucher');
-		if(!empty($useVoucher)) {
+		if(isset($useVoucher)) {
 			if($useVoucher == 'on') {
 				$useVoucher = 1;
 			} else {
@@ -248,8 +356,8 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 		}
 		
 		// Newsletter signup on confirm page
-		$useNewsletterr = $request->getParam('useNewsletter');
-		if(!empty($useNewsletter)) {
+		$useNewsletter = $request->getParam('useNewsletter');
+		if(isset($useNewsletter)) {
 			if($useNewsletter == 'on') {
 				$useNewsletter = 1;
 			} else {
@@ -260,7 +368,7 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 		
 		// Commentfield on confirm page
 		$useComment = $request->getParam('useComment');
-		if(!empty($useComment)) {
+		if(isset($useComment)) {
 			if($useComment == 'on') {
 				$useComment = 1;
 			} else {
@@ -269,43 +377,118 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$useComment' WHERE `name` LIKE 'useComment';");
 		}
 		
-		// TODO: Colortemplate ...need some work :(
+		// Colortemplate
+		$colorTemplate = $request->getParam('hiddenColorTemplate');
+		if(isset($colorTemplate)) {
+			
+			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$colorTemplate' WHERE `name` LIKE 'colorTemplate';");
+		}
 		
 		// Additional CSS
 		$additionalCSS = $request->getParam('additionalCSS');
-		if(!empty($additionalCSS)) {
+		if(isset($additionalCSS)) {
 			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$additionalCSS' WHERE `name` LIKE 'additionalCSS';");
 		}
 		
-		// TODO: Statusbar style ...need some work :(
+		// Statusbar style
+		$statusbarStyle = $request->getParam('hiddenStatusbarStyle');
+		if(isset($statusbarStyle)) {
+		
+			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$statusbarStyle' WHERE `name` LIKE 'statusbarStyle';");
+		}
 		
 		// Gloss on icon
 		$glossOnIcon = $request->getParam('glossOnIcon');
-		if(!empty($glossOnIcon)) {
+		if(isset($glossOnIcon)) {
 			if($glossOnIcon == 'on') {
 				$glossOnIcon = 1;
 			} else {
 				$glossOnIcon = 0;
 			}
-			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$uglossOnIcon' WHERE `name` LIKE 'glossOnIcon';");
+			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$glossOnIcon' WHERE `name` LIKE 'glossOnIcon';");
 		}
 		
 		$message = 'Das Formular wurde erfolgreich gespeichert.';
 		echo Zend_Json::encode(array('success' => true, 'message' => $message));
 		die();
 	}
-	
+
 	/**
-	 * getSupportedDevicesAction()
+	 * getColorTemplateStoreAction()
 	 *
-	 * Gibt die unterstuetzten als JSON String zurueck
+	 * Gibt alle verfuegbaren Farbtemplates als JSON String aus
 	 *
-	 * @access public
 	 * @return void
 	 */
-	public function getSupportedDevicesAction()
+	public function getColorTemplateStoreAction()
+	{		
+		$extension = '.jpg';
+		
+		// Basic data array
+		$data = $this->colorTemplates;
+				
+		$selected = $this->props['colorTemplate'];
+		foreach($data['data'] as $k => $v) {
+			// Set id
+			$data['data'][$k]['id'] = $k;
+			
+			// Set selected attribute
+			if($v['value'] == $selected) {
+				$data['data'][$k]['selected'] = true;
+			}
+			
+			// Set preview image
+			$data['data'][$k]['previewImage'] = $this->pluginPath . $v['value'] . $extension; 
+		}
+		
+		// Set totalCount
+		$data['totalCount'] = count($data['data']);
+		
+		// Set success attribute
+		$data['success'] = true;
+		
+		echo Zend_Json::encode($data);
+		die();
+	}
+
+	/**
+	 * getStatusbarStyleStoreAction()
+	 *
+	 * Gibt alle verfuegbaren Statusbar-Styles als JSON String aus
+	 *
+	 * @return void
+	 */
+	public function getStatusbarStyleStoreAction()
 	{
-		//.. empty	
+		$data = array(
+			'data' => array(
+				array('value' => 'default', 'displayText' => 'Standard'),
+				array('value' => 'black', 'displayText' => 'Schwarz'),
+				array('value' => 'black-translucent', 'displayText' => 'Schwarz-transparent')
+			)
+		);
+		
+		$selected = $this->props['statusbarStyle'];
+		foreach($data['data'] as $k => $v) {
+		
+			// Set id
+			$data['data'][$k]['id'] = $k;
+			
+			// Set selected attribute
+			if($v['value'] == $selected) {
+				$data['data'][$k]['selected'] = true;
+			}
+		}
+		
+		// Set totalCount
+		$data['totalCount'] = count($data['data']);
+		
+		// Set success attribute
+		$data['success'] = true;
+		
+		echo Zend_Json::encode($data);
+		die();
+		
 	}
 	
 	////////////////////////////////////////////
@@ -318,10 +501,10 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
      * Laedt die angegeben Datei hoch und validiert diese
      *
      * @access private
-     * @param $upload - $_FILES array
-     * @param $filename - Der zuverwendene Dateiname
-     * @param $imageType - Typ des Bildes (Logo, Icon, Startup-Screen)
-     * @return bool
+     * @param arr $upload - $_FILES array
+     * @param str $filename - Der zuverwendene Dateiname
+     * @param str $imageType - Typ des Bildes (Logo, Icon, Startup-Screen)
+     * @return str $path - Pfad zum Bild
      */
     private function processUpload($upload, $filename, $imageType)
     {
@@ -401,13 +584,15 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 		// Set generic file name
 		$upload['name'] = $filename . '.' . $file_extension;
 		
+		$path = $this->uploadPath . '/' . $upload['name'];
+		
 		// Process the file
-		if (!@move_uploaded_file($upload["tmp_name"], $this->uploadPath."/".$upload['name'])) {
+		if (!@move_uploaded_file($upload["tmp_name"], $path)) {
 			$message = 'Die Datei konnte nicht gespeichert werden.';
 			echo Zend_Json::encode(array('success' => false, 'message' => $message));
 			die();
 		}
 		
-		return true;
+		return $this->basePath . 'images/swag_mobiletemplate/' . $upload['name'];
     }
 }
