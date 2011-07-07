@@ -45,7 +45,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 			('infoGroupName', 'gMobile'),
 			('showNormalVersionLink', '1'),
 			('useAsSubshop', '0'),
-			('subshopID', '2'),
+			('subshopID', '1'),
 			('useSenchaIO', '0'),
 			('useVoucher', '0'),
 			('useNewsletter', '0'),
@@ -59,6 +59,10 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 			('statusbarStyle', 'default'),
 			('glossOnIcon', '1');"
 		);
+
+		$form = $this->Form();
+		$form->setElement('controllerbutton', 'Backendmodul aufrufen', array('label'=>'Shopware Mobile Beta 2 Backend Modul &ouml;ffnen','value'=>'','attributes'=>array('controller'=>'MobileTemplate','action'=>'skeleton')));
+		$form->save();
 
 		return true;
 	}
