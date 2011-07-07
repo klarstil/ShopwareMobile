@@ -297,7 +297,7 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 		}
 		
 		//Subshop-ID
-		$subshopID = $request->getParam('subshopID');
+		$subshopID = $request->getParam('hiddenSubshop');
 		if(isset($subshopID)) {
 			$subshopID = intval($subshopID);
 			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$subshopID' WHERE `name` LIKE 'subshopID';");
@@ -463,6 +463,33 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 	}
 
 	/**
+	 * getSubshopStoreAction()
+	 *
+	 * Gibt alle verfuegbaren Subshops als JSON String aus
+	 *
+	 * @return void
+	 */
+	public function getSubshopStoreAction()
+	{
+		$sql = "SELECT id, id AS valueField, name AS displayText FROM `s_core_multilanguage` GROUP BY id";
+		$result = $this->db->fetchAll($sql);
+
+		$selected = $this->props['subshopID'];
+		foreach($result as $k => $v) {
+			if($v['id'] == $selected) {
+				$result[$k]['selected'] = true;
+			}
+		}
+
+		$data['data'] = $result;
+		$data['totalCount'] = count($result);
+		$data['success'] = true;
+
+		echo Zend_Json::encode($data);
+		die();
+	}
+
+	/**
 	 * getStatusbarStyleStoreAction()
 	 *
 	 * Gibt alle verfuegbaren Statusbar-Styles als JSON String aus
@@ -569,8 +596,8 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 		// Image type related size checking
 		switch($imageType) {
 			case 'icon':
-				if($width != 57 || $height != 57) {
-					$message = 'Das Icon muss eine Gr&ouml;&szlig;e von 57 Pixel x 57 Pixel aufweisen. Bitte w&auml;hlen Sie ein anderes Bild als Icon.';
+				if($width != 72 || $height != 72) {
+					$message = 'Das Icon muss eine Gr&ouml;&szlig;e von 72 Pixel x 72 Pixel aufweisen. Bitte w&auml;hlen Sie ein anderes Bild als Icon.';
 					echo Zend_Json::encode(array('success' => false, 'message' => $message));
 					die();
 				}

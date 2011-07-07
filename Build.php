@@ -86,6 +86,13 @@ return array(
 		)),
 		'1.1.5'=>array('releasedate'=>'2011-06-29', 'lines' => array(
 			'Fix install order'
+		)),
+		'1.1.6'=>array('releasedate'=>'2011-07-07', 'lines' => array(
+			'Add backend module',
+			'Change Bootstrap and MobileTemplate Frontend Controller to use the new features from the backend module',
+			'Replace complete plugin configuration for with just one controller button',
+			'Set required shopware version to >= 3.5.4',
+			'Fix liveshopping counter'
 		))
 	)
 );
