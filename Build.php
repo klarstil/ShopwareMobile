@@ -93,6 +93,10 @@ return array(
 			'Replace complete plugin configuration for with just one controller button',
 			'Set required shopware version to >= 3.5.4',
 			'Fix liveshopping counter'
+		)),
+		'1.1.7'=>array('releasedate'=>'2011-07-07', 'lines' => array(
+			'Add missing uploader files',
+			'Fix uninstall bug'
 		))
 	)
 );
