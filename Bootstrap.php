@@ -191,6 +191,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
     public static function onPostDispatch(Enlight_Event_EventArgs $args)
     {	
     	$request = $args->getSubject()->Request();
+		$response = $args->getSubject()->Response();
 		$view = $args->getSubject()->View();
 
 		if(!$request->isDispatched() || $response->isException() || $request->getModuleName() !== 'frontend'){
