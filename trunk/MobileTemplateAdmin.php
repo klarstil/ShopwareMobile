@@ -144,14 +144,22 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 		
 		// Supported paymentmeans
 		$supportedPaymentmeans = explode('|', $this->props['supportedPayments']);
+		$availablePayments = array(3, 4, 5);
 		$payments = array();
 		foreach($paymentmeans as $k => $v) {
-			if(in_array($v['id'], $supportedPaymentmeans)) {
-				$payments[] = array(
-					'boxLabel' => utf8_encode($v['description']),
-					'checked' => true,
-					'name' => utf8_encode($v['name'])
-				);
+			if(in_array($v['id'], $availablePayments)) {
+				if(in_array($v['id'], $supportedPaymentmeans)) {
+					$payments[] = array(
+						'boxLabel' => utf8_encode($v['description']),
+						'checked' => true,
+						'name' => utf8_encode($v['name'])
+					);
+				} else {
+					$payments[] = array(
+						'boxLabel' => utf8_encode($v['description']),
+						'name' => utf8_encode($v['name'])
+					);
+				}
 			} else {
 				$payments[] = array(
 					'boxLabel' => utf8_encode($v['description'] . ' (noch nicht unterstützt)'),
@@ -318,7 +326,10 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 		// Check if the user chooses a new logo
 		if(is_array($logoUpload) && !empty($logoUpload) && $logoUpload['size'] > 0) {
 			$logo = $this->processUpload($logoUpload, 'logo', 'logo');
-			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$logo' WHERE `name` LIKE 'logoUpload';");
+			$logoImage = $logo['image'];
+			$logoHeight = $logo['height'];
+			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$logoImage' WHERE `name` LIKE 'logoUpload';");
+			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$logoHeight' WHERE `name` LIKE 'logoHeight';");
 		}
 		
 		// Check if the user chooses a new icon
@@ -592,7 +603,11 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 			echo Zend_Json::encode(array('success' => false, 'message' => $message));
 			die();
 		}
-		
-		return $this->basePath . 'images/swag_mobiletemplate/' . $upload['name'];
+
+		if($imageType == 'logo') {
+			return array('image' => $this->basePath . 'images/swag_mobiletemplate/' . $upload['name'], 'height' => $height);
+		} else {
+			return $this->basePath . 'images/swag_mobiletemplate/' . $upload['name'];
+		}
     }
 }

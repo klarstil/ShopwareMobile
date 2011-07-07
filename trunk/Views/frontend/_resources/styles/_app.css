@@ -352,7 +352,7 @@ strong { font-weight: 700 }
 #detail .liveshopping {
     position: relative;
     width: 160px;
-    margin-left: -3px;
+    margin-left: -10px;
     color: #666;
     font-size: 12px;
     text-align: center;

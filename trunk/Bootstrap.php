@@ -25,7 +25,6 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 	{
 		$this->deletePreviousEntries();
 		$this->createEvents();
-		$this->createPluginForm();
 		$this->createBackendMenuEntry();
 		
 		// Create database table
@@ -40,6 +39,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 		Shopware()->Db()->query("INSERT INTO `s_plugin_mobile_settings` (`name` ,`value`)
 			VALUES 
 			('supportedDevices', 'iPhone|iPod|Android'),
+			('supportedPayments', '3|4|5'),
 			('agbInfoID', '4'),
 			('cancelRightID', '8'),
 			('infoGroupName', 'gMobile'),
@@ -52,6 +52,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 			('useComment', '0'),
 			('colorTemplate', 'default'),
 			('logoUpload', ''),
+			('logoHeight', ''),
 			('additionalCSS', ''),
 			('iconUpload', ''),
 			('startupUpload', ''),
@@ -72,10 +73,10 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 	public function uninstall()
 	{
 		// Delete settings table
-		Shopware()->Db()->query('DROP TABLE `s_plugin_mobile_settings`;');
+		Shopware()->Db()->query('DROP TABLE IF EXISTS  `s_plugin_mobile_settings`;');
 		
 		// Delete menu entry
-		Shopware()->Db()->query("DELETE FROM `s_core_menu` WHERE `name` = 'Shopware Mobile'");
+		Shopware()->Db()->query(" DELETE IGNORE FROM `s_core_menu` WHERE `name` = 'Shopware Mobile'");
 		
 		// Delete previous entries
 		$this->deletePreviousEntries();
@@ -123,82 +124,6 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 			'onSaveRegisterStart'
 		);
 		$this->subscribeEvent($event);
-	}
-
-	/**
-	 * createPluginForm
-	 *
-	 * Erstellt die Pluginkonfiguration
-	 *
-	 * @return void
-	 */
-	public function createPluginForm()
-	{
-		$form = $this->Form();
-
-		/* Use Shopware Mobile as subshop */
-		/* $form->setElement('checkbox', 'useSubshop', array('label'=>'Shopware Mobile als Subshop verwenden','value'=>'0', 'scope'=>Shopware_Components_Form::SCOPE_SHOP)); */
-		/* $form->setElement('text', 'subshopId', array('label'=>'Subshop ID','value'=>'2', 'scope'=>Shopware_Components_Form::SCOPE_SHOP)); */
-
-		/* General settings */
-		/* $form->setElement('text', 'supportedDevices', array('label'=>'Unterstützte Geräte (mit Pipe getrennt)','value'=>'Android|BlackBerry|iPhone|iPod', 'scope'=>Shopware_Components_Form::SCOPE_SHOP)); */
-		/* $form->setElement('text', 'staticGroup', array('label'=>'Shopseiten-Gruppe, die für den Informations-Bereich genutzt werden soll','value'=>'gMobile', 'scope'=>Shopware_Components_Form::SCOPE_SHOP)); */
-		/* $form->setElement('checkbox', 'useSrc', array('label'=>'Sencha.io "Src" benutzen','value'=>'0', 'scope'=>Shopware_Components_Form::SCOPE_SHOP)); */
-		/* $form->setElement('text', 'agbID', array('label'=>'Shopseiten-ID der AGB','value'=>'4', 'scope'=>Shopware_Components_Form::SCOPE_SHOP)); */
-		/* $form->setElement('text', 'cancelRightID', array('label'=>'Shopseiten-ID des Widerrufsrecht','value'=>'8', 'scope'=>Shopware_Components_Form::SCOPE_SHOP)); */
-
-		/* Order confirmation view settings */
-		/* $form->setElement('checkbox', 'useVoucher', array('label'=>'Gutscheineingabe auf der Bestellbest&auml;tigungsseite anzeigen','value'=>'0', 'scope'=>Shopware_Components_Form::SCOPE_SHOP)); */
-		/*$form->setElement('checkbox', 'useNewsletter', array('label'=>'Newsletteranmeldung auf der Bestellbest&auml;tigungsseite anzeigen','value'=>'0', 'scope'=>Shopware_Components_Form::SCOPE_SHOP)); */
-		/* $form->setElement('checkbox', 'useComment', array('label'=>'Kommentarfeld auf der Bestellbest&auml;tigungsseite anzeigen','value'=>'0', 'scope'=>Shopware_Components_Form::SCOPE_SHOP)); */
-		$form->setElement('text', 'supportedPayments', array('label'=> 'Zahlungsarten-IDs, die unterst&uuml;tzt werden (Komma getrennt)','value'=>'3,4,5', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
-
-		/* Template related settings */
-		/* $form->setElement('text', 'logoPath', array('label'=> 'Logo-Pfad (bitte achten Sie darauf, dass das Logo nicht breiter als 320px ist)','value'=>'', 'scope'=>Shopware_Components_Form::SCOPE_SHOP)); */
-		$form->setElement('text', 'logoHeight', array('label'=> 'Logo-H&ouml;he','value'=>'', 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
-		/* $form->setElement('text', 'iconPath', array('label'=> 'Icon - nur iOS (Gr&ouml;&szlig;e: 57px x 57px, wird angezeigt wenn der Benutzer die Seite zum Home-Screen hinzuf&uuml;gt)','value'=>'', 'scope'=>Shopware_Components_Form::SCOPE_SHOP)); */
-		/*$form->setElement('checkbox', 'glossOnIcon', array('label'=>'Glanz &uuml;ber Icon anzeigen - nur iOS','value'=>'1', 'scope'=>Shopware_Components_Form::SCOPE_SHOP)); */
-		/* $form->setElement('text', 'startUpPath', array('label'=> 'Startup Screen - nur iOS (wird angezeigt wenn der Benutzer die Seite zum Home-Screen hinzuf&uuml;gt)','value'=>'', 'scope'=>Shopware_Components_Form::SCOPE_SHOP)); */
-		/* $form->setElement('checkbox', 'useNormalSite', array('label'=>'Link zur normalen Ansicht anzeigen','value'=>'1', 'scope'=>Shopware_Components_Form::SCOPE_SHOP)); */
-
-		/*$form->setElement('combo', 'statusBarStyle',
-						  array('label' => 'Statusbar Style','value' => 'black', 'attributes' => array(
-							  'valueField' => 'statusBarStyle', 'displayField' => 'displayText', 'mode' => 'local', 'triggerAction' => 'all',
-							  'store' => 'new Ext.data.ArrayStore({
-							  	id: 1, fields: [
-							  		"statusBarStyle",
-							  		"displayText"
-							  	],
-							  	data: [
-							  		["default", "default"],
-							  		["black", "black"],
-							  		["black-translucent", "black-translucent"]
-							  	]})'))); */
-
-		/* $form->setElement('combo', 'colorStyle',
-						  array('label' => 'Farbtemplate', 'value' => 'default', 'attributes' =>
-						  array('valueField' => 'colorStyle', 'displayField' => 'displayText', 'mode' => 'local', 'triggerAction' => 'all',
-								'store' => 'new Ext.data.ArrayStore({
-									id: 0, fields: [
-									"colorStyle",
-									"displayText"
-								],
-								data: [
-									["android", "android"],
-									["blue", "blue"],
-									["brown", "brown"],
-									["default", "default"],
-									["green", "green"],
-									["ios", "ios"],
-									["orange", "orange"],
-									["pink", "pink"],
-									["red", "red"],
-									["turquoise", "turquoise"]
-								]})'))); */
-
-		/* $form->setElement('textarea', 'additionalCSS', array('label'=>'Zusätzliche CSS-Eigenschaften','value'=>'', 'scope'=>Shopware_Components_Form::SCOPE_SHOP)); */
-
-		$form->save();
 	}
 
 	/**
@@ -264,16 +189,23 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
     	$request = $args->getSubject()->Request();
 		$response = $args->getSubject()->Response();
 		$view = $args->getSubject()->View();
-		$version = self::checkForMobileDevice();
-		$config = Shopware()->Plugins()->Frontend()->SwagMobileTemplate()->Config();
+
+		$config = Shopware()->Db()->fetchAll('SELECT * FROM `s_plugin_mobile_settings`');
+		$properties = array();
+		foreach($config as $prop) {
+			$properties[$prop['name']] = $prop['value'];
+		}
+		$config = $properties;
+
+		$version = self::checkForMobileDevice($config['supportedDevices']);
 
 		if(!$request->isDispatched()||$response->isException()){
 			return;
 		}
 
 	    // Set session value
-	    if($config->useSubshop == 1) {
-		    if(Shopware()->System()->sLanguage == $config->subshopId) {
+	    if($config['useAsSubshop'] == 1) {
+		    if(Shopware()->System()->sLanguage == $config['subshopID']) {
 			    Shopware()->Session()->Mobile = 1;
 		    } else {
 			    Shopware()->Session()->Mobile = 0;
@@ -304,22 +236,22 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 
 			// Assign plugin configuration
 			$view->assign('shopwareMobile', array(
-				'additionalCSS'  => $config->additionalCSS,
+				'additionalCSS'  => $config['additionalCSS'],
 				'isUserLoggedIn' => Shopware()->Modules()->sAdmin()->sCheckUser(),
-				'useNormalSite'  => $config->useNormalSite,
-				'template'       => 'frontend'. DIRECTORY_SEPARATOR . '_resources'.DIRECTORY_SEPARATOR.'styles' . DIRECTORY_SEPARATOR . trim($config->colorStyle) . '.css',
-				'useVoucher'     => $config->useVoucher,
-				'useNewsletter'  => $config->useNewsletter,
-				'useComment'     => $config->useComment,
-				'logoPath'       => $config->logoPath,
-				'logoHeight'     => $config->logoHeight,
-				'iconPath'       => $config->iconPath,
-				'glossOnIcon'    => $config->glossOnIcon,
-				'startUpPath'    => $config->startUpPath,
-				'statusBarStyle' => $config->statusBarStyle,
-				'payments'       => $config->supportedPayments,
-				'agbID'          => $config->agbID,
-				'cancellationID' => $config->cancelRightID,
+				'useNormalSite'  => $config['showNormalVersionLink'],
+				'template'       => 'frontend'. DIRECTORY_SEPARATOR . '_resources'.DIRECTORY_SEPARATOR.'styles' . DIRECTORY_SEPARATOR . trim($config['colorTemplate']) . '.css',
+				'useVoucher'     => $config['useVoucher'],
+				'useNewsletter'  => $config['useNewsletter'],
+				'useComment'     => $config['useComment'],
+				'logoPath'       => $config['logoUpload'],
+				'logoHeight'     => $config['logoHeight'],
+				'iconPath'       => $config['iconUpload'],
+				'glossOnIcon'    => $config['glossOnIcon'],
+				'startUpPath'    => $config['startupUpload'],
+				'statusBarStyle' => $config['statusbarStyle'],
+				'payments'       => $config['supportedPayments'],
+				'agbID'          => $config['agbInfoID'],
+				'cancellationID' => $config['cancelRightID'],
 				'basePath'       => $basepath
 			));
 
@@ -329,9 +261,9 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 			$view->addTemplateDir(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Views' . DIRECTORY_SEPARATOR);
 			$view->assign('shopwareMobile', array(
 				'active'     => $active,
-				'useSubShop' => $config->useSubshop,
-				'subShopId'  => $config->subshopId,
-				'userAgents' => $config->supportedDevices,
+				'useSubShop' => $config['useAsSubshop'],
+				'subShopId'  => $config['subshopID'],
+				'userAgents' => $config['supportedDevices'],
 				'basePath'   => $request->getBasePath()
 			));
 
@@ -424,14 +356,14 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
      *
      * Untersucht den User Agent nach Mobilen Endgeraeten
 	 *
-	 * @return string
+	 * @param str $devices
+	 * @return str
 	 */
-    private function checkForMobileDevice() {
-	    $config = Shopware()->Plugins()->Frontend()->SwagMobileTemplate()->Config();
+    private function checkForMobileDevice($devices) {
     	$agent = $_SERVER['HTTP_USER_AGENT'];
     	$device = 'desktop';
 
-    	if(preg_match('/(' . $config->supportedDevices . ')/i', $agent)) {
+    	if(preg_match('/(' . $devices . ')/i', $agent)) {
     		$device = 'mobile';
     	}
 

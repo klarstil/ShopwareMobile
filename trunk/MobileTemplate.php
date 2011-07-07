@@ -14,9 +14,10 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	protected $system;
 	protected $config;
 	protected $module;
-	protected $plugin;
 	protected $session;
 	protected $ViewRenderer;
+	/** {arr} Plugin configuration */
+	protected $props;
 
 	/**
 	 * init()
@@ -33,8 +34,18 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 		$this->config = Shopware()->Config();
 		$this->module = Shopware()->Modules();
 		$this->session = Shopware()->Session();
-		$this->plugin = Shopware()->Plugins()->Frontend()->SwagMobileTemplate();
 		$this->ViewRenderer = Shopware()->Plugins()->Controller()->ViewRenderer();
+
+		// Get all settings
+		$props = Shopware()->Db()->query('SELECT * FROM `s_plugin_mobile_settings`');
+		$props = $props->fetchAll();
+
+		$properties = array();
+		foreach($props as $prop) {
+			$properties[$prop['name']] = $prop['value'];
+		}
+
+		$this->props = $properties;
 	}
 
 	/**
@@ -635,9 +646,8 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	public function getInfoSitesAction()
 	{
 
-		$config = Shopware()->Plugins()->Frontend()->SwagMobileTemplate()->Config();
-		if(!empty($config->staticgroup)) {
-			$menu = $this->getMenu($config->staticgroup);
+		if(!empty($this->props['infoGroupName'])) {
+			$menu = $this->getMenu($this->props['infoGroupName']);
 		} else {
 			$plugin = Shopware()->Plugins()->Core()->ControllerBase();
 			$menu = $plugin->getMenu();
@@ -645,7 +655,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 
 		$output = array();
 		foreach($menu as $name => $groups) {
-			if($name !== 'gDisabled' && $name === $config->staticgroup) {
+			if($name !== 'gDisabled' && $name === $this->props['infoGroupName']) {
 				$count = count($groups);
 				foreach($groups as $site) {
 					if(empty($site['link'])) {
@@ -854,12 +864,12 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 * Entfernt den BasePath aus einer URL
 	 *
 	 * @access private
-	 * @param  {string} $url
-	 * @return {string} stripped url
+	 * @param  str $url
+	 * @return str stripped url
 	 */
 	private function stripBasePath($url)
 	{
-		if(!$this->plugin->Config()->useSrc) {
+		if(!$this->props['useSenchaIO']) {
 			if ($_SERVER["HTTPS"]){
 				$path = "https://";
 			}else {
@@ -881,8 +891,8 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 * Gibt einen formatierten JSON String zurueck und unterbindet die Ausgabe eines Templates
 	 *
 	 * @access private
-	 * @param  {string} $json_str - Auszugebener String
-	 * @return void
+	 * @param  str $json_str - Auszugebener String
+	 * @return str
 	 */
 	private function jsonOutput($json_str)
 	{
@@ -908,10 +918,10 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
      * Kuerzt einen String auf die gegebene Laenge
      *
      * @access private
-     * @param  {string} $str - zu kuerzender String
-     * @param  {string} $length - Laenge des Strings
-     * @param  {string} $trailing - Zeichen die am Ende des String eingefuegt werden
-     * @return {string} $res - gekuerzter String mit Trailing
+     * @param  str $str - zu kuerzender String
+     * @param  str $length - Laenge des Strings
+     * @param  str $trailing - Zeichen die am Ende des String eingefuegt werden
+     * @return str $res - gekuerzter String mit Trailing
      */
     private function truncate($str, $length=10, $trailing='...')
     {
