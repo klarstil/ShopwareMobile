@@ -16,8 +16,8 @@
     
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
     
-    <link rel="stylesheet" href="{link file={$shopwareMobile.template}}" type="text/css">
-    <link rel="stylesheet" href="{link file='frontend/_resources/styles/_app.css'}" type="text/css">
+    <link rel="stylesheet" href="{link file={$shopwareMobile.template} fullPath}" type="text/css">
+    <link rel="stylesheet" href="{link file='frontend/_resources/styles/_app.css' fullPath}" type="text/css">
 
     {if $shopwareMobile.additionalCSS|| $shopwareMobile.logoPath}
         <style type="text/css">
@@ -46,8 +46,8 @@
     </script>
 </head>
 <body>
-    <script type="text/javascript" src="{link file='frontend/_resources/app/_sencha/sencha-touch-debug.js'}"></script>
-    <script type="text/javascript" src="{link file='frontend/_resources/app/_sencha/Ext.ux.touch.PagingToolbar.js'}"></script>
+    <script type="text/javascript" src="{link file='frontend/_resources/app/_sencha/sencha-touch-debug.js' fullPath}"></script>
+    <script type="text/javascript" src="{link file='frontend/_resources/app/_sencha/Ext.ux.touch.PagingToolbar.js' fullPath}"></script>
 
 	<div id="templates">
 		{* Main categories list item template *}
