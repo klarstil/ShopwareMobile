@@ -97,6 +97,9 @@ return array(
 		'1.1.7'=>array('releasedate'=>'2011-07-07', 'lines' => array(
 			'Add missing uploader files',
 			'Fix uninstall bug'
+		)),
+		'1.1.8'=>array('releasedate'=>'2011-07-07', 'lines' => array(
+			'Add missing images'
 		))
 	)
 );
