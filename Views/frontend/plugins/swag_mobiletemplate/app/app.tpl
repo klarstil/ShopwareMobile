@@ -15,7 +15,7 @@ Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Ca
 var userLoggedIn = false;
 
 /** @private */
-payments = payments.split(',');
+payments = payments.split('|');
 
 /**
  * Register Application in global namespace
