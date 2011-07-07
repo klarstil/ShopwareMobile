@@ -1,0 +1,1 @@
+{$sContent|json_encode}
