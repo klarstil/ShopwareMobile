@@ -191,8 +191,12 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
     public static function onPostDispatch(Enlight_Event_EventArgs $args)
     {	
     	$request = $args->getSubject()->Request();
-		$response = $args->getSubject()->Response();
 		$view = $args->getSubject()->View();
+
+		if(!$request->isDispatched() || $response->isException() || $request->getModuleName() !== 'frontend'){
+			return;
+		}
+
 
 		$config = Shopware()->Db()->fetchAll('SELECT * FROM `s_plugin_mobile_settings`');
 		$properties = array();
@@ -202,10 +206,6 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 		$config = $properties;
 
 		$version = self::checkForMobileDevice($config['supportedDevices']);
-
-		if(!$request->isDispatched()||$response->isException()){
-			return;
-		}
 
 	    // Set session value
 	    if($config['useAsSubshop'] == 1) {
