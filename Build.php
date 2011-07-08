@@ -100,6 +100,9 @@ return array(
 		)),
 		'1.1.8'=>array('releasedate'=>'2011-07-07', 'lines' => array(
 			'Add missing images'
+		)),
+		'1.1.9'=>array('releasedate'=>'2011-07-08', 'lines' => array(
+			'Mark invalid fields in the registration for the personal and billing data'
 		))
 	)
 );
