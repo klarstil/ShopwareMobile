@@ -324,13 +324,25 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 			return;
 		}
 
+		$error_flags = array();
 		if(!empty($view->register->personal->error_messages)) {
 			$errors = '';
 			foreach($view->register->personal->error_messages as $k => $v) {
 				$errors = $errors . '<br/>' . utf8_encode($v);
 			}
-			$view->registerErrors = $errors;
+			$error_flags[] = $view->register->personal->error_flags;
 		}
+
+		$billingErrorFlags = array();
+		if(!empty($view->register->billing->error_messages)) {
+			foreach($view->register->billing->error_messages as $k => $v) {
+				$errors = $errors . '<br/>' . utf8_encode($v);
+			}
+			$error_flags[] = $view->register->billing->error_flags;
+		}
+
+		$view->registerErrors = $errors;
+		$view->error_flags = $error_flags;
 	}
 
 	/**

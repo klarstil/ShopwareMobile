@@ -481,6 +481,7 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel,
 					xtype: 'selectfield',
 					label: '{s name="MobileRegisterPersonalIam"}Ich bin{/s}',
 					required: true,
+					id: 'customer_type',
 					name: 'register[personal][customer_type]',
 					options: [
 						{ text: '{s name="MobileRegisterPersonalPrivateCustomer"}Privatkunde{/s}', value: 'private' },
@@ -492,6 +493,7 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel,
 					label: '{s name="MobileRegisterPersonalSalutation"}Anrede{/s}',
 					required: true,
 					name: 'register[personal][salutation]',
+					id: 'salutation',
 					options: [
 						{ text: 'Herr', value: 'mr' },
 						{ text: 'Frau', value: 'mrs' }
@@ -501,6 +503,7 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel,
 					xtype: 'textfield',
 					label: '{s name="MobileRegisterPersonalFirstname"}Vorname{/s}',
 					name: 'register[personal][firstname]',
+					id: 'firstname',
 					required: true,
 					placeHolder: '{s name="MobileRegisterPersonalFirstnamePlaceholder"}Max{/s}'
 				},
@@ -508,6 +511,7 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel,
 					xtype: 'textfield',
 					label: '{s name="MobileRegisterPersonalLastname"}Nachname{/s}',
 					name: 'register[personal][lastname]',
+					id: 'lastname',
 					required: true,
 					placeHolder: '{s name="MobileRegisterPersonalLastnamePlaceholder"}Mustermann{/s}'
 				},
@@ -515,18 +519,19 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel,
 					xtype: 'emailfield',
 					label: '{s name="MobileRegisterPersonalMail"}E-Mail{/s}',
 					name: 'register[personal][email]',
+					id: 'email',
 					required: true,
 					placeHolder: '{s name="MobileRegisterPersonalMailPlaceholder"}me@shopware.de{/s}'
 				},
 				{
-					id: 'passField',
+					id: 'password',
 					xtype: 'passwordfield',
 					label: '{s name="MobileRegisterPersonalPassword"}Passwort{/s}',
 					name: 'register[personal][password]',
 					required: true
 				},
 				{
-					id: 'passWdhField',
+					id: 'passwordConfirmation',
 					xtype: 'passwordfield',
 					label: '{s name="MobileRegisterPersonalPasswordRepeat"}Passwort Wdh.{/s}',
 					name: 'register[personal][passwordConfirmation]',
@@ -537,11 +542,13 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel,
 					label: '{s name="MobileRegisterPersonalPhone"}Telefon{/s}',
 					required: true,
 					name: 'register[personal][phone]',
+					id: 'phone',
 					placeHolder: '{s name="MobileRegisterPersonalPhonePlaceholder"}02555997500{/s}'
 				},
 				{
 					xtype: 'localeDatepickerfield',
-					label: '{s name="MobileRegisterPersonalBirthday"}Geburtstag{/s}'
+					label: '{s name="MobileRegisterPersonalBirthday"}Geburtstag{/s}',
+					id: 'birthday'
 				}
 			]
 		},
@@ -557,24 +564,28 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel,
 					xtype: 'textfield',
 					label: '{s name="MobileRegisterShippingStreet"}Stra&szlig;e{/s}',
 					name: 'register[billing][street]',
+					id: 'street',
 					required: true
 				},
 				{
 					xtype: 'textfield',
 					label: '{s name="MobileRegisterShippingStreetNo"}Hausnr.{/s}',
 					name: 'register[billing][streetnumber]',
+					id: 'streetnumber',
 					required: true
 				},
 				{
 					xtype: 'textfield',
 					label: '{s name="MobileRegisterShippingZipcode"}PLZ{/s}',
 					name: 'register[billing][zipcode]',
+					id: 'zipcode',
 					required: true
 				},
 				{
 					xtype: 'textfield',
 					label: '{s name="MobileRegisterShippingCity"}Stadt{/s}',
 					name: 'register[billing][city]',
+					id: 'city',
 					required: true
 				},
 				{
@@ -603,6 +614,7 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel,
 		deactivate: function(me) {
 			me.destroy();
 		},
+
 		submit: function(form, response) {
 			if(response.success && response.msg) {
 				Ext.Msg.alert('{s name="MobileRegisterSuccess"}Registrierung erfolgreich{/s}', response.msg, function() {
@@ -662,7 +674,19 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel,
 
 		exception: function(form, response) {
 			if(!response.success && response.msg) {
-				Ext.Msg.alert('{s name="MobileRegisterFailed"}Registrierung fehlgeschlagen{/s}', response.msg + response.errors);
+				Ext.Msg.alert('{s name="MobileRegisterFailed"}Registrierung fehlgeschlagen{/s}', response.msg + '<br />' + response.errors);
+
+				/* Mark fields from server side validation */
+				var error_fields = response.error_fields;
+				for(i in error_fields) {
+					var errors = error_fields[i];
+					Ext.iterate(errors, function(errorField, index) {
+						var cmp = Ext.getCmp(errorField);
+						cmp.addCls('error');
+
+					});
+				}
+
 				isUserLoggedIn = 0;
 			}
 		}
