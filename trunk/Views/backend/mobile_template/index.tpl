@@ -25,7 +25,13 @@ strong { font-weight: 700 }
 #iphonePreview .x-panel-body h3 {
 	font: 700 14px tahoma,arial,helvetica,sans-serif; margin: 0 0 1em;
 } 
-p.desc { font: 12px tahoma,arial,helvetica,sans-serif; margin: 0 0 1em; }
+p.desc, .native_teaser { font: 12px tahoma,arial,helvetica,sans-serif; margin: 0 0 1em; }
+.native_teaser {
+	background: url({/literal}{link file='backend/mobile_template/img/pic_step3.jpg'}{literal}) no-repeat right bottom;
+	min-height: 124px;
+	padding-right: 344px;
+}
+.native_teaser p, .native_teaser h2 { margin: 0 0 1em }
 </style>
 {/literal}
 <script type="text/javascript" src="{link file='backend/mobile_template/uploader/FileUploadField.js'}"></script>
@@ -439,12 +445,80 @@ Ext.ns('Shopware.SwagMobileTemplate');
 				items: [this.designFormPnl, this.designPreviewPnl]
 			});
 			
+			/** Native application panel */
+			this.nativePnl = new Ext.FormPanel({				
+				padding: 15,
+				autoScroll: true,
+				title: 'Native Applikation einreichen',
+				items: [{
+					bodyBorder: false,
+					cls: 'native_teaser',
+					html: '<h2>Shopware Mobile - Native Applikation</h2><p>Shopware Mobile kann auch als native App bereitgestellt werden. So können Sie als Shopbetreiber die App Stores von Apple, Android und co. als zusätzliches Marketinginstrument nutzen und sich dauerhaft auf den Smartphones Ihrer Kunden platzieren.</p><p>Füllen Sie hierzu das Formular "Applikationseinstellungen" aus und wir senden Ihnen eine Bestätigung, wenn die Applikation erfolgreich erstellt wurde.</p>'
+				}, {
+					xtype: 'fieldset',
+					title: 'Applikationseinstellungen',
+					labelWidth: 250,
+					items: [{
+						xtype: 'textfield',
+						fieldLabel: 'Titel',
+						allowBlank: false,
+						name: 'title',
+						width: 250
+					}, {
+						xtype: 'textfield',
+						fieldLabel: 'Paketname (AppID)',
+						name: 'appid',
+						allowBlank: false,
+						width: 250
+					}, {
+						xtype: 'textfield',
+						fieldLabel: 'Version',
+						allowBlank: false,
+						name: 'version',
+						width: 250
+					}, {
+						xtype: 'textarea',
+						fieldLabel: 'Beschreibung',
+						width: 250,
+						height: 175,
+						name: 'desc',
+						allowBlank: false
+					}],
+					buttons: [{
+						text: 'Applikationseinstellungen speichern',
+						scope: this,
+			        	handler: function() {
+			        		this.nativePnl.getForm().submit({
+			        			url: '{url controller="MobileTemplate" action="processNativeApplicationForm"}',
+			        			waitMsg: 'Sende Daten...',
+			        			success: function(form, response) {
+			        				Ext.Msg.show({
+			        					title: 'Speichern erfolgreich',
+			        					msg: response.result.message,
+			        					buttons: Ext.Msg.OK,
+			        					icon: Ext.MessageBox.INFO
+			        				});
+			        			},
+			        			failure: function(form, response) {
+			        				Ext.Msg.show({
+			        					title: 'Es ist ein Fehler aufgetreten',
+			        					msg: response.result.message,
+			        					buttons: Ext.Msg.OK,
+			        					icon: Ext.MessageBox.ERROR
+			        				});
+			        			}
+			        		})
+			        	}
+					}]
+				}]
+			});
+			
 			/** Main tabpanel navigation */
 			this.tabPnl = new Ext.TabPanel({
-				activeTab: 0,
+				activeTab: 3,
 				region: 'center',
 				autoWidth: false,
-				items: [this.generellPnl, this.shopPnl, this.designPnl]
+				items: [this.generellPnl, this.shopPnl, this.designPnl, this.nativePnl]
 			});
 			
 			/** Beta notice panel */
