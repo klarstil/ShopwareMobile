@@ -526,12 +526,196 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 		
 		echo Zend_Json::encode($data);
 		die();
+	}
+	
+	/**
+	 * processNativeApplicationFormAction()
+	 *
+	 * Verarbeitet die "Native Applikation"-Form
+	 *
+	 * @access public
+	 */
+	public function processNativeApplicationFormAction()
+	{
+		$request = $this->Request();
 		
+		$title = $request->getParam('title');
+		$appID = $request->getParam('appid');
+		$version = $request->getParam('version');
+		$desc = $request->getParam('desc');
+		
+		$data = array(
+			'title'   => $title,
+			'package' => $appID,
+			'version' => $version,
+			'desc'    => $desc
+		);
+		
+		// Grab the source code of the mobile template
+		$path = $this->scrapePageSourceCode($this->uploadPath . '/index.html');
+		
+		// Add application to our PhoneGap Dashboard
+		$this->addNativeApplication($path, $data);
+		
+		// Return Message
+		$message = 'Das Formular wurde erfolgreich gespeichert. Wir werden in K&uuml;rze mit Ihnen in Kontakt treten.';
+		echo Zend_Json::encode(array('success' => true, 'message' => $message));
+		die();
 	}
 	
 	////////////////////////////////////////////
     //Helper Functions
     ////////////////////////////////////////////
+    
+    /**
+     * addNativeApplication()
+     *
+     * Fuegt eine neue Applikation zum "build.phonegap.com"-Dashboard hinzu
+     * und verschickt eine E-Mail an eine definierte Adresse, damit die Applikation
+     * abgerechnet und in den AppStore gestellt werden kann.
+     *
+     * @access private
+     * @param str $filePath
+     * @param arr $dataRaw
+	 * @return bool
+     */
+    private function addNativeApplication($filePath, $dataRaw)
+    {
+    	$data = json_encode($dataRaw);
+    	
+    	$file = $this->uploadPath . '/index.html';    	
+    	$param = array(
+    		'data' => $data,
+    		'file' => "@$file"
+    	);
+    	$login = array(
+    		'username' => 'stp@shopware.de',
+    		'password' => 'shopware'
+    	);
+    	
+    	$application = json_decode($this->getData('https://build.phonegap.com/api/v0/apps', $param, '', $login));
+		
+		$html = '<html>
+			<head>
+				<title>Shopware Mobile - Native Applikation</title>
+				<style type="text/css">
+				html, body { background: #E5E5E5 }
+				.container { width: 500px; margin: 25px; background: #fff; padding: 15px; border: 1px solid #C0C0C0 }
+				.container { font: 12px tahoma,arial,helvetica,sans-serif; margin: 0 0 1em; }
+				p { margin: 0 0 1em }
+				</style>
+			</head>
+			<body>
+				<div class="container">
+				<p><strong>Applikationsname:</strong> %s</p>
+				<p><strong>App-ID:</strong> %s</p>
+				<p><strong>Version:</strong> %s</p>
+				<p><strong>Beschreibung:</strong> %s</p>
+				<p><strong>Shop-URL:</strong> %s</p>
+				<p><div><strong>Icon:</strong></div><img src="%s" /></p>
+				<p><div><strong>Splashscreen:</strong></div><img src="%s" /></p>
+				</div>
+			</body>
+		</html>';
+		
+		$html = sprintf($html, $dataRaw['title'], $dataRaw['package'], $dataRaw['version'], $dataRaw['desc'], $this->basePath, $this->props['iconUpload'], $this->props['startupUpload']);
+		
+		$to = 'te@shopware.de';
+		$from = 'stp@shopware.de';
+		$subject = 'Antrag - Shopware Mobile Native';
+		
+		$header = "MIME-Version: 1.0\r\n";
+		$header .= "Content-type: text/html; charset=iso-8859-1\r\n";
+		$header .= "From: $from\r\n";
+		$header .= "X-Mailer: PHP ". phpversion();
+		
+		mail($to, $subject, $html, $header);
+		
+		return true;
+    }
+	
+	/**
+	 * scrapePageSourceCode()
+	 *
+	 * Laedt den Quelltext des Mobile Templates herunter und schreibt diesen in den angegeben Pfad
+	 *
+	 * @access private
+	 * @param str $path
+	 * @return str $path
+	 */
+	private function scrapePageSourceCode($path)
+	{
+		$iPhoneUserAgent = "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_1 like Mac OS X; en-us) AppleWebKit/532.9 (KHTML, like Gecko)";
+		
+		// Support subshops
+		if($this->props['useAsSubshop']) {
+			$params = array(
+				'sLanguage' => $this->props['subshopID'],
+				'sMobile'   => 1
+			);
+		} else {
+			$params = array(
+				'sMobile' => 1
+			);
+		}
+		
+		// Fetch data
+		$data =  $this->getData($this->basePath, $params, $iPhoneUserAgent);
+		
+		// Save data
+		if(file_put_contents($path, $data) == false) {
+			return false;
+		}
+		
+		return $path;
+	}
+	
+	
+	/**
+	 * getData()
+	 *
+	 * Fragt Daten per cURL ab und gibt diese als String zurueck
+	 *
+	 * @access private 
+	 * @param str $url - URL, die abgefragt werden soll
+	 * @param str $post - POST Variablen, die mitgesendet werden sollen
+	 * @param str $userAgent - User Agent mit dem der Request gesendet werden soll
+	 * @param str $login - Login Informationen (username, password)
+	 * @param int $timeout - Timeout in Minuten
+	 * @return str $data
+	 */
+	private function getData($url, $post = '', $userAgent = '', $login = '', $timeout = 5)
+	{
+		// Initialize cURL 
+		$ch = curl_init();
+		
+		// Set POST variables
+		if(!empty($post) && is_array($post)) {
+			//curl_setopt($ch, CURLOPT_POST, $postCount);
+			curl_setopt($agent, CURLOPT_POST, true);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+		}
+		
+		// Set User agent
+		if(!empty($userAgent)) {
+			curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);
+		}
+		
+		// Set login informations
+		if(!empty($login)) {
+			curl_setopt($ch, CURLOPT_USERPWD, $login['username'] . ':' . $login['password']); 
+		}
+		
+		// Set url
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch,CURLOPT_CONNECTTIMEOUT,$timeout);
+		
+		// Execute request
+		$data = curl_exec($ch);
+		curl_close($ch);
+		return $data;
+	}
     
     /**
      * processUpload()
