@@ -36,6 +36,9 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 	
 	/** {arr} Color templates */
 	protected $colorTemplates;
+
+	/** {str} Prefix for generated thumbnails */
+	protected $thumbNailPrefix;
 	
 	/**
 	 * init()
@@ -97,6 +100,9 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 				array('value' => 'turquoise', 'displayText' => utf8_encode('Türkis'))
 			)
 		);
+
+		// Set thumbnail prefix
+		$this->thumbNailPrefix = 'thumb-';
 
 		$this->View()->addTemplateDir(dirname(__FILE__) . "/Views/");
 	}
@@ -588,8 +594,48 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
     		'data' => $data,
     		'file' => "@$file"
     	);
-
-		//... add build.phonegap request
+    	$login = array(
+    		'username' => 'stp@shopware.de',
+    		'password' => 'shopware'
+    	);
+    	
+    	//$application = json_decode($this->getData('https://build.phonegap.com/api/v0/apps', $param, '', $login));
+		
+		$html = '<html>
+			<head>
+				<title>Shopware Mobile - Native Applikation</title>
+				<style type="text/css">
+				html, body { background: #E5E5E5 }
+				.container { width: 500px; margin: 25px; background: #fff; padding: 15px; border: 1px solid #C0C0C0 }
+				.container { font: 12px tahoma,arial,helvetica,sans-serif; margin: 0 0 1em; }
+				p { margin: 0 0 1em }
+				</style>
+			</head>
+			<body>
+				<div class="container">
+				<p><strong>Applikationsname:</strong> %s</p>
+				<p><strong>App-ID:</strong> %s</p>
+				<p><strong>Version:</strong> %s</p>
+				<p><strong>Beschreibung:</strong> %s</p>
+				<p><strong>Shop-URL:</strong> %s</p>
+				<p><div><strong>Icon:</strong></div><img src="%s" /></p>
+				<p><div><strong>Splashscreen:</strong></div><img src="%s" /></p>
+				</div>
+			</body>
+		</html>';
+		
+		$html = sprintf($html, $dataRaw['title'], $dataRaw['package'], $dataRaw['version'], $dataRaw['desc'], $this->basePath, $this->props['iconUpload'], $this->props['startupUpload']);
+		
+		$to = 'stp@shopware.de';
+		$from = $this->config->mail;
+		$subject = 'Antrag - Shopware Mobile Native';+
+		
+		$header = "MIME-Version: 1.0\r\n";
+		$header .= "Content-type: text/html; charset=iso-8859-1\r\n";
+		$header .= "From: $from\r\n";
+		$header .= "X-Mailer: PHP ". phpversion();
+		
+		mail($to, $subject, $html, $header);
 		
 		return true;
     }
@@ -623,26 +669,24 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 		$data =  $this->getData($this->basePath, $params, $iPhoneUserAgent);
 		
 		// Save data
-		if(file_put_contents($path, $data) == false) {
+		if(file_put_contents($path, utf8_encode($data)) == false) {
 			return false;
 		}
 		
 		return $path;
 	}
 	
-	
 	/**
-	 * getData()
+	 * getData
 	 *
-	 * Fragt Daten per cURL ab und gibt diese als String zurueck
+	 * Sendet einen cURL Request und gibt das Ergebnis als String zurueck
 	 *
-	 * @access private 
-	 * @param str $url - URL, die abgefragt werden soll
-	 * @param str $post - POST Variablen, die mitgesendet werden sollen
-	 * @param str $userAgent - User Agent mit dem der Request gesendet werden soll
-	 * @param str $login - Login Informationen (username, password)
+	 * @param $url
+	 * @param string $post - POST-Variablen
+	 * @param string $userAgent - User Agent
+	 * @param string $login - Login-Informationen
 	 * @param int $timeout - Timeout in Minuten
-	 * @return str $data
+	 * @return mixed
 	 */
 	private function getData($url, $post = '', $userAgent = '', $login = '', $timeout = 5)
 	{
@@ -652,7 +696,7 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 		// Set POST variables
 		if(!empty($post) && is_array($post)) {
 			//curl_setopt($ch, CURLOPT_POST, $postCount);
-			curl_setopt($agent, CURLOPT_POST, true);
+			curl_setopt($ch, CURLOPT_POST, true);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
 		}
 		
@@ -740,8 +784,8 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 		// Image type related size checking
 		switch($imageType) {
 			case 'icon':
-				if($width != 72 || $height != 72) {
-					$message = 'Das Icon muss eine Gr&ouml;&szlig;e von 72 Pixel x 72 Pixel aufweisen. Bitte w&auml;hlen Sie ein anderes Bild als Icon.';
+				if($width != 512 || $height != 512) {
+					$message = 'Das Icon muss eine Gr&ouml;&szlig;e von 512 Pixel x 512 Pixel aufweisen. Bitte w&auml;hlen Sie ein anderes Bild als Icon.';
 					echo Zend_Json::encode(array('success' => false, 'message' => $message));
 					die();
 				}
@@ -777,8 +821,79 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 
 		if($imageType == 'logo') {
 			return array('image' => $this->basePath . 'images/swag_mobiletemplate/' . $upload['name'], 'height' => $height);
+		} elseif($imageType == 'icon') {
+			$iconPath = $this->basePath . 'images/swag_mobiletemplate/' . $upload['name'];
+
+			// Generate icon for appstore
+			$this->createThumbnail($iconPath, 512, 512, 'appstore-icon', $file_extension);
+
+			// Generate icon for iphone (retina display)
+			$this->createThumbnail($iconPath, 114, 114, 'app-icon-iphone4', $file_extension);
+
+			// Generate icon for ipad
+			$this->createThumbnail($iconPath, 72, 72, 'app-icon-ipad', $file_extension);
+
+			// ... for the rest
+			$this->createThumbnail($iconPath, 57, 57, 'app-icon-iphone', $file_extension);
+
+			return $this->basePath . 'images/swag_mobiletemplate/' . $upload['name'];
 		} else {
 			return $this->basePath . 'images/swag_mobiletemplate/' . $upload['name'];
 		}
+    }
+
+	/**
+	 * CreateThumbnail()
+	 *
+     * resize the given image and create a thumbnail
+	 *
+	 * @access private
+     * @param str $originalImage
+     * @param str $toWidth
+     * @param str $toHeight
+	 * @param str $name
+	 * @param str $extension
+     */
+    private function createThumbnail($originalImage, $toWidth, $toHeight, $name, $extension)
+    {
+        // Get the original geometry and calculate scales
+        list($width, $height) = getimagesize($originalImage);
+        if($width < $toWidth){
+            $toWidth = $width;
+        }
+        if($height < $toHeight){
+            $toHeight = $height;
+        }
+        $xscale = $width / $toWidth;
+        $yscale = $height / $toHeight;
+
+        // Recalculate new size with default ratio
+        if ($yscale > $xscale) {
+            $new_width = round($width * (1 / $yscale));
+            $new_height = round($height * (1 / $yscale));
+        }
+        else {
+            $new_width = round($width * (1 / $xscale));
+            $new_height = round($height * (1 / $xscale));
+        }
+
+        // Resize the original image
+        $imageResized = imagecreatetruecolor($new_width, $new_height);
+        if($extension !== 'png') {
+            $imageTmp = imagecreatefromjpeg($originalImage);
+        }
+        else{
+            $imageTmp = imagecreatefrompng($originalImage);
+        }
+        imagecopyresampled($imageResized, $imageTmp, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+        $path = dirname($originalImage);
+        $thumbnailFileName = $this->thumbNailPrefix.$name;
+
+        if ($extension !== 'png') {
+            imagejpeg($imageResized, $this->uploadPath . "/" . $thumbnailFileName.'.'.$extension);
+        }
+        else{
+            imagepng($imageResized, $this->uploadPath . "/" . $thumbnailFileName.'.'.$extension);
+        }
     }
 }

@@ -66,6 +66,9 @@ App.Helpers = {
      */
 	_request: function(url, method, params, callback, scope) {
 		scope = scope || this;
+
+		// Set mobile param for native applications
+		params.sMobile = 1;
 		Ext.Ajax.request({
 			url: url,
 			method: method,
