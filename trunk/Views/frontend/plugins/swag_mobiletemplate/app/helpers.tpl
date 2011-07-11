@@ -16,6 +16,18 @@
  */
 App.Helpers = {
 
+	/** Returns viewport size */
+	getViewportSize: function() {
+		var height, width;
+
+		if(typeof(window.innerWidth) != 'undefined') {
+			width  = window.innerWidth;
+			height = window.innerHeight;
+		}
+
+		return { 'width': width, 'height': height };
+	},
+
     /**
      * Sends an post request to the server
      *

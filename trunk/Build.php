@@ -103,6 +103,11 @@ return array(
 		)),
 		'1.1.9'=>array('releasedate'=>'2011-07-08', 'lines' => array(
 			'Mark invalid fields in the registration for the personal and billing data'
+		)),
+		'1.2.0'=>array('releasedate'=>'2011-07-11', 'lines' => array(
+			'Add new tab to the backend module(disabled)',
+			'Remove live price changing on the detail view',
+			'Proper banner resizing on category view'
 		))
 	)
 );

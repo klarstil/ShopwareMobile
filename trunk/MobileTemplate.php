@@ -225,13 +225,16 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 			'success' => true,
 			'banners' => array()
 		);
-		
+
 		$i = 0;
 		foreach($banners as $banner) {
+
+			list($width, $height, $type, $attr) = getimagesize($banner['img']);
 			$retBanners['banners'][$i] = array(
-				'desc' => $banner['description'],
-				'img' => $this->stripBasePath($banner['img']),
-				'link' => $banner['link']
+				'desc'   => $banner['description'],
+				'img'    => $this->stripBasePath($banner['img']),
+				'link'   => $banner['link'],
+				'height' => $height
 			);
 			$i++;
 		}
@@ -295,6 +298,13 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 				$articles['sArticles'][$i]['image_url'] = $this->stripBasePath($article['image']['src'][1]);
 			}
 			$i++;
+		}
+
+		/** Handle banner size */
+		if(isset($banner) && is_array($banner)) {
+			list($width, $height, $type, $attr) = getimagesize($banner['img']);
+			$banner['height'] = $height;
+			$banner['width'] = $width;
 		}
 
 		/** Remove some unneeded junk =)  */
