@@ -399,7 +399,6 @@ App.views.Shop.artListing = Ext.extend(Ext.Panel,
 			var viewportSize = App.Helpers.getViewportSize();
 			var height = Math.round((raw.sBanner.width / 1000) * raw.sBanner.height);
 
-			console.log(viewportSize);
 			html = '<img src="'+raw.sBanner.img+'" width="'+ viewportSize.width +'" height="'+height+'" alt="'+raw.sBanner.description+'"/>';
 			if(banner) { banner.update(html); }
 			this.doLayout();
