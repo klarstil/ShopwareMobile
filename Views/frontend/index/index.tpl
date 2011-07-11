@@ -46,7 +46,7 @@
     </script>
 </head>
 <body>
-    <script type="text/javascript" src="{link file='frontend/_resources/app/_sencha/sencha-touch-debug.js' fullPath}"></script>
+    <script type="text/javascript" src="{link file='frontend/_resources/app/_sencha/sencha-touch.js' fullPath}"></script>
     <script type="text/javascript" src="{link file='frontend/_resources/app/_sencha/Ext.ux.touch.PagingToolbar.js' fullPath}"></script>
 
 	<div id="templates">
@@ -111,7 +111,7 @@
 		<textarea id="CartemptyTpl" class="hidden">
 			<div class="emptyCart">
 				<p>
-					In Ihren Warenkorb befinden sich zur Zeit noch keine Artikel.
+					In Ihrem Warenkorb befinden sich zur Zeit noch keine Artikel.
 				</p>
 				<p>
 					Entdecken Sie Ihr Wunschprodukt im <strong>Shop</strong> oder finden Sie ein spezielles Produkt &uuml;ber die integrierte <strong>Suche</strong>.

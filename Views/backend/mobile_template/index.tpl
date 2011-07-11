@@ -449,6 +449,7 @@ Ext.ns('Shopware.SwagMobileTemplate');
 			this.nativePnl = new Ext.FormPanel({				
 				padding: 15,
 				autoScroll: true,
+				disabled: true,
 				title: 'Native Applikation einreichen',
 				items: [{
 					bodyBorder: false,
@@ -515,7 +516,7 @@ Ext.ns('Shopware.SwagMobileTemplate');
 			
 			/** Main tabpanel navigation */
 			this.tabPnl = new Ext.TabPanel({
-				activeTab: 3,
+				activeTab: 0,
 				region: 'center',
 				autoWidth: false,
 				items: [this.generellPnl, this.shopPnl, this.designPnl, this.nativePnl]

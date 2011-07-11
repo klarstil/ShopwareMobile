@@ -588,48 +588,8 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
     		'data' => $data,
     		'file' => "@$file"
     	);
-    	$login = array(
-    		'username' => 'stp@shopware.de',
-    		'password' => 'shopware'
-    	);
-    	
-    	$application = json_decode($this->getData('https://build.phonegap.com/api/v0/apps', $param, '', $login));
-		
-		$html = '<html>
-			<head>
-				<title>Shopware Mobile - Native Applikation</title>
-				<style type="text/css">
-				html, body { background: #E5E5E5 }
-				.container { width: 500px; margin: 25px; background: #fff; padding: 15px; border: 1px solid #C0C0C0 }
-				.container { font: 12px tahoma,arial,helvetica,sans-serif; margin: 0 0 1em; }
-				p { margin: 0 0 1em }
-				</style>
-			</head>
-			<body>
-				<div class="container">
-				<p><strong>Applikationsname:</strong> %s</p>
-				<p><strong>App-ID:</strong> %s</p>
-				<p><strong>Version:</strong> %s</p>
-				<p><strong>Beschreibung:</strong> %s</p>
-				<p><strong>Shop-URL:</strong> %s</p>
-				<p><div><strong>Icon:</strong></div><img src="%s" /></p>
-				<p><div><strong>Splashscreen:</strong></div><img src="%s" /></p>
-				</div>
-			</body>
-		</html>';
-		
-		$html = sprintf($html, $dataRaw['title'], $dataRaw['package'], $dataRaw['version'], $dataRaw['desc'], $this->basePath, $this->props['iconUpload'], $this->props['startupUpload']);
-		
-		$to = 'te@shopware.de';
-		$from = 'stp@shopware.de';
-		$subject = 'Antrag - Shopware Mobile Native';
-		
-		$header = "MIME-Version: 1.0\r\n";
-		$header .= "Content-type: text/html; charset=iso-8859-1\r\n";
-		$header .= "From: $from\r\n";
-		$header .= "X-Mailer: PHP ". phpversion();
-		
-		mail($to, $subject, $html, $header);
+
+		//... add build.phonegap request
 		
 		return true;
     }

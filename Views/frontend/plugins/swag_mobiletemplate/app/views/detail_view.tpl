@@ -235,11 +235,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 			maxValue: 100,
 			width: '100%',
 			cycle: false,
-			name: 'sQuantity',
-			listeners: {
-				scope: this,
-				spin: me.onSpinnerSpin
-			}
+			name: 'sQuantity'
 		});
 
 		/** "Buy now" form panel */
@@ -303,27 +299,6 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 		});
 
 		App.views.Shop.info.superclass.initComponent.call(this);
-	},
-
-	/**
-	 * Changes the displayed price based on the amount and base price
-	 *
-	 * @param field
-	 * @param newValue
-	 * @param oldValue
-	 */
-	onSpinnerSpin: function(field, newValue, oldValue) {
-		var price, newPrice;
-
-		/** Calulate new price */
-		price = document.getElementById('priceNumericDetail').getAttribute('value');
-		price = parseFloat(price) * 100;
-
-		newPrice = (price * newValue) / 100;
-
-		/** Update price */
-		document.getElementById('priceDetail').innerHTML = App.Helpers.number_format(newPrice, 2, ',', '');
-
 	},
 
 	/**
