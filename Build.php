@@ -112,6 +112,9 @@ return array(
 		'1.2.1'=>array('releasedate'=>'2011-07-14', 'lines' => array(
 			'Add message box if the user adds an article to the cart',
 			'Add possibility to change the quantity in the cart view'
+		)),
+		'1.2.2'=>array('releasedate'=>'2011-07-14', 'lines' => array(
+			'Remove the property "Sencha.io"'
 		))
 	)
 );

@@ -884,19 +884,10 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	private function stripBasePath($url)
 	{
-		if(!$this->props['useSenchaIO']) {
-			if ($_SERVER["HTTPS"]){
-				$path = "https://";
-			}else {
-				$path= "http://";
-			}
-			$path .= $this->config->BasePath;
-			$url = str_ireplace($path, '', $url);
-			
-		} else {
-			$url = $this->senchaIo . $url;
-		}
+		$request = Enlight::Instance()->Front()->Request();
+		$basePath = $request->getScheme().'://'. $request->getHttpHost() . $request->getBasePath() . '/';
 
+		$url = str_ireplace($basePath, '', $url);
 		return $url;
 	}
 	
@@ -954,7 +945,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 
 	     return $res;
 	}
-	
+
 	/**
 	 * utf8decode()
 	 *

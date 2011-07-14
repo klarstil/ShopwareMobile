@@ -229,7 +229,9 @@ Ext.ns('Shopware.SwagMobileTemplate');
 					items: [{
 						// Sencha.io "Src"
 						xtype: 'checkbox',
+						disabled: true,
 						fieldLabel: 'Sencha.io "Src" verwenden',
+						boxLabel: '(noch nicht unterstützt)',
 						name: 'useSenchaIO',
 						checked: {if $useSenchaIO}true{else}false{/if}
 					}, {
