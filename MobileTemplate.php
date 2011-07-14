@@ -444,14 +444,19 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 		}
 		$limit = (int) $limit;
 
+		// Support umlauts
+		$search = (string) $this->Request()->sSearch;
+		$search = urldecode($search);
+		$search = $this->utf8decode($search);
+
 		if ($this->Request()->sSearchMode=="supplier"){
-			$variables = Shopware()->Modules()->Articles()->sGetArticlesByName("a.name ASC","","supplier",urldecode($this->Request()->sSearch));
+			$variables = Shopware()->Modules()->Articles()->sGetArticlesByName("a.name ASC","","supplier", $search);
 			$this->Request()->setParam('sSearch',urldecode($this->Request()->sSearchText));
 		} elseif ($this->Request()->sSearchMode=="newest"){
-			$variables = Shopware()->Modules()->Articles()->sGetArticlesByName("a.datum DESC","","newest",urldecode($this->Request()->sSearch));
+			$variables = Shopware()->Modules()->Articles()->sGetArticlesByName("a.datum DESC","","newest", $search);
 			$this->Request()->setParam('sSearch',urldecode($this->Request()->sSearchText));
 		} else {
-			$variables = Shopware()->Modules()->Articles()->sGetArticlesByName("a.topseller DESC","","",urldecode($this->Request()->sSearch));
+			$variables = Shopware()->Modules()->Articles()->sGetArticlesByName("a.topseller DESC","","", $search);
 		}
 		foreach ($variables["sPerPage"] as $perPageKey => &$perPage){
 			$perPage["link"] = str_replace("sPage=".$this->Request()->sPage,"sPage=1",$perPage["link"]);

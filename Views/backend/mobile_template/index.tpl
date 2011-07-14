@@ -47,13 +47,13 @@ Ext.ns('Shopware.SwagMobileTemplate');
 			
 			/** General settings form panel */
 			this.generellPnl = new Ext.FormPanel({
-				title: 'Allgemeine Anpassungen',
+				title: 'Grundkonfiguration',
 				padding: 15,
 				autoScroll: true,
 				items: [{
 					xtype: 'fieldset',
 					anchor: '0',
-					title: 'Allgemeine Anpassungen',
+					title: 'Grundkonfiguration',
 					labelWidth: 250,
 					items: [{
 						// Supported devices
@@ -96,6 +96,24 @@ Ext.ns('Shopware.SwagMobileTemplate');
 						fieldLabel: 'Link zur normalen Ansicht',
 						name: 'showNormalVersionLink',
 						checked: {if $showNormalVersionLink}true{else}false{/if}
+					}, {
+						// Voucher on confirm page
+						xtype: 'checkbox',
+						fieldLabel: 'Gutscheineingabe auf der Bestellbest&auml;tigungsseite anzeigen',
+						name: 'useVoucher',
+						checked: {if $useVoucher}true{else}false{/if}
+					}, {
+						// Newsletter signup on confirm page
+						xtype: 'checkbox',
+						fieldLabel: 'Newsletter-Anmeldung auf der Bestellbest&auml;tigungsseite anzeigen',
+						name: 'useNewsletter',
+						checked: {if $useNewsletter}true{else}false{/if}
+					}, {
+						// Commentfield on confirm page
+						xtype: 'checkbox',
+						fieldLabel: 'Kommentarfeld auf der Bestellbest&auml;tigungsseite anzeigen',
+						name: 'useComment',
+						checked: {if $useComment}true{else}false{/if}
 					}],
 					buttons: [{
 			        	text: 'Allgemeine Anpassungen speichern',
@@ -124,15 +142,7 @@ Ext.ns('Shopware.SwagMobileTemplate');
 			        		})
 			        	}
 			        }]
-				}]
-			});
-			
-			/** Subshop settings form panel */
-			this.shopPnl = new Ext.FormPanel({
-				title: 'Subshop-Anpassungen',
-				padding: 15,
-				autoScroll: true,
-				items: [{
+				}, {
 					xtype: 'fieldset',
 					title: 'Subshop-Anpassungen',
 					labelWidth: 250,
@@ -154,8 +164,8 @@ Ext.ns('Shopware.SwagMobileTemplate');
 			        	text: 'Subshop Anpassungen speichern',
 			        	scope: this,
 			        	handler: function() {
-			        		this.shopPnl.getForm().submit({
-			        			url: '{url controller="MobileTemplate" action="processSubshopForm"}',
+			        		this.generellPnl.getForm().submit({
+			        			url: '{url controller="MobileTemplate" action="processGenerellForm"}',
 			        			waitMsg: 'Sende Daten...',
 			        			success: function(form, response) {
 			        				Ext.Msg.show({
@@ -178,6 +188,7 @@ Ext.ns('Shopware.SwagMobileTemplate');
 			        }]
 				}]
 			});
+			
 			
 			this.colorTemplateStore = new Ext.data.JsonStore({
 				autoLoad: true,
@@ -221,24 +232,6 @@ Ext.ns('Shopware.SwagMobileTemplate');
 						fieldLabel: 'Sencha.io "Src" verwenden',
 						name: 'useSenchaIO',
 						checked: {if $useSenchaIO}true{else}false{/if}
-					}, {
-						// Voucher on confirm page
-						xtype: 'checkbox',
-						fieldLabel: 'Gutscheineingabe auf der Bestellbest&auml;tigungsseite anzeigen',
-						name: 'useVoucher',
-						checked: {if $useVoucher}true{else}false{/if}
-					}, {
-						// Newsletter signup on confirm page
-						xtype: 'checkbox',
-						fieldLabel: 'Newsletter-Anmeldung auf der Bestellbest&auml;tigungsseite anzeigen',
-						name: 'useNewsletter',
-						checked: {if $useNewsletter}true{else}false{/if}
-					}, {
-						// Commentfield on confirm page
-						xtype: 'checkbox',
-						fieldLabel: 'Kommentarfeld auf der Bestellbest&auml;tigungsseite anzeigen',
-						name: 'useComment',
-						checked: {if $useComment}true{else}false{/if}
 					}, {
 						// Colortemplate
 			            fieldLabel: 'Farbtemplate',
@@ -454,7 +447,8 @@ Ext.ns('Shopware.SwagMobileTemplate');
 				items: [{
 					bodyBorder: false,
 					cls: 'native_teaser',
-					html: '<h2>Shopware Mobile - Native Applikation</h2><p>Shopware Mobile kann auch als native App bereitgestellt werden. So können Sie als Shopbetreiber die App Stores von Apple, Android und co. als zusätzliches Marketinginstrument nutzen und sich dauerhaft auf den Smartphones Ihrer Kunden platzieren.</p><p>Füllen Sie hierzu das Formular "Applikationseinstellungen" aus und wir senden Ihnen eine Bestätigung, wenn die Applikation erfolgreich erstellt wurde.</p>'
+					html: '<h2>Shopware Mobile - Native Applikation</h2><p>Shopware Mobile kann auch als native App bereitgestellt werden. So können Sie als Shopbetreiber die App Stores von Apple, Android und co. als zusätzliches Marketinginstrument nutzen und sich dauerhaft auf den Smartphones Ihrer Kunden platzieren.</p><p>Füllen Sie hierzu das Formular "Applikationseinstellungen" aus und wir senden Ihnen eine Bestätigung, wenn die Applikation erfolgreich erstellt wurde.</p><p class="price"><strong>Einmalige Einrichtungsgeb&uuml;hr:</strong> <span>99,00 &euro;</span></p><p class="price"><strong>Monatliche Kosten:</strong> <span>79,00 &euro;</span></p>'
+
 				}, {
 					xtype: 'fieldset',
 					title: 'Applikationseinstellungen',
@@ -519,7 +513,7 @@ Ext.ns('Shopware.SwagMobileTemplate');
 				activeTab: 0,
 				region: 'center',
 				autoWidth: false,
-				items: [this.generellPnl, this.shopPnl, this.designPnl, this.nativePnl]
+				items: [this.generellPnl, this.designPnl, this.nativePnl]
 			});
 			
 			/** Beta notice panel */
