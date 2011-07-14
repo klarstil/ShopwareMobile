@@ -108,6 +108,10 @@ return array(
 			'Add new tab to the backend module(disabled)',
 			'Remove live price changing on the detail view',
 			'Proper banner resizing on category view'
+		)),
+		'1.2.1'=>array('releasedate'=>'2011-07-14', 'lines' => array(
+			'Add message box if the user adds an article to the cart',
+			'Add possibility to change the quantity in the cart view'
 		))
 	)
 );

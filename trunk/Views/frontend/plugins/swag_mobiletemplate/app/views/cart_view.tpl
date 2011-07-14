@@ -131,12 +131,6 @@ App.views.Cart.list = Ext.extend(Ext.Panel,
 	store: App.stores.Cart,
 	autoHeight: true,
 	scroll: false,
-	listeners: {
-		scope: this,
-		deactivate: function(me) {
-			alert('cartlist deactivate');
-		}
-	},
 	initComponent: function() {
 		this.store.on({
 			datachanged: this.onDataChanged,
@@ -147,13 +141,13 @@ App.views.Cart.list = Ext.extend(Ext.Panel,
 		Ext.apply(this, {
 			listeners: {
 				el: {
-					tap: this.onDeleteBtn,
-					delegate: '.deleteBtn',
+					tap: this.onTap,
+					delegate: '.x-button',
 					scope: this
 				},
 				scope: this
 			}
-		})
+		});
 	},
 
     /**
@@ -197,10 +191,36 @@ App.views.Cart.list = Ext.extend(Ext.Panel,
      * @param event
      * @param el
      */
-	onDeleteBtn: function(event, el) {
-		var el = Ext.get(el), val;
-		val = el.dom.attributes[1].nodeValue;
-		App.stores.Cart.remove(val);
+	onTap: function(event, el) {
+		var element = el;
+		if(event.getTarget('.quantityBtn')) {
+			// Prompt for user data and process the result using a callback:
+			Ext.Msg.prompt(
+				'{s name="MobileCartQuantityBtn"}Menge &auml;ndern{/s}',
+				'{s name="MobileCartQuantityText"}Bitte geben Sie die gew&uuml;nschte Menge ein{/s}',
+				function(text, quantity) {					
+	   				var el = Ext.get(element), id, ordernumber;
+					ordernumber = el.dom.attributes[1].nodeValue;
+					id = el.dom.attributes[2].nodeValue;
+					
+					if(text == 'ok') {
+						console.log(quantity);
+					
+						App.stores.Cart.remove(id);
+						
+						App.stores.Cart.add({
+							sOrdernumber: ordernumber,
+							sQuantity: quantity
+						});
+					}
+			}, this, false);
+			
+			
+		} else if(event.getTarget('.deleteBtn')) {
+			var el = Ext.get(el), val;
+			val = el.dom.attributes[1].nodeValue;
+			App.stores.Cart.remove(val);
+		}
 		return false;
 	},
 

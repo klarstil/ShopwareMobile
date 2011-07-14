@@ -445,6 +445,7 @@ Ext.ns('Shopware.SwagMobileTemplate');
 				disabled: true,
 				title: 'Native Applikation einreichen',
 				items: [{
+					// Price information
 					bodyBorder: false,
 					cls: 'native_teaser',
 					html: '<h2>Shopware Mobile - Native Applikation</h2><p>Shopware Mobile kann auch als native App bereitgestellt werden. So können Sie als Shopbetreiber die App Stores von Apple, Android und co. als zusätzliches Marketinginstrument nutzen und sich dauerhaft auf den Smartphones Ihrer Kunden platzieren.</p><p>Füllen Sie hierzu das Formular "Applikationseinstellungen" aus und wir senden Ihnen eine Bestätigung, wenn die Applikation erfolgreich erstellt wurde.</p><p class="price"><strong>Einmalige Einrichtungsgeb&uuml;hr:</strong> <span>99,00 &euro;</span></p><p class="price"><strong>Monatliche Kosten:</strong> <span>79,00 &euro;</span></p>'
@@ -454,24 +455,55 @@ Ext.ns('Shopware.SwagMobileTemplate');
 					title: 'Applikationseinstellungen',
 					labelWidth: 250,
 					items: [{
+						// App name
 						xtype: 'textfield',
 						fieldLabel: 'Titel',
 						allowBlank: false,
 						name: 'title',
 						width: 250
 					}, {
-						xtype: 'textfield',
-						fieldLabel: 'Paketname (AppID)',
-						name: 'appid',
-						allowBlank: false,
-						width: 250
-					}, {
+						// Version
 						xtype: 'textfield',
 						fieldLabel: 'Version',
 						allowBlank: false,
 						name: 'version',
 						width: 250
 					}, {
+						// Release date
+						fieldLabel: 'Ver&ouml;ffentlichsdatum',
+						xtype: 'datefield',
+						allowBlank: false,
+						width: 250,
+						name: 'release_date'
+					}, {
+						// Keywords
+						fieldLabel: 'Keywords',
+						name: 'keywords',
+						xtype: 'textfield',
+						allowBlank: false,
+						width: 250
+					}, {
+						// Contact eMail Address
+						xtype: 'textfield',
+						allowBlank: false,
+						width: 250,
+						fieldLabel: 'Kontakt eMail Adresse',
+						name: 'contact_email_address'
+					}, {
+						// Support URL
+						xtype: 'textfield',
+						name: 'support_url',
+						allowBlank: false,
+						width: 250,
+						fieldLabel: 'Support URL'
+					}, {
+						// App URL
+						xtype: 'textfield',
+						name: 'app_url',
+						fieldLabel: 'App-URL (optional)',
+						width: 250
+					}, {
+						// Description
 						xtype: 'textarea',
 						fieldLabel: 'Beschreibung',
 						width: 250,
