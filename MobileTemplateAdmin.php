@@ -571,9 +571,9 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
      */
     private function addNativeApplication($dataRaw)
     {
-    	$key = 'ieSPXqt8o3aHujdjyvfGiq6CHyQmOpz74uJ';
+    	$key = '####';
     	$params = '?action=buildApp&key='.$key;
-    	$url = 'http://mobile.shopware-de/'.$params;
+    	$url = '####'.$params;
     	
     	$this->getData($url, $dataRaw);
     }

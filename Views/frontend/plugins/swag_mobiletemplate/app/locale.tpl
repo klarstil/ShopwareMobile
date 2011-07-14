@@ -8,6 +8,26 @@
 
 Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Cart', 'App.views.Account', 'App.views.Info', 'App.views.Checkout');
 
+/** Localized Ext.Messagebox constants */
+(function(){
+    var B = Ext.MessageBox;
+
+    Ext.apply(B, {
+        OK     : { text : 'OK',     itemId : 'ok',  ui : 'action' },
+        CANCEL : { text : 'Abbrechen', itemId : 'cancel'},
+        YES    : { text : 'Ja',    itemId : 'yes', ui : 'action' },
+        NO     : { text : 'Nein',     itemId : 'no' },
+    });
+
+    Ext.apply(B, {
+        OKCANCEL    : [B.CANCEL, B.OK],
+        YESNOCANCEL : [B.CANCEL, B.NO, B.YES],
+        YESNO       : [B.NO, B.YES]
+    });
+
+})();
+
+
 /** Localized day names */
 Date.dayNames = [
 	'Sonntag',
