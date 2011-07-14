@@ -273,24 +273,7 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 			}
 			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$showNormalVersionLink' WHERE `name` LIKE 'showNormalVersionLink';");
 		}
-		
-		$message = 'Das Formular wurde erfolgreich gespeichert.';
-		echo Zend_Json::encode(array('success' => true, 'message' => $message));
-		die();
-	}
-	
-	/**
-	 * processSubshopFormAction()
-	 *
-	 * Verarbeitet die Subshop Einstellungen des Plugins
-	 *
-	 * @access public
-	 * @return void
-	 */
-	public function processSubshopFormAction()
-	{
-		$request = $this->Request();
-		
+
 		// Use Shopware Mobile as Subshop
 		$useAsSubshop = $request->getParam('useAsSubshop');
 		if(isset($useAsSubshop)) {
@@ -301,12 +284,45 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 			}
 			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$useAsSubshop' WHERE `name` LIKE 'useAsSubshop';");
 		}
-		
+
 		//Subshop-ID
 		$subshopID = $request->getParam('hiddenSubshop');
 		if(isset($subshopID)) {
 			$subshopID = intval($subshopID);
 			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$subshopID' WHERE `name` LIKE 'subshopID';");
+		}
+
+		// Voucher on confirm page
+		$useVoucher = $request->getParam('useVoucher');
+		if(isset($useVoucher)) {
+			if($useVoucher == 'on') {
+				$useVoucher = 1;
+			} else {
+				$useVoucher = 0;
+			}
+			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$useVoucher' WHERE `name` LIKE 'useVoucher';");
+		}
+
+		// Newsletter signup on confirm page
+		$useNewsletter = $request->getParam('useNewsletter');
+		if(isset($useNewsletter)) {
+			if($useNewsletter == 'on') {
+				$useNewsletter = 1;
+			} else {
+				$useNewsletter = 0;
+			}
+			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$useNewsletter' WHERE `name` LIKE 'useNewsletter';");
+		}
+
+		// Commentfield on confirm page
+		$useComment = $request->getParam('useComment');
+		if(isset($useComment)) {
+			if($useComment == 'on') {
+				$useComment = 1;
+			} else {
+				$useComment = 0;
+			}
+			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$useComment' WHERE `name` LIKE 'useComment';");
 		}
 		
 		$message = 'Das Formular wurde erfolgreich gespeichert.';
@@ -359,39 +375,6 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 				$useSenchaIO = 0;
 			}
 			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$useSenchaIO' WHERE `name` LIKE 'useSenchaIO';");
-		}
-		
-		// Voucher on confirm page
-		$useVoucher = $request->getParam('useVoucher');
-		if(isset($useVoucher)) {
-			if($useVoucher == 'on') {
-				$useVoucher = 1;
-			} else {
-				$useVoucher = 0;
-			}
-			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$useVoucher' WHERE `name` LIKE 'useVoucher';");
-		}
-		
-		// Newsletter signup on confirm page
-		$useNewsletter = $request->getParam('useNewsletter');
-		if(isset($useNewsletter)) {
-			if($useNewsletter == 'on') {
-				$useNewsletter = 1;
-			} else {
-				$useNewsletter = 0;
-			}
-			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$useNewsletter' WHERE `name` LIKE 'useNewsletter';");
-		}
-		
-		// Commentfield on confirm page
-		$useComment = $request->getParam('useComment');
-		if(isset($useComment)) {
-			if($useComment == 'on') {
-				$useComment = 1;
-			} else {
-				$useComment = 0;
-			}
-			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$useComment' WHERE `name` LIKE 'useComment';");
 		}
 		
 		// Colortemplate
@@ -549,19 +532,22 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 		$appID = $request->getParam('appid');
 		$version = $request->getParam('version');
 		$desc = $request->getParam('desc');
-		
+	
 		$data = array(
-			'title'   => $title,
-			'package' => $appID,
-			'version' => $version,
-			'desc'    => $desc
+			'url'          => $this->basePath,
+			'title'        => $title,
+			'package'      => $appID,
+			'version'      => $version,
+			'desc'         => $desc,
+			'splash'       => $this->props['startupUpload'],
+			'icon'         => $this->props['iconUpload'],
+			'useAsSubshop' => $this->props['useAsSubshop'],
+			'subshop'      => $this->props['subshopID'],
+			'mail'         => $this->config->mail
 		);
-		
-		// Grab the source code of the mobile template
-		$path = $this->scrapePageSourceCode($this->uploadPath . '/index.html');
-		
+	
 		// Add application to our PhoneGap Dashboard
-		$this->addNativeApplication($path, $data);
+		$this->addNativeApplication($data);
 		
 		// Return Message
 		$message = 'Das Formular wurde erfolgreich gespeichert. Wir werden in K&uuml;rze mit Ihnen in Kontakt treten.';
@@ -581,100 +567,16 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
      * abgerechnet und in den AppStore gestellt werden kann.
      *
      * @access private
-     * @param str $filePath
      * @param arr $dataRaw
-	 * @return bool
      */
-    private function addNativeApplication($filePath, $dataRaw)
+    private function addNativeApplication($dataRaw)
     {
-    	$data = json_encode($dataRaw);
+    	$key = 'ieSPXqt8o3aHujdjyvfGiq6CHyQmOpz74uJ';
+    	$params = '?action=buildApp&key='.$key;
+    	$url = 'http://mobile.shopware-de/'.$params;
     	
-    	$file = $this->uploadPath . '/index.html';    	
-    	$param = array(
-    		'data' => $data,
-    		'file' => "@$file"
-    	);
-    	$login = array(
-    		'username' => 'stp@shopware.de',
-    		'password' => 'shopware'
-    	);
-    	
-    	//$application = json_decode($this->getData('https://build.phonegap.com/api/v0/apps', $param, '', $login));
-		
-		$html = '<html>
-			<head>
-				<title>Shopware Mobile - Native Applikation</title>
-				<style type="text/css">
-				html, body { background: #E5E5E5 }
-				.container { width: 500px; margin: 25px; background: #fff; padding: 15px; border: 1px solid #C0C0C0 }
-				.container { font: 12px tahoma,arial,helvetica,sans-serif; margin: 0 0 1em; }
-				p { margin: 0 0 1em }
-				</style>
-			</head>
-			<body>
-				<div class="container">
-				<p><strong>Applikationsname:</strong> %s</p>
-				<p><strong>App-ID:</strong> %s</p>
-				<p><strong>Version:</strong> %s</p>
-				<p><strong>Beschreibung:</strong> %s</p>
-				<p><strong>Shop-URL:</strong> %s</p>
-				<p><div><strong>Icon:</strong></div><img src="%s" /></p>
-				<p><div><strong>Splashscreen:</strong></div><img src="%s" /></p>
-				</div>
-			</body>
-		</html>';
-		
-		$html = sprintf($html, $dataRaw['title'], $dataRaw['package'], $dataRaw['version'], $dataRaw['desc'], $this->basePath, $this->props['iconUpload'], $this->props['startupUpload']);
-		
-		$to = 'stp@shopware.de';
-		$from = $this->config->mail;
-		$subject = 'Antrag - Shopware Mobile Native';+
-		
-		$header = "MIME-Version: 1.0\r\n";
-		$header .= "Content-type: text/html; charset=iso-8859-1\r\n";
-		$header .= "From: $from\r\n";
-		$header .= "X-Mailer: PHP ". phpversion();
-		
-		mail($to, $subject, $html, $header);
-		
-		return true;
+    	$this->getData($url, $dataRaw);
     }
-	
-	/**
-	 * scrapePageSourceCode()
-	 *
-	 * Laedt den Quelltext des Mobile Templates herunter und schreibt diesen in den angegeben Pfad
-	 *
-	 * @access private
-	 * @param str $path
-	 * @return str $path
-	 */
-	private function scrapePageSourceCode($path)
-	{
-		$iPhoneUserAgent = "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_1 like Mac OS X; en-us) AppleWebKit/532.9 (KHTML, like Gecko)";
-		
-		// Support subshops
-		if($this->props['useAsSubshop']) {
-			$params = array(
-				'sLanguage' => $this->props['subshopID'],
-				'sMobile'   => 1
-			);
-		} else {
-			$params = array(
-				'sMobile' => 1
-			);
-		}
-		
-		// Fetch data
-		$data =  $this->getData($this->basePath, $params, $iPhoneUserAgent);
-		
-		// Save data
-		if(file_put_contents($path, utf8_encode($data)) == false) {
-			return false;
-		}
-		
-		return $path;
-	}
 	
 	/**
 	 * getData

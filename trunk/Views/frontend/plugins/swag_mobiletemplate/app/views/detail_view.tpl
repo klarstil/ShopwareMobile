@@ -384,6 +384,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 	onBuyBtn: function() {
 		var values = this.formPnl.getValues();
 		App.stores.Cart.add(values);
+		Ext.Msg.alert('{s name="MobileDetailCart"}Warenkorb{/s}', '{s name="MobileDetailArticleInCart"}Der Artikel wurde erfolgreich in den Warenkorb gelegt.{/s}', Ext.emptyFn);
 	},
 
 	/**
