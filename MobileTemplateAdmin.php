@@ -125,6 +125,19 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 		
 		$this->View()->assign('pluginBase', $this->pluginPath);
 		
+		// Screenshots
+		if(!empty($this->props['screenshots'])) {
+			$screenshots = explode('|', $this->props['screenshots']);
+			if(is_array($screenshots)) {
+				foreach($screenshots as $k => $v) {
+					$screenshots[$k] = $this->basePath . 'images/swag_mobiletemplate/'. $v;
+				}
+			}
+			$this->View()->assign('screenshots', $screenshots);
+		}
+		
+		
+		
 		// Supported devices
 		$data = array(
 			array('boxLabel' => 'iPhone', 'name' => 'iphone'),
@@ -528,21 +541,115 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 	{
 		$request = $this->Request();
 		
-		$title = $request->getParam('title');
-		$appID = $request->getParam('appid');
-		$version = $request->getParam('version');
-		$desc = $request->getParam('desc');
+		$screenshots = $_FILES['screenshots'];
+
+		// Check if the user chooses a new icon
+		if(is_array($screenshots) && $screenshots['error'] === 0) {
+		
+			$count = @count($screenshots['name']);
+			
+			$screens = array();
+			for($i = 0; $i < $count; $i++) {
+				$screens[$i] = array(
+					'name'     => $screenshots['name'][$i],
+					'type'     => $screenshots['type'][$i],
+					'tmp_name' => $screenshots['tmp_name'][$i],
+					'error'    => $screenshots['error'][$i],
+					'size'     => $screenshots['size'][$i]
+				);
+			}
+			
+			$uploadedScreens = array();
+			$i = 0;
+			foreach($screens as $screen) {
+				$uploadedScreens[] = $this->processUpload($screen, $i, 'screenshot');
+				$i++;
+			}
+			
+			$uploadedScreens = implode('|', $uploadedScreens);
+			
+			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$uploadedScreens' WHERE `name` LIKE 'screenshots';");
+		}
+
+		//App Title
+		$apptitle = $request->getParam('apptitle');
+		if(isset($apptitle)) {
+
+			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$apptitle' WHERE `name` LIKE 'apptitle';");
+		}
+
+		//App version
+		$appversion = $request->getParam('appversion');
+		if(isset($apptitle)) {
+
+			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$appversion' WHERE `name` LIKE 'appversion';");
+		}
+
+		//Publish date
+		$publishdate = $request->getParam('publish_date');
+		if(isset($publishdate)) {
+
+			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$publishdate' WHERE `name` LIKE 'publishdate';");
+		}
+
+		// Keywords
+		$keywords = $request->getParam('keywords');
+		if(isset($keywords)) {
+
+			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$keywords' WHERE `name` LIKE 'keywords';");
+		}
+
+		// Contact email address
+		$contact_email = $request->getParam('contact_email');
+		if(isset($contact_email)) {
+
+			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$contact_email' WHERE `name` LIKE 'contact_email';");
+		}
+
+		// Support URL
+		$support_url = $request->getParam('support_url');
+		if(isset($support_url)) {
+
+			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$support_url' WHERE `name` LIKE 'support_url';");
+		}
+
+		// App URL
+		$app_url = $request->getParam('app_url');
+		if(isset($support_url)) {
+
+			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$app_url' WHERE `name` LIKE 'app_url';");
+		}
+
+		// Description
+		$description = $request->getParam('description');
+		if(isset($description)) {
+
+			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$description' WHERE `name` LIKE 'description';");
+		}
+
+		// Changelog
+		$changelog = $request->getParam('changelog');
+		if(isset($changelog)) {
+
+			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$changelog' WHERE `name` LIKE 'changelog';");
+		}
 	
 		$data = array(
 			'url'          => $this->basePath,
-			'title'        => $title,
-			'package'      => $appID,
-			'version'      => $version,
-			'desc'         => $desc,
+			'title'        => $this->props['apptitle'],
+			'version'      => $this->props['appversion'],
+			'publishdate'  => $this->props['publishdate'],
+			'keywords'     => $this->props['keywords'],
+			'contact_email'=> $this->props['contact_email'],
+			'support_url'  => $this->props['support_url'],
+			'app_url'      => $this->props['app_url'],
+			'desc'         => $this->props['description'],
+			'changelog'    => $this->props['changelog'],
 			'splash'       => $this->props['startupUpload'],
 			'icon'         => $this->props['iconUpload'],
 			'useAsSubshop' => $this->props['useAsSubshop'],
 			'subshop'      => $this->props['subshopID'],
+			'screenshots'  => $this->props['screenshots'],
 			'mail'         => $this->config->mail
 		);
 	
@@ -571,9 +678,9 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
      */
     private function addNativeApplication($dataRaw)
     {
-    	$key = '####';
+    	$key = 'ieSPXqt8o3aHujdjyvfGiq6CHyQmOpz74uJ';
     	$params = '?action=buildApp&key='.$key;
-    	$url = '####'.$params;
+    	$url = 'http://mobile.shopware.de/'.$params;
     	
     	$this->getData($url, $dataRaw);
     }
@@ -685,6 +792,13 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 		
 		// Image type related size checking
 		switch($imageType) {
+			case 'screenshot':
+				if($width > 640 || $height > 960) {
+					$message = 'Das Icon muss eine Gr&ouml;&szlig;e von 512 Pixel x 512 Pixel aufweisen. Bitte w&auml;hlen Sie ein anderes Bild als Icon.';
+					echo Zend_Json::encode(array('success' => false, 'message' => $message));
+					die();
+				}
+				break;
 			case 'icon':
 				if($width != 512 || $height != 512) {
 					$message = 'Das Icon muss eine Gr&ouml;&szlig;e von 512 Pixel x 512 Pixel aufweisen. Bitte w&auml;hlen Sie ein anderes Bild als Icon.';
@@ -739,6 +853,8 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 			$this->createThumbnail($iconPath, 57, 57, 'app-icon-iphone', $file_extension);
 
 			return $this->basePath . 'images/swag_mobiletemplate/' . $upload['name'];
+		} elseif($imageType == 'screenshot') {
+			return $upload['name'];
 		} else {
 			return $this->basePath . 'images/swag_mobiletemplate/' . $upload['name'];
 		}

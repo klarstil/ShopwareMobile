@@ -56,8 +56,18 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 			('additionalCSS', ''),
 			('iconUpload', ''),
 			('startupUpload', ''),
+			('screenshots', ''),
 			('statusbarStyle', 'default'),
-			('glossOnIcon', '1');"
+			('glossOnIcon', '1'),
+			('apptitle', ''),
+			('appversion', ''),
+			('publishdate', ''),
+			('keywords', ''),
+			('contact_email', ''),
+			('support_url', ''),
+			('app_url', ''),
+			('description', ''),
+			('changelog', '');"
 		);
 
 		$form = $this->Form();

@@ -36,6 +36,8 @@ Ext.ux.form.FileUploadField = Ext.extend(Ext.form.TextField,  {
     // private
     readOnly: true,
 
+	mulitple: false,
+
     /**
      * @hide
      * @method autoSize
@@ -100,8 +102,20 @@ Ext.ux.form.FileUploadField = Ext.extend(Ext.form.TextField,  {
                 this.button.removeClass(['x-btn-over','x-btn-focus','x-btn-click'])
             },
             change: function(){
-                var v = this.fileInput.dom.value;
-                this.setValue(v);
+				if(this.multiple) {
+					var files = this.fileInput.dom.files, v = '';
+
+					for(var i in files) {
+						var file = files[i];
+						if(i == 0)
+							v += file.fileName;
+						else
+							v += '; ' + file.fileName;
+					}
+				} else
+                	v = this.fileInput.dom.value;
+				
+				this.setValue(v);
                 this.fireEvent('fileselected', this, v);
             }
         });
@@ -116,6 +130,10 @@ Ext.ux.form.FileUploadField = Ext.extend(Ext.form.TextField,  {
             type: 'file',
             size: 1
         });
+
+		if(this.multiple == true) {
+			this.fileInput.dom.multiple = 'multiple';
+		}
     },
 
     reset : function(){

@@ -32,6 +32,22 @@ p.desc, .native_teaser { font: 12px tahoma,arial,helvetica,sans-serif; margin: 0
 	padding-right: 344px;
 }
 .native_teaser p, .native_teaser h2 { margin: 0 0 1em }
+.screens { overflow: hidden; width: {/literal}{$screenshots|@count * 190}{literal}px; height: 276px; background: #efefef; }
+.screens img {
+	height: 230px;
+	width: 160px;
+	display: block;
+	float: left;
+	-webkit-box-shadow: 0 0 8px #111;
+	-moz-box-shadow: 0 0 8px #111;
+	margin: 15px;
+}
+#screensPnl { border: 1px solid #c7c7c7; }
+#screensPnl .x-panel-body {
+	overflow-x: scroll;
+	background: #F7F7F7;
+}
+
 </style>
 {/literal}
 <script type="text/javascript" src="{link file='backend/mobile_template/uploader/FileUploadField.js'}"></script>
@@ -229,9 +245,7 @@ Ext.ns('Shopware.SwagMobileTemplate');
 					items: [{
 						// Sencha.io "Src"
 						xtype: 'checkbox',
-						disabled: true,
 						fieldLabel: 'Sencha.io "Src" verwenden',
-						boxLabel: '(noch nicht unterstützt)',
 						name: 'useSenchaIO',
 						checked: {if $useSenchaIO}true{else}false{/if}
 					}, {
@@ -314,7 +328,7 @@ Ext.ns('Shopware.SwagMobileTemplate');
 						// Notice for iOS devices only
 						bodyBorder: false,
 						html: '<p class="desc"><strong>Hinweis:</strong> Die hier gesetzten Einstellungen gelten nur für iOS-Geräte wie dem iPhone, iPod touch und den iPad.</p>'
-					},{
+					}, {
 						// Icon Upload
 						xtype: 'fileuploadfield',
 						emptyText: '',
@@ -440,11 +454,108 @@ Ext.ns('Shopware.SwagMobileTemplate');
 				items: [this.designFormPnl, this.designPreviewPnl]
 			});
 			
+			this.nativeFieldSet = new Ext.form.FieldSet({
+				title: 'Applikationseinstellungen',
+				labelWidth: 250,
+				
+				width: '50%',
+				items: [{
+					// App name
+					xtype: 'textfield',
+					fieldLabel: 'Titel',
+					allowBlank: false,
+					name: 'apptitle',
+					width: 250,
+					value: '{$apptitle}'
+				}, {
+					// Version
+					xtype: 'textfield',
+					fieldLabel: 'Version',
+					allowBlank: false,
+					name: 'appversion',
+					width: 250,
+					value: '{$appversion}'
+				}, {
+					// Release date
+					fieldLabel: 'Ver&ouml;ffentlichsdatum',
+					xtype: 'datefield',
+					allowBlank: false,
+					width: 250,
+					name: 'publish_date',
+					value: '{$publishdate}'
+				}, {
+					// Keywords
+					fieldLabel: 'Keywords',
+					name: 'keywords',
+					xtype: 'textfield',
+					allowBlank: false,
+					width: 250,
+					value: '{$keywords}'
+				}, {
+					// Contact eMail Address
+					xtype: 'textfield',
+					allowBlank: false,
+					width: 250,
+					fieldLabel: 'Kontakt eMail Adresse',
+					name: 'contact_email',
+					value: '{$contact_email}'
+				}, {
+					// Support URL
+					xtype: 'textfield',
+					name: 'support_url',
+					allowBlank: false,
+					width: 250,
+					fieldLabel: 'Support URL',
+					value: '{$support_url}'
+				}, {
+					// App URL
+					xtype: 'textfield',
+					name: 'app_url',
+					fieldLabel: 'App-URL (optional)',
+					width: 250,
+					value: '{$app_url}'
+				}, {
+					// Description
+					xtype: 'textarea',
+					fieldLabel: 'Beschreibung',
+					width: 250,
+					height: 175,
+					name: 'description',
+					allowBlank: false,
+					value: '{$description}'
+				}, {
+					// Changelog
+					xtype: 'textarea',
+					fieldLabel: 'Changelog (falls ältere Version verfügbar)',
+					width: 250,
+					height: 175,
+					name: 'changelog',
+					allowBlank: true,
+					value: '{$changelog}'
+				}, {
+					// iPhone Screenshots hochladen
+					xtype: 'fileuploadfield',
+					emptyText: '',
+					fieldLabel: 'Screenshots Upload (Mehrfachauswahl)',
+					buttonText: 'Screens auswählen',
+					name: 'screenshots[]',
+					width: 250,
+					multiple: true
+				}]
+			});
+			
+			this.holderPnl = new Ext.Panel({
+				layout: 'hbox',
+				bodyBorder: false,
+				items: [this.nativeFieldSet]
+			});
+			
 			/** Native application panel */
 			this.nativePnl = new Ext.FormPanel({				
 				padding: 15,
 				autoScroll: true,
-				disabled: true,
+				fileUpload: true,
+				disabled: false,
 				title: 'Native Applikation einreichen',
 				items: [{
 					// Price information
@@ -452,99 +563,65 @@ Ext.ns('Shopware.SwagMobileTemplate');
 					cls: 'native_teaser',
 					html: '<h2>Shopware Mobile - Native Applikation</h2><p>Shopware Mobile kann auch als native App bereitgestellt werden. So können Sie als Shopbetreiber die App Stores von Apple, Android und co. als zusätzliches Marketinginstrument nutzen und sich dauerhaft auf den Smartphones Ihrer Kunden platzieren.</p><p>Füllen Sie hierzu das Formular "Applikationseinstellungen" aus und wir senden Ihnen eine Bestätigung, wenn die Applikation erfolgreich erstellt wurde.</p><p class="price"><strong>Einmalige Einrichtungsgeb&uuml;hr:</strong> <span>99,00 &euro;</span></p><p class="price"><strong>Monatliche Kosten:</strong> <span>79,00 &euro;</span></p>'
 
+				}, this.holderPnl],
+				buttons: [{
+					text: 'Applikationseinstellungen speichern',
+					scope: this,
+		        	handler: function() {
+		        		this.nativePnl.getForm().submit({
+		        			url: '{url controller="MobileTemplate" action="processNativeApplicationForm"}',
+		        			waitMsg: 'Sende Daten...',
+		        			success: function(form, response) {
+		        				Ext.Msg.show({
+		        					title: 'Speichern erfolgreich',
+		        					msg: response.result.message,
+		        					buttons: Ext.Msg.OK,
+		        					icon: Ext.MessageBox.INFO
+		        				});
+		        			},
+		        			failure: function(form, response) {
+		        				Ext.Msg.show({
+		        					title: 'Es ist ein Fehler aufgetreten',
+		        					msg: response.result.message,
+		        					buttons: Ext.Msg.OK,
+		        					icon: Ext.MessageBox.ERROR
+		        				});
+		        			}
+		        		})
+		        	}
 				}, {
-					xtype: 'fieldset',
-					title: 'Applikationseinstellungen',
-					labelWidth: 250,
-					items: [{
-						// App name
-						xtype: 'textfield',
-						fieldLabel: 'Titel',
-						allowBlank: false,
-						name: 'title',
-						width: 250
-					}, {
-						// Version
-						xtype: 'textfield',
-						fieldLabel: 'Version',
-						allowBlank: false,
-						name: 'version',
-						width: 250
-					}, {
-						// Release date
-						fieldLabel: 'Ver&ouml;ffentlichsdatum',
-						xtype: 'datefield',
-						allowBlank: false,
-						width: 250,
-						name: 'release_date'
-					}, {
-						// Keywords
-						fieldLabel: 'Keywords',
-						name: 'keywords',
-						xtype: 'textfield',
-						allowBlank: false,
-						width: 250
-					}, {
-						// Contact eMail Address
-						xtype: 'textfield',
-						allowBlank: false,
-						width: 250,
-						fieldLabel: 'Kontakt eMail Adresse',
-						name: 'contact_email_address'
-					}, {
-						// Support URL
-						xtype: 'textfield',
-						name: 'support_url',
-						allowBlank: false,
-						width: 250,
-						fieldLabel: 'Support URL'
-					}, {
-						// App URL
-						xtype: 'textfield',
-						name: 'app_url',
-						fieldLabel: 'App-URL (optional)',
-						width: 250
-					}, {
-						// Description
-						xtype: 'textarea',
-						fieldLabel: 'Beschreibung',
-						width: 250,
-						height: 175,
-						name: 'desc',
-						allowBlank: false
-					}],
-					buttons: [{
-						text: 'Applikationseinstellungen speichern',
-						scope: this,
-			        	handler: function() {
-			        		this.nativePnl.getForm().submit({
-			        			url: '{url controller="MobileTemplate" action="processNativeApplicationForm"}',
-			        			waitMsg: 'Sende Daten...',
-			        			success: function(form, response) {
-			        				Ext.Msg.show({
-			        					title: 'Speichern erfolgreich',
-			        					msg: response.result.message,
-			        					buttons: Ext.Msg.OK,
-			        					icon: Ext.MessageBox.INFO
-			        				});
-			        			},
-			        			failure: function(form, response) {
-			        				Ext.Msg.show({
-			        					title: 'Es ist ein Fehler aufgetreten',
-			        					msg: response.result.message,
-			        					buttons: Ext.Msg.OK,
-			        					icon: Ext.MessageBox.ERROR
-			        				});
-			        			}
-			        		})
-			        	}
-					}]
+					text: 'Applikation einreichen',
+					scope: this,
+					disabled: true,
+					handler: function() { alert('super ingo'); }
 				}]
 			});
 			
+			{if $screenshots}
+				var htmlStr = '';
+				{foreach $screenshots as $screen}
+					htmlStr += '<img src="{$screen}" />';
+				{/foreach}
+			
+				this.screenshots = new Ext.form.FieldSet({
+					title: 'Screenshots',
+					width: '49%',
+					style: 'margin-left: 1%',
+					items: [{
+						xtype: 'panel',
+						bodyBorder: false,
+						height: 285,
+						width: 420,
+						id: 'screensPnl',
+						html: '<div class="screens">'+htmlStr+'</div>'
+					}]
+				});
+				this.holderPnl.add(this.screenshots);
+			{/if}
+			
 			/** Main tabpanel navigation */
 			this.tabPnl = new Ext.TabPanel({
-				activeTab: 0,
+				activeTab: 2,
 				region: 'center',
 				autoWidth: false,
 				items: [this.generellPnl, this.designPnl, this.nativePnl]
