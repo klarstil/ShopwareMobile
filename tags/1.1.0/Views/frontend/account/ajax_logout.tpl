@@ -1,1 +1,0 @@
-{['success'=>true, 'msg'=> 'Ihr Logout war erfolgreich.'|utf8_encode]|json_encode}

@@ -1,1 +1,0 @@
-{['sUserData' => $sUserData]|json_encode}

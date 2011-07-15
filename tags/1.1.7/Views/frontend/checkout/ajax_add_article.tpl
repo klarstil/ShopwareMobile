@@ -1,1 +1,0 @@
-{['success'=>true]|json_encode}

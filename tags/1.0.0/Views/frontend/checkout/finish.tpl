@@ -1,1 +1,0 @@
-{['success'=>true, 'msg'=> 'Ihre Bestellung wurde erfolgreich ausgeführt. In Kürze erhalten Sie eine Bestellbestätigungsmail mit allen Informationen zu Ihrer Bestellung. Sie werden jetzt zurück auf die Startseite geleitet.'|utf8_encode, 'basket'=>$sBasket, 'userdata'=>$sUserData]|json_encode}

@@ -1,1 +1,0 @@
-{['success'=>false, 'msg'=> 'Ihre Bestellung konnte nicht abgesendet werden. Bitte probieren Sie es zu einen späteren Zeitpunkt erneut.'|utf8_encode]|json_encode}
