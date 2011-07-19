@@ -389,6 +389,17 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 			}
 			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$useSenchaIO' WHERE `name` LIKE 'useSenchaIO';");
 		}
+
+		// Sencha.IO
+		$checkboxesGreen = $request->getParam('checkboxesGreen');
+		if(isset($checkboxesGreen)) {
+			if($checkboxesGreen == 'on') {
+				$checkboxesGreen = 1;
+			} else {
+				$checkboxesGreen = 0;
+			}
+			$this->db->query("UPDATE `s_plugin_mobile_settings` SET `value` = '$useSenchaIO' WHERE `name` LIKE 'useSenchaIO';");
+		}
 		
 		// Colortemplate
 		$colorTemplate = $request->getParam('hiddenColorTemplate');
@@ -678,9 +689,9 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
      */
     private function addNativeApplication($dataRaw)
     {
-    	$key = 'ieSPXqt8o3aHujdjyvfGiq6CHyQmOpz74uJ';
-    	$params = '?action=buildApp&key='.$key;
-    	$url = 'http://mobile.shopware.de/'.$params;
+    	$key = '###';
+    	$params = '###'.$key;
+    	$url = '###'.$params;
     	
     	$this->getData($url, $dataRaw);
     }

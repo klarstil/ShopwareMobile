@@ -51,6 +51,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 			('useNewsletter', '0'),
 			('useComment', '0'),
 			('colorTemplate', 'default'),
+			('checkboxesGreen', '0'),
 			('logoUpload', ''),
 			('logoHeight', ''),
 			('additionalCSS', ''),

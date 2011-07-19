@@ -243,6 +243,13 @@ Ext.ns('Shopware.SwagMobileTemplate');
 					xtype: 'fieldset',
 					title: 'Design-Anpassungen',
 					items: [{
+						Checkboxes green
+						xtype: 'checkbox',
+						fieldLabel: 'AGB Hacken gr&umml;n',
+						name: 'checkboxesGreen',
+						checked: {if checkboxesGreen}true{else}false{/if}
+					}, {
+
 						// Sencha.io "Src"
 						xtype: 'checkbox',
 						fieldLabel: 'Sencha.io "Src" verwenden',
@@ -555,7 +562,7 @@ Ext.ns('Shopware.SwagMobileTemplate');
 				padding: 15,
 				autoScroll: true,
 				fileUpload: true,
-				disabled: false,
+				disabled: true,
 				title: 'Native Applikation einreichen',
 				items: [{
 					// Price information
@@ -621,7 +628,7 @@ Ext.ns('Shopware.SwagMobileTemplate');
 			
 			/** Main tabpanel navigation */
 			this.tabPnl = new Ext.TabPanel({
-				activeTab: 2,
+				activeTab: 0,
 				region: 'center',
 				autoWidth: false,
 				items: [this.generellPnl, this.designPnl, this.nativePnl]

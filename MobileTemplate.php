@@ -62,13 +62,22 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 		$i = 0;
 		foreach($main_categories as $cat) {
 			$categoryInfo = Shopware()->Modules()->Categories()->sGetCategoryContent((int) $cat['id']);
-			$output[$i] = array(
-				'id'     => $cat['id'],
-				'name'   => utf8_encode($cat['description']),
-				'desc'   => utf8_encode($this->truncate(strip_tags($categoryInfo['cmstext']), 100)),
-				'sub'    => ($cat['hasSubCategories'] == 1) ? true : false
-			);
-			$i++;
+
+			/** Get article count to hide empty categories */
+			$count = Shopware()->Db()->fetchRow("
+				SELECT COUNT(*) as count FROM s_articles_categories WHERE categoryID=?
+			",array($cat['id']));
+			$count = (int) $count['count'];
+
+			if($count > 0) {
+				$output[$i] = array(
+					'id'     => $cat['id'],
+					'name'   => utf8_encode($cat['description']),
+					'desc'   => utf8_encode($this->truncate(strip_tags($categoryInfo['cmstext']), 100)),
+					'sub'    => ($cat['hasSubCategories'] == 1) ? true : false
+				);
+				$i++;
+			}
 		}
 		$this->jsonOutput(array('categories' => $output));
 	}
@@ -352,7 +361,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 			}
 		}
 
-		$article = Shopware()->Modules()->Articles()->sGetArticleById($id);
+		$article = Shopware()->Modules()->Articles()->sGetPromotionById('fix', 0, $id);
 		
 		$article['mode'] = (int) $article['mode'];
 		if($article['mode'] !== 1) {
@@ -360,7 +369,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 		} else {
 			$article['articleName'] = $this->utf8encode($article['articleName']);
 		}
-		$article['description'] = $this->utf8encode($article['description']);
+		$article['description_long'] = $this->utf8encode($article['description_long']);
 		
 		$article['priceNumeric'] = preg_replace('/,/', '.', $article['price']);
 		if(!empty($article['pseudoprice'])) {

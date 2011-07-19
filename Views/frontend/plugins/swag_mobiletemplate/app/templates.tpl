@@ -31,7 +31,7 @@ App.views.Shop.detailTpl = new Ext.XTemplate(
 				'<span class="price"><span id="priceDetail">{price}</span> &euro;*</span>',
 			'</strong>',
 			// Base price
-			'<tpl if="!Ext.isEmpty(purchaseunit)">',
+			'<tpl if="purchaseunit &gt; 0">',
 				'<span class="tax">Inhalt: {purchaseunit} {sUnit.description}</span>',
 				'<tpl if="purchaseunit != referenceunit">',
 					'<span class="tax">Grundpreis:<br/> {referenceunit} {sUnit.description} = {referenceprice} &euro;*</span><br />',

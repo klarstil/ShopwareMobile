@@ -322,7 +322,7 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 		}
 
 		/* If needed, add configurator fieldset(s) */
-		if(!Ext.isEmpty(item.data.sConfigurator)) {
+		if(!Ext.isEmpty(item.data.sConfigurator) && item.data.sConfigurator != 0) {
 			me.buildConfigurator(item);
 		}
 
@@ -342,15 +342,19 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 		/** Setup article amount spinner */
 		if(~~item.get('laststock')) {
 			me.spinner.maxValue = ~~item.get('instock');
-		} else {
+		} else if(~~item.get('maxpurchase')) {
 			me.spinner.maxValue = ~~item.get('maxpurchase');
 		}
 		/** Set min purchase amount */
-		me.spinner.minValue = ~~item.get('minpurchase');
-		me.spinner.setValue(~~item.get('minpurchase'));
+		if(~~item.get('minpurchase') && ~~item.get('minpurchase')) {
+			me.spinner.minValue = ~~item.get('minpurchase');
+			me.spinner.setValue(~~item.get('minpurchase'));
+		}
 
 		/** Purchase steps */
-		me.spinner.incrementValue = ~~item.get('purchasesteps');
+		if(~~item.get('purchasesteps')) {
+			me.spinner.incrementValue = ~~item.get('purchasesteps');
+		}
 		if(me.spinner.rendered) {
 			me.spinner.doComponentLayout();
 		}
