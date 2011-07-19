@@ -302,7 +302,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 		foreach($articles['sArticles'] as $article) {
 			$articles['sArticles'][$i]['image_url'] = '';
 			$articles['sArticles'][$i]['articleName'] = $this->utf8encode($article['articleName']);
-			$articles['sArticles'][$i]['description_long'] = $this->utf8encode($this->truncate($article['description_long'], 80));
+			$articles['sArticles'][$i]['description_long'] = $this->utf8encode($this->truncate(strip_tags($article['description_long']), 80));
 			if(isset($article['image']['src'])) {
 				$articles['sArticles'][$i]['image_url'] = $this->stripBasePath($article['image']['src'][1]);
 			}
@@ -346,7 +346,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	public function getArticleDetailsAction()
 	{
 
-		$id = (int) $this->Request()->getParam('articleId');
+		$id = $this->Request()->getParam('articleId');
 
 		/** Replace configurator groups due to a bug in safari mobile
 		 *  which fires the following JS error:
@@ -360,9 +360,10 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 				}
 			}
 		}
-
-		$article = Shopware()->Modules()->Articles()->sGetPromotionById('fix', 0, $id);
 		
+		$article = Shopware()->Modules()->Articles()->sGetArticleById($id);
+		
+						
 		$article['mode'] = (int) $article['mode'];
 		if($article['mode'] !== 1) {
 			$article['articleName'] = $this->utf8encode($this->truncate($article['articleName'], 30));
@@ -515,7 +516,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	public function getArticleImagesAction()
 	{
 		$id = (int) $this->Request()->getParam('articleId');
-		$article = Shopware()->Modules()->Articles()->sGetArticleById($id);
+		$article = Shopware()->Modules()->Articles()->sGetPromotionById('fix', 0, $id);
 		$images = array();
 
 		// Main image
@@ -709,7 +710,16 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	{
 
 		$paymentMethods = Shopware()->Modules()->Admin()->sGetPaymentMeans();
-		$this->jsonOutput(array('sPaymentMethods' => $paymentMethods));
+		
+		$paymentmeans = Shopware()->Db()->query("SELECT `id`, `name`, `description`, `additionaldescription` FROM `s_core_paymentmeans`");
+		$paymentmeans = $paymentmeans->fetchAll();
+		
+		foreach($paymentmeans as &$payments) {
+			$payments['description'] = $this->utf8encode($payments['description']);
+			$payments['name'] = $this->utf8encode($payments['name']);
+		}
+		
+		$this->jsonOutput(array('sPaymentMethods' => $paymentmeans));
 	}
 
 	/**
