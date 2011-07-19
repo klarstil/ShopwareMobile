@@ -30,6 +30,11 @@
                 #logo, #logo div { background: url({$shopwareMobile.logoPath}) no-repeat center center }
                 #logo { height: {$shopwareMobile.logoHeight}px !important }
             {/if}
+			{if $shopwareMobile.checkboxGreen}
+				#orderPnl .x-field .x-input-radio:checked::after, #orderPnl .x-field .x-input-checkbox:checked::after {
+					border-color: #456E00;
+				}
+			{/if}
         </style>
     {/if}
 

@@ -243,11 +243,12 @@ Ext.ns('Shopware.SwagMobileTemplate');
 					xtype: 'fieldset',
 					title: 'Design-Anpassungen',
 					items: [{
-						Checkboxes green
+					
+						// Checkboxes green
 						xtype: 'checkbox',
-						fieldLabel: 'AGB Hacken gr&umml;n',
+						fieldLabel: 'AGB Hacken grün',
 						name: 'checkboxesGreen',
-						checked: {if checkboxesGreen}true{else}false{/if}
+						checked: {if $checkboxesGreen}true{else}false{/if}
 					}, {
 
 						// Sencha.io "Src"

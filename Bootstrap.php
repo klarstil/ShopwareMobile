@@ -268,6 +268,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 				'payments'       => $config['supportedPayments'],
 				'agbID'          => $config['agbInfoID'],
 				'cancellationID' => $config['cancelRightID'],
+				'checkboxGreen'  => $config['checkboxesGreen'],
 				'basePath'       => $basepath
 			));
 
