@@ -10,12 +10,24 @@
  */
 class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Action
 {
+	/** {str} sencha io url */
 	protected $senchaIo;
+
+	/** {obj} shopware system */
 	protected $system;
+
+	/** {obj} shopware config */
 	protected $config;
+
+	/** {obj} shopware module */
 	protected $module;
+
+	/** {obj} session object */
 	protected $session;
+
+	/** {obj} generell view renderer */
 	protected $ViewRenderer;
+	
 	/** {arr} Plugin configuration */
 	protected $props;
 
@@ -182,6 +194,10 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 */
 	public function getPromotionCarouselAction($cat_id = 3)
 	{
+		$languageData = Shopware()->System()->sLanguageData;
+		$activeLanguage = $languageData[Shopware()->System()->sLanguage];
+		$cat_id = $activeLanguage['parentID'];
+		
 		$cat_id = (int) $cat_id;
 		$promotion_articles = Shopware()->Modules()->Articles()->sGetPromotions($cat_id);
 		
@@ -516,7 +532,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	public function getArticleImagesAction()
 	{
 		$id = (int) $this->Request()->getParam('articleId');
-		$article = Shopware()->Modules()->Articles()->sGetPromotionById('fix', 0, $id);
+		$article = Shopware()->Modules()->Articles()->sGetArticleById($id);
 		$images = array();
 
 		// Main image
@@ -916,7 +932,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	 * Gibt einen formatierten JSON String zurueck und unterbindet die Ausgabe eines Templates
 	 *
 	 * @access private
-	 * @param  str $json_str - Auszugebener String
+	 * @param  array $json_str - Auszugebener String
 	 * @return str
 	 */
 	private function jsonOutput($json_str)

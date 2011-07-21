@@ -115,6 +115,11 @@ return array(
 		)),
 		'1.2.2'=>array('releasedate'=>'2011-07-14', 'lines' => array(
 			'Remove the property "Sencha.io"'
+		)),
+		'1.2.3'=>array('releasedate'=>'2011-07-21', 'lines' => array(
+			'Hide empty categories',
+			'Set the proper parent id for the main category',
+			'Add ability to change the checkboxes on the confirm page'
 		))
 	)
 );
