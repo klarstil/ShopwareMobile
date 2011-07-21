@@ -120,6 +120,9 @@ return array(
 			'Hide empty categories',
 			'Set the proper parent id for the main category',
 			'Add ability to change the checkboxes on the confirm page'
+		)),
+		'1.2.4'=>array('releasedate'=>'2011-07-21', 'lines' => array(
+			'Hide empty and blog categories in sub category listing'
 		))
 	)
 );
