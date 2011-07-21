@@ -24,7 +24,6 @@ App.stores.CategoriesTree = new Ext.data.TreeStore({
 	model: 'Categories',
 	filterOnLoad: false,
 	sortOnLoad: false,
-	clearOnLoad: true
 });
 
 /** Store for the promotions carousel */

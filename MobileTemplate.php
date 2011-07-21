@@ -113,6 +113,11 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 			$node = intval($this->Request()->categoryID);
 		}
 
+		if($this->Request()->node === 'root' && empty($this->Request()->categoryID)) {
+			$this->jsonOutput(array('categories' => ''));
+			exit();
+		}
+
 		$nodes = array();
 		$sql = "
 			SELECT c.id, c.description, c.position, c.parent, COUNT(c2.id) as count,
@@ -157,26 +162,27 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 					$image = false;
 				}
 
-				/* Fill return array */
-				if(!empty($category["count"])) {
-					$nodes[] = array(
-						'id'       => $category["id"],
-						'parentId' => $category["parent"],
-						'text'     => $category["description"],
-						'desc'     => $categoryInfo['cmstext'],
-						'img'      => $image,
-						'count'    => $category["article_count"]
-					);
-				} else {
-					$nodes[] = array(
-						'id'       => $category["id"],
-						'parentId' => $category["parent"],
-						'text'     => $category["description"],
-						'desc'     => $categoryInfo['cmstext'],
-						'img'      => $image,
-						'count'    => $category["article_count"],
-						'leaf'     => true
-					);
+				if($category['article_count'] > 0 && $categoryInfo['blog'] == '0') {
+					if(!empty($category["count"])) {
+						$nodes[] = array(
+							'id'       => $category["id"],
+							'parentId' => $category["parent"],
+							'text'     => $category["description"],
+							'desc'     => $categoryInfo['cmstext'],
+							'img'      => $image,
+							'count'    => $category["article_count"]
+						);
+					} else {
+						$nodes[] = array(
+							'id'       => $category["id"],
+							'parentId' => $category["parent"],
+							'text'     => $category["description"],
+							'desc'     => $categoryInfo['cmstext'],
+							'img'      => $image,
+							'count'    => $category["article_count"],
+							'leaf'     => true
+						);
+					}
 				}
 			}
 		}
