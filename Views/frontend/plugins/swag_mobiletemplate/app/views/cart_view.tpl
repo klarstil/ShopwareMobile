@@ -1,4 +1,5 @@
 <script type="text/javascript">
+
 /**
  * @file cart.js
  * @link http://www.shopware.de
@@ -30,10 +31,11 @@ App.views.Cart.index = Ext.extend(Ext.Panel,
 		scope: this,
 
 		activate: function() {
-			var amountEl = Ext.get('amount-display');
-			if(amountEl) {
-				amountEl.setHTML(App.Helpers.number_format((Math.round(App.stores.Cart.amount*100) / 100), 2, ',', '.') + '&nbsp;&euro;*');
-			}
+			Ext.dispatch({
+				controller: 'checkout',
+				action: 'updateSumDisplay',
+				element: Ext.get('amount-display')
+			});
 		},
 
 		deactivate: function(me) {
@@ -56,13 +58,21 @@ App.views.Cart.index = Ext.extend(Ext.Panel,
 	},
 
 	initComponent: function() {
+		var $me = this;
 
 		this.checkoutBtn = new Ext.Button({
 			id: 'checkoutBtn',
 			ui: 'forward action',
 			text: '{s name="MobileCartCheckoutButton"}Zur Kasse{/s}',
 			scope: this,
-			handler: this.onCheckoutBtn
+			handler: function() {
+
+				Ext.dispatch({
+					controller: 'checkout',
+					action: 'show',
+					parentView: $me
+				});
+			}
 		});
 
 		this.checkoutBtn2 = new Ext.Button({
@@ -71,7 +81,13 @@ App.views.Cart.index = Ext.extend(Ext.Panel,
 			text: '{s name="MobileCartCheckoutButton"}Zur Kasse{/s}',
 			style: 'margin: 1em',
 			scope: this,
-			handler: this.onCheckoutBtn
+			handler: function() {
+				Ext.dispatch({
+					controller: 'checkout',
+					action: 'show',
+					parentView: $me
+				});
+			}
 		})
 
 		this.toolbar = new Ext.Toolbar({
@@ -95,19 +111,6 @@ App.views.Cart.index = Ext.extend(Ext.Panel,
 		if(App.stores.Cart.articleCount < 1) {
 			this.checkoutBtn.hide();
 		}
-	},
-
-    /**
-     * Will be called when the checkout btn is tapped
-     */
-	onCheckoutBtn: function() {
-		var view = this;
-
-		Ext.dispatch({
-			controller: 'checkout',
-			action: 'show',
-			parentView: view
-		});
 	}
 });
 
@@ -192,35 +195,12 @@ App.views.Cart.list = Ext.extend(Ext.Panel,
      * @param el
      */
 	onTap: function(event, el) {
-		var element = el;
-		if(event.getTarget('.quantityBtn')) {
-			// Prompt for user data and process the result using a callback:
-			Ext.Msg.prompt(
-				'{s name="MobileCartQuantityBtn"}Menge &auml;ndern{/s}',
-				'{s name="MobileCartQuantityText"}Bitte geben Sie die gew&uuml;nschte Menge ein{/s}',
-				function(text, quantity) {					
-	   				var el = Ext.get(element), id, ordernumber;
-					ordernumber = el.dom.attributes[1].nodeValue;
-					id = el.dom.attributes[2].nodeValue;
-					
-					if(text == 'ok') {
-						console.log(quantity);
-					
-						App.stores.Cart.remove(id);
-						
-						App.stores.Cart.add({
-							sOrdernumber: ordernumber,
-							sQuantity: quantity
-						});
-					}
-			}, this, false);
-			
-			
-		} else if(event.getTarget('.deleteBtn')) {
-			var el = Ext.get(el), val;
-			val = el.dom.attributes[1].nodeValue;
-			App.stores.Cart.remove(val);
-		}
+
+		Ext.dispatch({
+			controller: 'checkout',
+			action: 'deleteItem',
+			element: el,
+		});
 		return false;
 	},
 
