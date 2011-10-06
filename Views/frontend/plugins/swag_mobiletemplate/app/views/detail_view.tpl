@@ -50,7 +50,11 @@ App.views.Shop.detail = Ext.extend(Ext.Panel,
 		beforedeactivate: function(me) {
 			var shopView   = Ext.getCmp('shop');
 			shopView.backBtn.setHandler(shopView.onBackBtn, shopView);
-			me.navBtn.destroy();
+
+			/** ... only delete the navigation buttons if they exists */
+			if(me.navBtn) {
+				me.navBtn.destroy();
+			}
 		},
 
 		/**
@@ -128,31 +132,13 @@ App.views.Shop.detail = Ext.extend(Ext.Panel,
 	 * @param pressed
 	 */
 	onNavBtn: function(pnl, btn, pressed) {
-		var active = Ext.getCmp('detail').getActiveItem();
-		if (pressed === true) {
-			if (btn.text === '{s name="MobileDetailSplitButtonDetail"}Detail{/s}' && active.id !== 'teaser') {
-				Ext.dispatch({
-					controller: 'detail',
-					action: 'showInfo',
-					refresh: true
-				});
-
-				Ext.getCmp('detail').setActiveItem('teaser', 'fade');
-			}
-			if (btn.text === '{s name="MobileDetailSplitButtonComments"}Kommentare{/s}') {
-				Ext.dispatch({
-					controller: 'detail',
-					action: 'showComments'
-				});
-				Ext.getCmp('detail').setActiveItem('votes', 'fade');
-			}
-			if (btn.text === '{s name="MobileDetailSplitButtonPictures"}Bilder{/s}') {
-				Ext.dispatch({
-					controller: 'detail',
-					action: 'showPictures'
-				})
-			}
-		}
+		Ext.dispatch({
+			controller: 'detail',
+			action: 'handleNavigationButton',
+			button: btn,
+			pressed: pressed
+		});
+		return true;
 	}
 });
 
@@ -305,70 +291,13 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 	 * Handles the different article types and creates the needed elements (e.g. variants, configurator, bundles)
 	 */
 	onStoreLoaded: function() {
-		var me = this, store = App.stores.Detail, item = store.getAt(0), data = item.data.liveshoppingData;
-		me._item = item;
+		Ext.dispatch({
+			controller: 'detail',
+			action: 'storeLoaded',
+			view: this
+		});
 
-		/* Create hidden input field */
-		me.buildOrdernumber(item);
-
-		/* If needed, add bundle view */
-		if(!Ext.isEmpty(item.data.sBundles)) {
-			me.add(me.bundle);
-		}
-
-		/* If needed, add variant select box */
-		if(!Ext.isEmpty(item.data.sVariants)) {
-			me.buildVariantField(item);
-		}
-
-		/* If needed, add configurator fieldset(s) */
-		if(!Ext.isEmpty(item.data.sConfigurator) && item.data.sConfigurator != 0) {
-			me.buildConfigurator(item);
-		}
-
-		/* If needed, add live-shopping functionality */
-		if(!Ext.isEmpty(item.data.liveshoppingData)) {
-			App.Helpers.server.init(timeNow);
-			interval = App.Helpers.liveshopping.init(data);
-		}
-		me.add(me.desc);
-
-		/** Hide buy button and formPnl if its an blog article */
-		if(me._item.data.mode == '1') {
-			me.buyBtn.hide();
-			me.formPnl.hide();
-		}
-
-		/** Setup article amount spinner */
-		if(~~item.get('laststock')) {
-			me.spinner.maxValue = ~~item.get('instock');
-		} else if(~~item.get('maxpurchase')) {
-			me.spinner.maxValue = ~~item.get('maxpurchase');
-		}
-		/** Set min purchase amount */
-		if(~~item.get('minpurchase') && ~~item.get('minpurchase')) {
-			me.spinner.minValue = ~~item.get('minpurchase');
-			me.spinner.setValue(~~item.get('minpurchase'));
-		}
-
-		/** Purchase steps */
-		if(~~item.get('purchasesteps')) {
-			me.spinner.incrementValue = ~~item.get('purchasesteps');
-		}
-		if(me.spinner.rendered) {
-			me.spinner.doComponentLayout();
-		}
-
-		/** Change template for blog articles */
-		if(~~item.get('mode') == 1) {
-			me.info.tpl = App.views.Shop.blogTpl;
-			me.info.refresh();
-			me.buyBtn.destroy();
-			me.desc.style = 'display:inline-block;';
-			me.desc.refresh();
-		}
-
-		me.doLayout();
+		return this;
 	},
 
 	/**
@@ -496,55 +425,27 @@ App.views.Shop.info = Ext.extend(Ext.Panel,
 	 * @param val
 	 */
 	onConfiguratorChange: function(select, val) {
-		var store  = App.stores.Detail,
-			item   = store.getAt(0),
-			configurator = item.data.sConfigurator,
-			groupId, active, values = this.formPnl.getValues(),
-			me = this;
+		Ext.dispatch({
+			controller: 'detail',
+			action: 'changeConfigurator',
+			select: select,
+			value: val,
+			view: this
+		});
 
-		this.setLoading(true);
-		values.articleId = item.data.articleID;
-		App.Helpers.postRequest(App.RequestURL.getDetail, values, function(response) {
-				if(!Ext.isEmpty(response.sArticle)) {
-
-					var article = response.sArticle[0];
-
-					/** Update ordnumber */
-					me.hiddenOrdernumber.setValue(article.ordernumber);
-					document.getElementById('ordernumberDetail').innerHTML = article.ordernumber;
-
-					/** Update price */
-					document.getElementById('priceDetail').innerHTML = article.price;
-					document.getElementById('priceNumericDetail').setAttribute('value', article.priceNumeric);
-
-					me.spinner.setValue(1);
-					me.setLoading(false);
-				}
-			}
-		);
+		return true;
 	},
 
 	onVariantChange: function(select, value) {
-		var store = App.stores.Detail, item = store.getAt(0), me = this;
-		item = item.data;
+		Ext.dispatch({
+			controller: 'detail',
+			action: 'changeVariants',
+			select: select,
+			value: value,
+			view: this
+		});
 
-		for(var idx in item.sVariants) {
-			var variant = item.sVariants[idx];
-
-			if(variant.ordernumber == value) {
-
-				/** Update ordernumber */
-				document.getElementById('ordernumberDetail').innerHTML = variant.ordernumber;
-				me.hiddenOrdernumber.setValue(variant.ordernumber);
-
-				/** Update price */
-				variant.priceNumeric = variant.price.replace(',', '.');
-				variant.priceNumeric = parseFloat(variant.priceNumeric);
-				document.getElementById('priceDetail').innerHTML = variant.price;
-				document.getElementById('priceNumericDetail').setAttribute('value', variant.priceNumeric);
-				me.spinner.setValue(1);
-			}
-		}
+		return true;
 	}
 });
 
@@ -714,21 +615,11 @@ App.views.Shop.commentForm = Ext.extend(Ext.form.FormPanel,
 
 		/** TODO - Check fields before submit */
 		handler: function() {
-			var me = Ext.getCmp('commentForm'),
-			    store = App.stores.Detail,
-			    articleID = store.data.items[0].data.articleID,
-				values = me.getValues(true);
-
-			values.articleID = articleID;
-
-			App.Helpers.postRequest(App.RequestURL.addComment, values, function() {
-				Ext.Msg.alert('{s name="MobileDetailCommentSuccess"}Erfolg{/s}', '{s name="MobileDetailCommentSuccessMessage"}Ihr Kommentar wurde erfolgreich hinzugef&uuml;gt{/s}');
-				store.load({
-					params: {
-						articleID: articleID
-					}
-				});
+			Ext.dispatch({
+				controller: 'detail',
+				action: 'saveComment'
 			});
+			return true;
 		}
 	}],
 
