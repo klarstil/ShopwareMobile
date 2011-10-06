@@ -19,7 +19,6 @@ Ext.ns('App.views.Viewport', 'App.views.Shop', 'App.views.Search', 'App.views.Ca
 App.views.Account.index = Ext.extend(Ext.Panel,
 /** @lends App.views.Account.index# */
 {
-	//id: 'account',
 	cls: 'account',
 	title: 'Kundenkonto',
 	iconCls: 'user',
@@ -63,19 +62,13 @@ App.views.Account.index = Ext.extend(Ext.Panel,
 			hidden: (~~isUserLoggedIn) ? false : true,
 			handler: function() {
 				var me = this;
-				App.Helpers.getRequest(App.RequestURL.logout, '', function(response) {
-					if(response.success && response.msg) {
-						Ext.Msg.alert('{s name="MobileAccountRegisterSuccess"}Registrierung erfolgreich{/s}', response.msg);
-					}
-					isUserLoggedIn = 0;
-
-					/* Change view */
-					me.logoutBtn.hide();
-					me.centerPnl.hide();
-					me.existingPnl.show();
-					me.newPnl.show();
-					me.doComponentLayout();
+				Ext.dispatch({
+					controller: 'account',
+					action: 'logout',
+					view: this
 				});
+
+				return true;
 			}
 		});
 
@@ -216,6 +209,7 @@ App.views.Account.index = Ext.extend(Ext.Panel,
 			items: [this.welcomeCmp, this.userInfoCmp, this.paymentField, this.billingCmp, this.deliveryCmp]
 		});
 
+		/** Get the payment methods */
 	    App.Helpers.getRequest(App.RequestURL.getPayment, '', function(data) {
 			for(idx in data.sPaymentMethods) {
 				var payItem = data.sPaymentMethods[idx];
@@ -282,6 +276,8 @@ App.views.Account.index = Ext.extend(Ext.Panel,
 				'register[payment]': chkbox.getValue()
 			}
 		});
+
+		return true;
 	},
 
 	/**
@@ -377,59 +373,20 @@ App.views.Account.login = Ext.extend(Ext.form.FormPanel,
 			me.destroy();
 		},
 		submit: function(form, response) {
-			if(response.success && response.msg) {
-				Ext.Msg.alert('Login erfolgreich', response.msg, function() {
-					var active = Ext.getCmp('viewport').getActiveItem(),
-						view = 0;
 
-					if(active.id == 'cart') {
-						App.stores.UserData.load({
-							scope: this,
-							callback: function(){
-
-								/* Set user is logged in */
-								isUserLoggedIn = 1;
-
-								view = new App.views.Checkout.index;
-								view.update('');
-								active.setActiveItem(view, {
-									type: 'slide',
-									reverse: true,
-									scope: this
-								});
-							}
-						});
-					} else {
-						/* Toolbar set up */
-						active.backBtn.hide();
-						active.logoutBtn.show();
-						active.toolbar.setTitle(active.backBtn.text);
-						active.toolbar.doLayout();
-
-						/* Change active view */
-						active.newPnl.hide();
-						active.existingPnl.hide();
-
-						App.stores.UserData.load({
-							scope: this,
-							callback: function() {
-								active.createCustomerCenter(active.mainPnl);
-								active.mainPnl.doComponentLayout();
-								active.mainPnl.doLayout();
-
-								/* Set user is logged in */
-								isUserLoggedIn = 1;
-
-								active.setActiveItem(view, {
-									type: 'slide',
-									reverse: true,
-									scope: this
-								});
-							}
-						})
-					}
-				});
+			if(!response.success && response.msg) {
+				return false;
 			}
+			Ext.Msg.alert('Login erfolgreich', response.msg, function() {
+				Ext.dispatch({
+					controller: 'account',
+					action: 'login',
+					form: form,
+					response: response
+				});
+
+				return true;
+			});
 		},
 		exception: function(form, response) {
 			if(!response.success && response.msg) {
@@ -618,58 +575,14 @@ App.views.Account.register = Ext.extend(Ext.form.FormPanel,
 		submit: function(form, response) {
 			if(response.success && response.msg) {
 				Ext.Msg.alert('{s name="MobileRegisterSuccess"}Registrierung erfolgreich{/s}', response.msg, function() {
-					var active = Ext.getCmp('viewport').getActiveItem(),
-						view = 0;
-
-					if(active.id == 'cart') {
-						App.stores.UserData.load({
-							scope: this,
-							callback: function(){
-
-								/* Set user is logged in */
-								isUserLoggedIn = 1;
-
-								view = new App.views.Checkout.index;
-								view.update('');
-								active.setActiveItem(view, {
-									type: 'slide',
-									reverse: true,
-									scope: this
-								});
-							}
-						});
-					} else {
-
-						/* Toolbar set up */
-						active.backBtn.hide();
-						active.logoutBtn.show();
-						active.toolbar.setTitle(active.backBtn.text);
-						active.toolbar.doLayout();
-
-						/* Change active view */
-						active.newPnl.hide();
-						active.existingPnl.hide();
-
-						App.stores.UserData.load({
-							scope: this,
-							callback: function() {
-								active.createCustomerCenter(active.mainPnl);
-								active.mainPnl.doComponentLayout();
-								active.mainPnl.doLayout();
-
-								/* Set user is logged in */
-								isUserLoggedIn = 1;
-
-								active.setActiveItem(view, {
-									type: 'slide',
-									reverse: true,
-									scope: this
-								});
-							}
-						})
-					}
+					Ext.dispatch({
+						controller: 'account',
+						action: 'register'
+					});
 				});
 			}
+
+			return true;
 		},
 
 		exception: function(form, response) {
