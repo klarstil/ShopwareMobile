@@ -410,11 +410,12 @@ strong { font-weight: 700 }
 
 /*  DETAIL VIEW - COMMENTS
 	------------------------------------------------------------------ */
-#commentsView { margin: 0.5em 0 1em; }
+#commentsView { margin: 0.5em 0 1em; width: 100% }
 #commentsView .comment {
     font-size: 14px;
     position: relative;
     margin-top: 10px;
+	width: 100%;
 }
 #commentsView .comment .desc {
     margin: 0;
