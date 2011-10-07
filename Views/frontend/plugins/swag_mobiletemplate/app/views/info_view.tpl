@@ -100,15 +100,12 @@ App.views.Info.list = Ext.extend(Ext.List,
 	 * @param idx
 	 */
 	onItemTap: function(pnl, idx) {
-		var item = App.stores.Info.getAt(idx), view = Ext.getCmp('infoDetail');
-
-		if(!view) {
-			view = new App.views.Info.Detail(item);
-			Ext.getCmp('info').add(view);
-		}
-
-		Ext.getCmp('info').getToolbar().setTitle(App.Helpers.truncate(item.data.name, 12, '...'));
-		Ext.getCmp('info').setActiveItem(view, { type: 'slide' });
+				Ext.dispatch({
+			controller: 'info',
+			action: 'detail',
+			index: idx
+		});
+		return true;
 	}
 });
 

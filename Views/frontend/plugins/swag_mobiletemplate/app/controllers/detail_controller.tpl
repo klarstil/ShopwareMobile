@@ -181,10 +181,12 @@ Ext.regController('detail', {
 
 		me.setLoading(true);
 		values.articleId = item.data.articleID;
-		App.Helpers.postRequest(App.RequestURL.getDetail, options.values, function(response) {
+		App.Helpers.postRequest(App.RequestURL.getDetail, values, function(response) {
 			if(!Ext.isEmpty(response.sArticle)) {
 
 				var article = response.sArticle[0];
+
+				console.log(article);
 
 				/** Update ordnumber */
 				me.hiddenOrdernumber.setValue(article.ordernumber);
@@ -210,13 +212,14 @@ Ext.regController('detail', {
 	 * @return bool
 	 */
 	changeVariants: function(options) {
+
 		var store = App.stores.Detail, item = store.getAt(0), me = options.view;
 		item = item.data;
 
 		for(var idx in item.sVariants) {
 			var variant = item.sVariants[idx];
 
-			if(variant.ordernumber == value) {
+			if(variant.ordernumber == options.value) {
 
 				/** Update ordernumber */
 				document.getElementById('ordernumberDetail').innerHTML = variant.ordernumber;

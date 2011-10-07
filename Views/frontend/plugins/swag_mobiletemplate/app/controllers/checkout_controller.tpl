@@ -144,9 +144,12 @@ Ext.regController('checkout', {
 		}
 
 		element = options.element;
+
 		/** TODO: Use smarty snippet for the currency symbol */
-		price = App.Helpers.number_format((Math.round(App.stores.Cart.amount*100) / 100), 2, ',', '.') + '&nbsp;&euro;*';
-		element.setHTML(price);
+		if(App.stores.Cart.amount && element) {
+			price = App.Helpers.number_format((Math.round(App.stores.Cart.amount*100) / 100), 2, ',', '.') + '&nbsp;&euro;*';
+			element.setHTML(price);
+		}
 
 		return true;
 	}
