@@ -448,11 +448,21 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 		// Configurator
 		if(!empty($article['sConfigurator'])) {
 			foreach($article['sConfigurator'] as $id => $configurator) {
-				$article['sConfigurator'][$id]['groupname'] = utf8_encode($configurator['groupname']);
-				$article['sConfigurator'][$id]['groupdescription'] = utf8_encode($configurator['groupdescription']);
+				$article['sConfigurator'][$id]['groupname'] = $this->utf8encode($configurator['groupname']);
+				$article['sConfigurator'][$id]['groupdescription'] = $this->utf8encode($configurator['groupdescription']);
 				foreach($configurator['values'] as $key => $value) {
-					$article['sConfigurator'][$id]['values'][$key]['optionname'] = utf8_encode($value['optionname']);
+					$article['sConfigurator'][$id]['values'][$key]['optionname'] = $this->utf8encode($value['optionname']);
 				}
+			}
+		}
+
+		// Variants
+		if(!empty($article['additionaltext'])) {
+			$article['additionaltext'] = $this->utf8encode($article['additionaltext']);
+		}
+		if(!empty($article['sVariants'])) {
+			foreach($article['sVariants'] as $id => $variant) {
+				$article['sVariants'][$id]['additionaltext'] = $this->utf8encode($variant['additionaltext']);
 			}
 		}
 		
