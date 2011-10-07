@@ -32,9 +32,8 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	protected $props;
 
 	/**
-	 * init()
-	 *
-	 * Dient als Konstruktor
+	 * Constructor method which gets the configuration
+	 * and sets some class properties to save keystrokes.
 	 *
 	 * @access public
 	 * @return void
@@ -61,9 +60,11 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	}
 
 	/**
-	 * getMainCategoriesAction()
+	 * Get all main categories for the main page
+	 * of the mobile template.
 	 *
-	 * Liest alle Hauptkategorien des Shops aus
+	 * Note that the data which will be passed
+	 * to the view are utf8 encoded
 	 *
 	 * @access public
 	 * @return void
@@ -95,9 +96,11 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	}
 
 	/**
-	 * getCategoriesTreeAction()
+	 * Get all subcategories based on the
+	 * passed category id.
 	 *
-	 * Listet alle Unterkategorien einer gegebenen Kategorie-ID auf
+	 * Note that the data which will be passed
+	 * to the view are utf8 encoded
 	 *
 	 * @return void
 	 */
@@ -190,13 +193,14 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	}
 	
 	/**
-	 * getPromotionCarouselActions()
+	 * Gets all promotions articles from the given
+	 * category id (default 3 = german).
 	 *
-	 * Gibt alle Promotion-Artikel der Hauptkategorie zurueck
+	 * Note that the data which will be passed
+	 * to the view are utf8 encoded
 	 *
-	 * @access public
-	 * @param  {int} $cat_id - KategorieID
-	 * @return {string} $retPromo - Array mit den gefundenen Promotions
+	 * @param int $cat_id
+	 * @return void
 	 */
 	public function getPromotionCarouselAction($cat_id = 3)
 	{
@@ -232,14 +236,15 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	}
 	
 	/**
-	 * getBannersByCategoryIdAction()
+	 * Gets all banners for a subcategory
+	 * based on the passed category id (default = 3)
 	 *
-	 * Liest alle Banner einer Kategorie aus und gibt diese per JSON String zurueck
+	 * Note that the data which will be passed
+	 * to the view are utf8 encoded
 	 *
-	 * @access public
-	 * @param  {int} $cat_id - KategorieID
-	 * @param  {int} $limit - Maximalanzahl der Banner
-	 * @return {string} $retBanners - Array mit den gefundenen Banner
+	 * @param int $cat_id
+	 * @param int $limit
+	 * @return void
 	 */
 	public function getBannersByCategoryIdAction($cat_id=3, $limit=10)
 	{
@@ -274,13 +279,13 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	}
 	
 	/**
-	 * getArticlesByCategoryIdAction()
+	 * Get all articles (with pagination) from a
+	 * given category id.
 	 *
-	 * Laedt alle Artikel einer bestimmten Kategorie
+	 * Note that the data which will be passed
+	 * to the view are utf8 encoded
 	 *
-	 * @access public
-	 * @param  {int} $_GET['categoryId']
-	 * @return {string} json string
+	 * @return void
 	 */
 	public function getArticlesByCategoryIdAction()
 	{
@@ -357,13 +362,14 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	}
 	
 	/**
-	 * getArticleDetailsAction()
+	 * Get the article details based on the
+	 * passed article id. The data will be optimized for a smaller
+	 * response size.
 	 *
-	 * Liest alle Artikeldetails aus
+	 * Note that the data which will be passed
+	 * to the view are utf8 encoded
 	 *
-	 * @access public
-	 * @param  {int} $_GET['articleId']
-	 * @return {string} json string
+	 * @return void
 	 */
 	public function getArticleDetailsAction()
 	{
@@ -454,9 +460,11 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	}
 
 	/**
-	 * searchAction()
+	 * Processes a search request on the based
+	 * of the normal search (no fuzzy search license needed).
 	 *
-	 * Fuehrt eine Suche aus und gibt das Ergebnis als JSON String zurueck
+	 * Note that the data which will be passed
+	 * to the view are utf8 encoded
 	 *
 	 * @return void
 	 */
@@ -527,13 +535,13 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	}
 	
 	/**
-	 * getArticleImagesAction()
+	 * Get all articles images based on the passed
+	 * article id.
 	 *
-	 * Liest alle Bilder eines Artikels aus
+	 * Note that the data which will be passed
+	 * to the view are utf8 encoded
 	 *
-	 * @access public
-	 * @param  {int} $_GET['articleId']
-	 * @return {string} json string 
+	 * @return void
 	 */
 	public function getArticleImagesAction()
 	{
@@ -564,11 +572,9 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	}
 
 	/**
-	 * addCommentAction()
+	 * Saves a user comment in the database with
+	 * standard method from shopware
 	 *
-	 * Speichert ein Benutzerkommentar
-	 * 
-	 * @access public
 	 * @return void
 	 */
 	public function addCommentAction()
@@ -583,11 +589,12 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	}
 
 	/**
-	 * addBundleToCartAction
+	 * Adds a bundle to the basket and
+	 * returns the placed bundle as a json string
 	 *
-	 * Fuegt ein Bundle zum Warenkorb hinzu
+	 * Note that the data which will be passed
+	 * to the view are utf8 encoded
 	 *
-	 * @access public
 	 * @return void
 	 */
 	public function addBundleToCartAction()
@@ -600,14 +607,13 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	}
 	
 	/**
-	 * getBasketAction()
+	 * Gets the whole basket from the DB and adds the
+	 * supplier name to it.
 	 *
-	 * Liest alle Artikel im Warenkorb aus und gibt diese als
-	 * JSON String zurueck
+	 * Note that the data which will be passed
+	 * to the view are utf8 encoded
 	 *
-	 * @access public
-	 * @param  void
-	 * @return {string} json string
+	 * @return void
 	 */
 	public function getBasketAction()
 	{
@@ -632,11 +638,11 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 
 
 	/**
-	 * getBasketAmountAction()
+	 * Returns the basket amount as a json string
 	 *
-	 * Gibt den gesamten Warenkorbwert als JSON String zurueck
+	 * Note that the data which will be passed
+	 * to the view are utf8 encoded
 	 *
-	 * @access public
 	 * @return void
 	 */
 	public function getBasketAmountAction()
@@ -647,13 +653,13 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	}
 	
 	/**
-	 * removeArticleFromCartAction()
+	 * Removes an article from the basket based
+	 * on the passed article id.
 	 *
-	 * Loescht einen Artikel aus dem Warenkorb
+	 * Note that the data which will be passed
+	 * to the view are utf8 encoded
 	 *
-	 * @access public
-	 * @param  {int} $_POST['articleId']
-	 * @return {string} json string
+	 * @return void
 	 */
 	public function removeArticleFromCartAction()
 	{
@@ -665,13 +671,13 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	}
 	
 	/**
-	 * deleteBasketAction()
+	 * Deletes the whole basket and returns
+	 * an json string as the result
 	 *
-	 * Loescht den gesamten Warenkorb
+	 * Note that the data which will be passed
+	 * to the view are utf8 encoded
 	 *
-	 * @access public
-	 * @param  void
-	 * @return {string} json string
+	 * @return void
 	 */
 	public function deleteBasketAction()
 	{
@@ -683,12 +689,13 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	}
 	
 	/**
-	 * getInfoSitesAction()
+	 * Returns a list of all avaible information pages
+	 * based on the backend module settings
 	 *
-	 * Liest alle statischen Seiten einer Gruppe aus
+	 * Note that the data which will be passed
+	 * to the view are utf8 encoded
 	 *
-	 * @access public
-	 * @param  {string} $group
+	 * @return void
 	 */
 	public function getInfoSitesAction()
 	{
@@ -721,10 +728,11 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	}
 
 	/**
-	 * getPaymentMethodsAction()
+	 * Returns all available payment methods
+	 * as a json string
 	 *
-	 * Liest alle verfuegbaren Zahlungsarten aus und gibt diese per
-	 * JSON zurueck
+	 * Note that the data which will be passed
+	 * to the view are utf8 encoded
 	 *
 	 * @return void
 	 */
@@ -745,9 +753,7 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	}
 
 	/**
-	 * getActiveDispatchMethod
-	 *
-	 * Gibt die aktuelle Versandart zurueck
+	 * Returns the currently active dispatch method
 	 *
 	 * @return bool|mixed
 	 */
@@ -778,12 +784,13 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	}
 	
 	/**
-	 * isUserLoggedInAction()
+	 * Checks if the user is logged in and returns the state
+	 * as a json string
 	 *
-	 * Prueft ob ein Benutzer eingeloggt ist
+	 * Note that the data which will be passed
+	 * to the view are utf8 encoded
 	 *
-	 * @access public
-	 * @return {string} Loginstatus
+	 * @return void
 	 */
 	public function isUserLoggedInAction()
 	{
@@ -800,13 +807,13 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	}
 	
 	/**
-	 * getUserDataAction()
+	 * Returns the user informations if the
+	 * user is logged into the system
 	 *
-	 * Gibt die Benuterdaten eines eingeloggten Benutzers per JSON
-	 * zurueck
+	 * Note that the data which will be passed
+	 * to the view are utf8 encoded
 	 *
-	 * @access public
-	 * @return {string} Benutzerdaten
+	 * @return void
 	 */
 	public function getUserDataAction()
 	{
@@ -863,12 +870,10 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	}
 	
 	/**
-	 * loginAction()
+	 * Logs in the user into the system and
+	 * returns a json string as a response
 	 *
-	 * Loggt einen Benutzer ein
-	 *
-	 * @access public
-	 * @return {string} Benutzerdaten
+	 * @return void
 	 */
 	public function loginAction()
 	{
@@ -896,9 +901,8 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	}
 
 	/**
-	 * logoutAction()
-	 *
-	 * Loggt den Benutzer aus dem System aus
+	 * Logs out a user from the system and returns
+	 * a json string as a response
 	 *
 	 * @return void
 	 */
@@ -915,13 +919,11 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	}
 	
 	/**
-	 * stripBasePath()
+	 * Strips the base path from the passed url. This method
+	 * is a helper method to enable the usage of sencha.io
 	 *
-	 * Entfernt den BasePath aus einer URL
-	 *
-	 * @access private
-	 * @param  str $url
-	 * @return str stripped url
+	 * @param $url
+	 * @return mixed
 	 */
 	private function stripBasePath($url)
 	{
@@ -933,13 +935,11 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	}
 	
 	/**
-	 * jsonOutput()
+	 * Returns a json string with the suitable
+	 * MIME type and if needed with a JSONP callback
 	 *
-	 * Gibt einen formatierten JSON String zurueck und unterbindet die Ausgabe eines Templates
-	 *
-	 * @access private
-	 * @param  array $json_str - Auszugebener String
-	 * @return str
+	 * @param $json_str
+	 * @return void
 	 */
 	private function jsonOutput($json_str)
 	{
@@ -960,16 +960,15 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	}
     
     /**
-     * truncate()
-     *
-     * Kuerzt einen String auf die gegebene Laenge
-     *
-     * @access private
-     * @param  str $str - zu kuerzender String
-     * @param  str $length - Laenge des Strings
-     * @param  str $trailing - Zeichen die am Ende des String eingefuegt werden
-     * @return str $res - gekuerzter String mit Trailing
-     */
+	 * Truncates a string based on the passed length (default 10
+	 * characters) and appends a trailing string (default ...)
+	 * to the end of the passed string
+	 *
+	 * @param $str
+	 * @param int $length
+	 * @param string $trailing
+	 * @return string
+	 */
     private function truncate($str, $length=10, $trailing='...')
     {
     	$length-=mb_strlen($trailing);
@@ -988,13 +987,14 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	}
 
 	/**
-	 * utf8decode()
+	 * Converts a string with ISO-8859-1 characters encoded with UTF-8
+	 * to single-byte ISO-8859-1.
+	 * If the function "mb_convert_encoding" is available this method
+	 * will be used rather than "utf8_decode".
 	 *
-	 * Decodiert einen UTF8 String
 	 *
-	 * @access private
-	 * @param  {string} $str - zu decodierender String
-	 * @return {string} $str - decodierter String
+	 * @param $str
+	 * @return string
 	 */
 	private function utf8decode($str) {
 		if(function_exists('mb_convert_encoding')) {
@@ -1007,11 +1007,13 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	}
 
 	/**
-	 * utf8encode
+	 * Encodes an ISO-8859-1 string to UTF-8. This function encodes
+	 * the string data to UTF-8, and returns the encoded version.
 	 *
-	 * Encodiert einen UTF8 String
+	 * If the function "mb_convert_encoding" is available this method
+	 * will be used rather than "utf8_encode".
 	 *
-	 * @param  $str
+	 * @param $str
 	 * @return string
 	 */
 	private function utf8encode($str) {
@@ -1024,10 +1026,10 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 	}
 
 	/**
-	 * getMenu
+	 * Loads the informations based on the passed
+	 * group name. The returned data will be used
+	 * in the information section of the mobile template.
 	 *
-	 * Laedt die angegebene Gruppe von statischen Shopseiten
-	 * 
 	 * @param string $groupName
 	 * @return array
 	 */
