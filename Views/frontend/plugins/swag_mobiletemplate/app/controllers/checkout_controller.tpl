@@ -8,6 +8,15 @@
  */
 Ext.regController('checkout', {
 
+	/** Contains the payment methods */
+	paymentMethods: null,
+
+	/** Contains the current selected payment method */
+	selectedMethod: null,
+
+	/** Contains the object of the active view in the checkout section */
+	view: null,
+
 	/**
 	 * Checks if the necessary parameter are passed and creates the
 	 * view.
@@ -40,21 +49,19 @@ Ext.regController('checkout', {
 	 */
 	initView: function(parentView) {
 
-		var view;
 		isUserLoggedIn = ~~isUserLoggedIn;
 
 		if(!isUserLoggedIn) {
-
-			view = this.openAccountView(parentView);
+			this.view = this.openAccountView(parentView);
 		} else {
 
-			view = this.openCheckoutView(parentView);
+			this.view = this.openCheckoutView(parentView);
 		}
 
 		/** Set view as the active item */
-		parentView.setActiveItem(view, 'slide');
+		parentView.setActiveItem(this.view, 'slide');
 
-		return view;
+		return this.view;
 	},
 
 	/**
@@ -65,28 +72,28 @@ Ext.regController('checkout', {
 	 * @return view
 	 */
 	openAccountView: function(parentView) {
-		/** Create login form - TODO: Transform to smarty snippet */
-		var view = new App.views.Account.index;
-		view.toolbar.setTitle('Checkout');
+		/** Create login form - TODO: Transform title to smarty snippet */
+		this.view = new App.views.Account.index;
+		this.view.toolbar.setTitle('Checkout');
 
 		/** Update the parent view */
-		parentView.add(view);
+		parentView.add(this.view);
 		parentView.toolbar.hide();
 		parentView.doComponentLayout();
 
 		/** Update the back button handler */
-		view.backBtn.setHandler(function() {
+		this.view.backBtn.setHandler(function() {
 			parentView.setActiveItem(0, {
 				type: 'slide',
 				reverse: true,
 				scope: this
 			});
 		});
-		/** Modify the back button and show it. TODO: Transform to a smarty snippet */
-		view.backBtn.setText('Warenkorb');
-		view.backBtn.show();
+		/** Modify the back button and show it. TODO: Transform title to a smarty snippet */
+		this.view.backBtn.setText('Warenkorb');
+		this.view.backBtn.show();
 
-		return view;
+		return this.view;
 	},
 
 	/**
@@ -97,15 +104,91 @@ Ext.regController('checkout', {
 	 * @return view
 	 */
 	openCheckoutView: function(parentView) {
-		/** Create the first checkout view */
-		var view = new App.views.Checkout.index;
 
-		/** Update the parent view */
-		parentView.add(view);
-		parentView.toolbar.hide();
-		parentView.doComponentLayout();
+		var view, methods = [],
+			userData = App.stores.UserData.proxy.reader.rawData.sUserData,
+			me = this;
 
-		return view;
+		App.Helpers.getRequest(App.RequestURL.getPayment, '', function(data) {
+			this.paymentMethods = data.sPaymentMethods;
+
+			/** Create the payment methods */
+			for(idx in data.sPaymentMethods) {
+				var payItem = data.sPaymentMethods[idx];
+				if(App.Helpers.inArray(payItem.id, payments)) {
+					methods.push(new Ext.form.Radio({
+						name: 'paymentMethod',
+						value: payItem.id,
+						label: payItem.description,
+						checked: (userData.additional.payment.id == payItem.id) ? true : false,
+						listeners: {
+							scope: this,
+							check: me.onPayment
+						}
+					}));
+
+					if(userData.additional.payment.id == payItem.id) {
+						this.selectedMethod = payItem;
+					}
+				}
+			}
+
+			/** Create the checkout view */
+			this.view = new App.views.Checkout.index;
+			this.view.paymentField.add(methods);
+
+			/** If payment based on a iframe */
+			if(this.selectedMethod.embediframe) {
+				var url = this.selectedMethod.embediframe;
+				this.view.submitOrderBtn.setText('Zahlung durchführen').setHandler(function() {
+					window.location.href = url;
+				});
+
+
+			}
+
+			/** Update the parent view */
+			parentView.add(this.view);
+			parentView.setActiveItem(this.view, { type: 'slide' });
+			parentView.toolbar.hide();
+			parentView.doComponentLayout();
+
+			this.view.pnl.doLayout();
+		});
+	},
+
+	/**
+	 * Event handler
+	 * @param chkbox
+	 */
+	onPayment: function(chkbox) {
+		var me = this;
+
+		/** Change the prefered payment method for the user (server side) */
+		Ext.Ajax.request({
+			url: App.RequestURL.changePayment,
+			method: 'post',
+			disableCaching: false,
+			params: {
+				'register[payment]': chkbox.getValue()
+			}
+		});
+
+		/** Determine the actual payment method of the user */
+		Ext.each(this.paymentMethods, function(el, i) {
+			if(el.id == ~~chkbox.value) {
+				me.selectedMethod = el;
+			}
+		});
+		
+		if(me.selectedMethod.embediframe) {
+			me.view.submitOrderBtn.setText('Zahlung durchführen');
+			console.log(me.selectedMethod.embediframe);
+		} else {
+			me.view.submitOrderBtn.setText('Bestellung absenden');
+		}
+
+
 	},
 
 	/**

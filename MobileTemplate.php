@@ -751,12 +751,16 @@ class Shopware_Controllers_Frontend_MobileTemplate extends Enlight_Controller_Ac
 
 		$paymentMethods = Shopware()->Modules()->Admin()->sGetPaymentMeans();
 		
-		$paymentmeans = Shopware()->Db()->query("SELECT `id`, `name`, `description`, `additionaldescription` FROM `s_core_paymentmeans`");
+		$paymentmeans = Shopware()->Db()->query("SELECT * FROM `s_core_paymentmeans`");
 		$paymentmeans = $paymentmeans->fetchAll();
 		
 		foreach($paymentmeans as &$payments) {
 			$payments['description'] = $this->utf8encode($payments['description']);
 			$payments['name'] = $this->utf8encode($payments['name']);
+
+			if(!empty($payments['embediframe'])) {
+				$payments['embediframe'] =  preg_replace('#^[./]+#', '', $payments['embediframe']);
+			}
 		}
 		
 		$this->jsonOutput(array('sPaymentMethods' => $paymentmeans));

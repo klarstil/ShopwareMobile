@@ -41,9 +41,9 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 	protected $thumbNailPrefix;
 	
 	/**
-	 * init()
-	 *
-	 * Initializiert die benoetigten Views und setzt globale Variablen
+	 * Used as a constructor method for this class, which
+	 * sets the views, provides global variables and reads
+	 * the config from the DB
 	 *
 	 * @access public
 	 * @return void
@@ -108,14 +108,11 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 	}
  	
  	/**
- 	 * indexAction()
- 	 *
- 	 * Liest alle Plugin-Einstellungen aus und stellt diese der View
- 	 * zur Verfuegung
- 	 *
- 	 * @access public
- 	 * @return void
- 	 */
+	  * Provides all configuration settings to
+	  * the view.
+	  *
+	  * @return void
+	  */
 	public function indexAction()
 	{
 		// Assign plugin props to view
@@ -137,7 +134,6 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 		}
 		
 		
-		
 		// Supported devices
 		$data = array(
 			array('boxLabel' => 'iPhone', 'name' => 'iphone'),
@@ -157,13 +153,13 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 		}
 		$this->View()->assign('supportedDevicesJSON', Zend_Json::encode($data));
 		
-		// Get paymentmeans
+		// Get paymentmeans -
 		$paymentmeans = $this->db->query("SELECT `id`, `name`, `description`, `additionaldescription` FROM `s_core_paymentmeans`");
 		$paymentmeans = $paymentmeans->fetchAll();
 		
 		// Supported paymentmeans
 		$supportedPaymentmeans = explode('|', $this->props['supportedPayments']);
-		$availablePayments = array(3, 4, 5);
+		$availablePayments = array(3, 4, 5, 20);
 		$payments = array();
 		foreach($paymentmeans as $k => $v) {
 			if(in_array($v['id'], $availablePayments)) {
@@ -190,24 +186,21 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 		$this->View()->assign('supportedPaymentmeansJSON', Zend_Json::encode($payments));
 	}
  	
- 	/**
- 	 * skeletonAction()
- 	 *
- 	 * Leere Funktion
- 	 *
- 	 * @access public
- 	 * @return void
- 	 */
-	public function skeletonAction()
-	{
-	}
-	
 	/**
-	 * processGenerellFormAction()
+	 * Necessary method which have some auto magic
+	 * and provides an iFrame which contains the
+	 * content of the backend module
 	 *
-	 * Verarbeitet die allgemeinen Einstellungen des Plugins
+	 * Note: This is a empty functions
 	 *
-	 * @access public
+	 * @return void
+	 */
+	public function skeletonAction() { }
+
+	/**
+	 * Saves the form elements of the
+	 * generell settings tab to the DB
+	 *
 	 * @return void
 	 */
 	public function processGenerellFormAction()
@@ -344,11 +337,9 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 	}
 	
 	/**
-	 * processDesignFormAction()
+	 * Saves the form elements of the design related
+	 * settings tab and processes the file uploads
 	 *
-	 * Verarbeitet die allgemeinen Einstellungen des Plugins
-	 *
-	 * @access public
 	 * @return void
 	 */
 	public function processDesignFormAction()
@@ -438,10 +429,13 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 	}
 
 	/**
-	 * getColorTemplateStoreAction()
+	 * Helper function for ExtJS which provides
+	 * all available color templates
+	 * in a suitable format (JSON).
 	 *
-	 * Gibt alle verfuegbaren Farbtemplates als JSON String aus
-	 *
+	 * The data which are used here are all from
+	 * the database.
+	 * 
 	 * @return void
 	 */
 	public function getColorTemplateStoreAction()
@@ -476,9 +470,9 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 	}
 
 	/**
-	 * getSubshopStoreAction()
-	 *
-	 * Gibt alle verfuegbaren Subshops als JSON String aus
+	 * Helper function for ExtJS which provides
+	 * all available sub shops in a suitable
+	 * format (JSON).
 	 *
 	 * @return void
 	 */
@@ -503,9 +497,12 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 	}
 
 	/**
-	 * getStatusbarStyleStoreAction()
+	 * Helper function for ExtJS which provides
+	 * all available statusbar styles in a suitable
+	 * format.
 	 *
-	 * Gibt alle verfuegbaren Statusbar-Styles als JSON String aus
+	 * Note that the styles are static placed in the
+	 * source code.
 	 *
 	 * @return void
 	 */
@@ -542,11 +539,12 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 	}
 	
 	/**
-	 * processNativeApplicationFormAction()
+	 * Handles the whole native application tab of
+	 * the backend module.
 	 *
-	 * Verarbeitet die "Native Applikation"-Form
+	 * TODO: This methods needs a refactor due to the new requirements
 	 *
-	 * @access public
+	 * @return void
 	 */
 	public function processNativeApplicationFormAction()
 	{
@@ -672,40 +670,23 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 		echo Zend_Json::encode(array('success' => true, 'message' => $message));
 		die();
 	}
-	
-	////////////////////////////////////////////
-    //Helper Functions
-    ////////////////////////////////////////////
-    
-    /**
-     * addNativeApplication()
-     *
-     * Fuegt eine neue Applikation zum "build.phonegap.com"-Dashboard hinzu
-     * und verschickt eine E-Mail an eine definierte Adresse, damit die Applikation
-     * abgerechnet und in den AppStore gestellt werden kann.
-     *
-     * @access private
-     * @param arr $dataRaw
-     */
-    private function addNativeApplication($dataRaw)
-    {
-    	$key = '###';
-    	$params = '###'.$key;
-    	$url = '###'.$params;
-    	
-    	$this->getData($url, $dataRaw);
-    }
+
 	
 	/**
-	 * getData
-	 *
-	 * Sendet einen cURL Request und gibt das Ergebnis als String zurueck
+	 * Helper function which provides an easy
+	 * to use way to use cURL to request or
+	 * get data.
+	 * 
+	 * The method supports requests with different
+	 * user agents, could login in password
+	 * protected area and has the ability to
+	 * send additional post parameters.
 	 *
 	 * @param $url
-	 * @param string $post - POST-Variablen
-	 * @param string $userAgent - User Agent
-	 * @param string $login - Login-Informationen
-	 * @param int $timeout - Timeout in Minuten
+	 * @param string $post - post variables
+	 * @param string $userAgent - user agent
+	 * @param string $login - login informations
+	 * @param int $timeout - timeout in milliseconds
 	 * @return mixed
 	 */
 	private function getData($url, $post = '', $userAgent = '', $login = '', $timeout = 5)
@@ -733,7 +714,7 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 		// Set url
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch,CURLOPT_CONNECTTIMEOUT,$timeout);
+		curl_setopt($ch,CURLOPT_CONNECTTIMEOUT, $timeout);
 		
 		// Execute request
 		$data = curl_exec($ch);
@@ -742,10 +723,12 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
 	}
     
     /**
-     * processUpload()
-     *
-     * Laedt die angegeben Datei hoch und validiert diese
-     *
+     * Processes the whole upload process for images in the backend module.
+	 * The supported image types are defined in the {@link init()} method.
+	 *
+	 * Note that this method needs an upload folder for the images. This
+	 * folder is defined in the {@link init()} method.
+	 *
      * @access private
      * @param arr $upload - $_FILES array
      * @param str $filename - Der zuverwendene Dateiname
@@ -872,9 +855,9 @@ class Shopware_Controllers_Backend_MobileTemplate extends Enlight_Controller_Act
     }
 
 	/**
-	 * CreateThumbnail()
-	 *
-     * resize the given image and create a thumbnail
+	 * Helper method which provides a easy to use way
+	 * to resize images or create thumbnails on the
+	 * fly
 	 *
 	 * @access private
      * @param str $originalImage

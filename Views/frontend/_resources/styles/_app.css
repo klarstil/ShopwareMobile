@@ -19,6 +19,10 @@
 
 /*	GENERAL FORMATING
 	------------------------------------------------------------------ */
+html, body {
+	background: #f4f4f4;
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,white), color-stop(45%,white), color-stop(100%,#f1f1f1));
+}
 .clear {height: 0; clear: both; float: none; line-height: 0}
 .hidden { display: none }
 strong { font-weight: 700 }
@@ -99,9 +103,20 @@ strong { font-weight: 700 }
     color: #666;
 }
 /* Maincategories */
+.x-list,
+.x-list-item {
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%,white), color-stop(45%,white), color-stop(100%,#F1F1F1));
+}
+.x-list .x-list-item.x-item-pressed,
+.x-list .x-list-item.x-item-selected {
+	-webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #EDECEC), color-stop(100%, #D8D8D8));
+}
 #categories .desc, #categories .count {
     color: #666;
     font-size: 12px;
+}
+#categories .x-list-item strong {
+	text-shadow: 1px 1px 1px #fff;
 }
 #artListing .image {
     display: block;

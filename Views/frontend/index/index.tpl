@@ -59,7 +59,7 @@
 		{* Main categories list item template *}
 		{block name="frontend_mobile_template_main_categories"}{literal}
 		<textarea id="MainCategorylistTpl" class="hidden">
-			<strong>{name}</strong><tpl if="desc"><div class="desc">{desc}</div></tpl>
+			<strong>{name}</strong>
 		</textarea>
 		{/literal}{/block}
 

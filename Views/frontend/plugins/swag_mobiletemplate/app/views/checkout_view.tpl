@@ -307,26 +307,6 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 			items: [this.pnl]
 		});
 		App.views.Checkout.index.superclass.initComponent.call(this);
-
-		App.Helpers.getRequest(App.RequestURL.getPayment, '', function(data) {
-			for(idx in data.sPaymentMethods) {
-				var payItem = data.sPaymentMethods[idx];
-				if(App.Helpers.inArray(payItem.id, payments)) {
-					paymentMethods.push(new Ext.form.Radio({
-						name: 'paymentMethod',
-						value: payItem.id,
-						label: payItem.description,
-						checked: (userData.additional.payment.id == payItem.id) ? true : false,
-						listeners: {
-							scope: this,
-							check: me.onPayment
-						}
-					}));
-				}
-			}
-			me.paymentField.add(paymentMethods);
-			me.pnl.doLayout();
-		});
 	},
 
 	/** Event handler */
@@ -457,21 +437,6 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 			return false;
 		}
 		pnl.submit();
-	},
-
-	/**
-	 * Event handler
-	 * @param chkbox
-	 */
-	onPayment: function(chkbox) {
-		Ext.Ajax.request({
-			url: App.RequestURL.changePayment,
-			method: 'post',
-			disableCaching: false,
-			params: {
-				'register[payment]': chkbox.getValue()
-			}
-		});
 	}
 });
 </script>
