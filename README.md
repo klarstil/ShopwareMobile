@@ -14,7 +14,7 @@
 
 * Usable as a subshop
 * Customer login and registration
-* Support for bundles, articles, configurator and liveshopping articles
+* Support for bundles, variants articles, configurator articles and liveshopping articles
 * full-fledged search based on the normal search component
 * Post comments right from your smartphone
 * Support for banners in subcategories
@@ -24,13 +24,13 @@
 
 # Installation from the github.com repository
 
-1. Create a new folder to place clone in the repository using `$ mkdir Frontend` and change it that folder using `$ cd Frontend`
+1. Create a new folder to place in the repository using `$ mkdir Frontend` and change it that folder using `$ cd Frontend`
 2. Clone the repository from github.com using `$ git clone git://github.com/ShopwareAG/ShopwareMobile.git`
 3. Rename the cloned repository to *SwagMobileTemplate* using `$ mv ShopwareMobile SwagMobileTemplate`
 4. Now go to the parent folder using `$ cd ..` and create a ZIP-Archive of the plugin using `zip -r SwagMobileTemplate.zip Frontend`
 5. Clean up the mess and delete the *Frontend* folder using `$ rm -rf Frontend`
 
-Now head over to your Shopware Backend (e.g. `http://example.de/shop/backend`), login and open up the plugin manager. To install the plugin change the tab to "Plugin hinzuf&uuml;gen" and upload the generated ZIP-archive using the "Plugin per Datei-Upload hinzuf&uuml;gen"
+Now head over to your Shopware Backend (e.g. `http://example.de/shop/backend`), login and open up the plugin manager. To install the plugin change the tab to "Plugin hinzuf&uuml;gen" and upload the generated ZIP-archive using the "Plugin per Datei-Upload hinzuf&uuml;gen" function
 
 ---
 
