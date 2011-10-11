@@ -41,7 +41,7 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 		Shopware()->Db()->query("INSERT INTO `s_plugin_mobile_settings` (`name` ,`value`)
 			VALUES 
 			('supportedDevices', 'iPhone|iPod|Android'),
-			('supportedPayments', '3|4|5'),
+			('supportedPayments', '3|4|5|20'),
 			('agbInfoID', '4'),
 			('cancelRightID', '8'),
 			('infoGroupName', 'gMobile'),
@@ -134,10 +134,15 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 		);
 		$this->subscribeEvent($event);
 
-
 		$event = $this->createEvent(
 			'Shopware_Modules_Admin_SaveRegister_Start',
 			'onSaveRegisterStart'
+		);
+		$this->subscribeEvent($event);
+
+		$event = $this->createEvent(
+			'Enlight_Controller_Action_PostDispatch_Frontend_Checkout',
+			'mobileFinishAction'
 		);
 		$this->subscribeEvent($event);
 	}
@@ -374,6 +379,45 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 				$value = htmlentities($value);
 				$session['sRegister']['billing'][$key] = $value;
 			}
+		}
+	}
+
+	/**
+	 * Helper method which checks if the payment was processed
+	 * by an external payment provider (like PayPal or Heidelpay),
+	 * sets the mandatory informations in the view and loads the
+	 * whole base template structure from the index/index.tpl
+	 *
+	 * Note that this method will be only come in place if the
+	 * request wasn't a XML HTTP request
+	 *
+	 * @static
+	 * @param Enlight_Event_EventArgs $args
+	 */
+	public static function mobileFinishAction(Enlight_Event_EventArgs $args)
+	{
+		$subject = $args->getSubject();
+		$request = $subject->Request();
+		$view = $args->getSubject()->View();
+
+		if($request->getActionName() === 'finish' && !$request->isXmlHttpRequest()) {
+			/** PayPal Express Mobile payment */
+			if($view->sUserData['additional']['user']['paymentID'] == 20) {
+				$result = Shopware()->Db()->query('SELECT * FROM s_order WHERE transactionID = ?', array($request->getParam('sUniqueID')));
+				$result = $result->fetch();
+
+				$view->assign('lastOrder', array(
+					'ordernumber' => $result['ordernumber'],
+					'invoice_amount' => $result['invoice_amount'],
+					'date' => date('H:i:s d.m.Y', strtotime($result['ordertime'])),
+					'payment_method' => 'PayPal'
+				));
+			}
+		}
+
+		/** Load the basic structure */
+		if(!$request->isXmlHttpRequest()) {
+			$view->loadTemplate(dirname(__FILE__) . '/Views/frontend/index/index.tpl');
 		}
 	}
 

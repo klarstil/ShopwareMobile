@@ -1,4 +1,5 @@
 <script type="text/javascript">
+{literal}
 /**
  * ----------------------------------------------------------------------
  * app.js
@@ -78,8 +79,9 @@ App = Ext.regApplication(
 			/** Event listener which checks if the user is online */
 			window.setInterval(function() {
 				this.isUserOnline = navigator.onLine;
-
+				{/literal}
 				if(!this.isUserOnline) {
+
 					loadingMask = Ext.getCmp('viewport').setLoading(true);
 					loadingMask.msg = '{s name="MobileGlobalConnectionLost" force}Verbindung unterbrochen{/s}';
 
@@ -90,7 +92,14 @@ App = Ext.regApplication(
 					Ext.getCmp('viewport').setLoading(false);
 					msg = false;
 				}
+				{literal}
 			}, 1500);
+
+			/** Check if a payment over an external payment provider was processed */
+			if(lastOrder && Ext.isDefined(lastOrder.payment_method)) {
+				Ext.Msg.alert('Zahlung erfolgreich', {/literal}{s name="MobilePaymentSuccessful"}'Danke für Ihre Zahlung über ' + lastOrder.payment_method + '. In Kürze erhalten Sie eine Bestellbestätigungsmail.'{/s}{literal});
+
+			}
 		}
 	}
 );
@@ -156,4 +165,5 @@ App.RequestURL = {
 	customSite:    App.basePath + '/custom/',
 	getTree: 	   App.basePath + '/MobileTemplate/getCategoriesTree'
 };
+{/literal}
 </script>

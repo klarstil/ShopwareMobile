@@ -47,12 +47,20 @@
         {foreach $shopwareMobile as $key => $value}
         var {$key} = '{$value}';
         {/foreach}
+
+		{* Get the last order, needed for external payment providers *}
+		var lastOrder = {};
+		{if $lastOrder}
+		{foreach $lastOrder as $key => $value}
+		lastOrder.{$key} = '{$value}';
+		{/foreach}
+		{/if}
     //]]>
     </script>
 </head>
 <body>
 
-    <script type="text/javascript" src="{link file='frontend/_resources/app/_sencha/sencha-touch.js' fullPath}"></script>
+    <script type="text/javascript" src="{link file='frontend/_resources/app/_sencha/sencha-touch-debug.js' fullPath}"></script>
     <script type="text/javascript" src="{link file='frontend/_resources/app/_sencha/Ext.ux.touch.PagingToolbar.js' fullPath}"></script>
 
 	<div id="templates">

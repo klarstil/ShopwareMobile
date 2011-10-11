@@ -37,6 +37,8 @@ App.views.Account.index = Ext.extend(Ext.Panel,
 	},
 
 	initComponent: function() {
+		var me = this;
+
 		/** Back btn */
 		this.backBtn = new Ext.Button({
 			text: this.title,
@@ -138,8 +140,15 @@ App.views.Account.index = Ext.extend(Ext.Panel,
 
 		/** Add logout btn if the user is logged in */
 		if(~~isUserLoggedIn) {
-			this.toolbar.add(this.logoutBtn);
-			this.createCustomerCenter(this.mainPnl)
+
+			/** Create the customer center when the user data store is fully loaded */
+			var interval = window.setInterval(function() {
+				if(!App.stores.UserData.isLoading()) {
+					me.toolbar.add(me.logoutBtn);
+					me.createCustomerCenter(me.mainPnl);
+					clearInterval(interval);
+				}
+			}, 1500);
 		}
 
 		App.views.Account.index.superclass.initComponent.call(this);
@@ -155,7 +164,7 @@ App.views.Account.index = Ext.extend(Ext.Panel,
 			paymentMethods = [];
 
 		/* Get user data */
-		var userData = App.stores.UserData;
+		userData = App.stores.UserData;
 		userData = userData.proxy.reader.rawData.sUserData;
 		var billingSalutation = (userData.billingaddress.salutation == 'mr') ? 'Herr' : 'Frau';
 		var shippingSalutation = (userData.shippingaddress.salutation == 'mr') ? 'Herr' : 'Frau';
