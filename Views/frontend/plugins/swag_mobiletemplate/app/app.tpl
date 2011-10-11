@@ -29,14 +29,21 @@ App = Ext.regApplication(
 	{
 		/** Name of the application */
 		name: 'App',
+
 		/** Path to icon - iOS only, Size 72px x 72px */
 		icon: (!Ext.isEmpty(iconPath)) ? iconPath : false,
+
 		/** Splashscreen - iOS only, Size 320px x 460px */
 		phoneStartupScreen: (!Ext.isEmpty(startUpPath)) ? startUpPath : false,
+
 		/** Set gloss on icon - iOS only */
 		glossOnIcon: false,
+
 		/** Auto create basic viewport */
 		autoInitViewport: true,
+
+		/** Is the user online */
+		isUserOnline: true,
 
 		/** Base path - will be needed for the native app */
 		basePath: 'http://'+basePath,
@@ -60,12 +67,30 @@ App = Ext.regApplication(
 		 * @returns void
 		 */
 		mainLaunch: function() {
+			var loadingMask, msg = false;
 
 			/** Create basic viewport */
 	    	this.viewport = new App.views.Viewport;
 
 		    /** Load cart content from server */
 	    	App.stores.Cart.load();
+
+			/** Event listener which checks if the user is online */
+			window.setInterval(function() {
+				this.isUserOnline = navigator.onLine;
+
+				if(!this.isUserOnline) {
+					loadingMask = Ext.getCmp('viewport').setLoading(true);
+					loadingMask.msg = '{s name="MobileGlobalConnectionLost" force}Verbindung unterbrochen{/s}';
+
+					if(!msg) {
+						msg = Ext.Msg.alert('{s name="MobileGlobalConnectionLost"}{/s}', '{s name="MobileGlobalConnectionLostText"}Bitte verbinden Sie sich wieder mit dem Internet um fortzufahren.{/s}', Ext.emptyFn);
+					}
+				} else {
+					Ext.getCmp('viewport').setLoading(false);
+					msg = false;
+				}
+			}, 1500);
 		}
 	}
 );
@@ -88,8 +113,10 @@ App.router = Ext.Router.draw(function(map)
 	{
 		/** URL pattern to match the home controller */
 		map.connect('home', { controller: 'home', action: 'show' });
+
 		/** URL pattern to match the category controller */
 		map.connect('category/:index', { controller: 'category', action: 'show' });
+
 		/** URL pattern to match the detail controller */
 		map.connect('detail/:articleID', { controller: 'detail', action: 'show' });
 

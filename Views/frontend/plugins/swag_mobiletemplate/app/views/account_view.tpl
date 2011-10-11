@@ -151,7 +151,7 @@ App.views.Account.index = Ext.extend(Ext.Panel,
      */
 	createCustomerCenter: function(parent) {
 		var me = this,
-			userData = App.stores.UserData.proxy.reader.rawData.sUserData,
+			userData = null,
 			paymentMethods = [];
 
 		/* Get user data */

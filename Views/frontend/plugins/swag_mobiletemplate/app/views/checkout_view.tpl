@@ -244,6 +244,7 @@ App.views.Checkout.index = Ext.extend(Ext.Panel,
 			title: '{s name="MobileCheckoutAGBTitle"}AGB akzeptieren{/s}',
 			instructions: '{s name="MobileCheckoutAGBInstruction"}Bitte best&auml;tigen Sie die geltenden Allgemeinen Gesch&auml;ftsbedingungen.{/s}',
 			items: [{
+				id: 'agbCheckbox',
 				xtype: 'checkboxfield',
 				checked: false,
 				label: '{s name="MobileCheckoutAGBLabel"}AGB{/s}',

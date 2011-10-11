@@ -1,5 +1,4 @@
 <script type="text/javascript">
-{literal}
 /**
  * @file checkout_controller.js
  * @link http://www.shopware.de
@@ -23,7 +22,7 @@ Ext.regController('checkout', {
 	 *
 	 * This method represents the constructor of the controller
 	 *
-	 * @param {obj} options - Option object from the Ext.dispatch()
+	 * @param options - Option object from the Ext.dispatch()
 	 * @return void
 	 */
 	show: function(options) {
@@ -44,8 +43,8 @@ Ext.regController('checkout', {
 	 * redirected to a login / register page to login
 	 * in the section
 	 *
-	 * @param {obj} parentView
-	 * @return {obj} view - the active view
+	 * @param  parentView
+	 * @return view - the active view
 	 */
 	initView: function(parentView) {
 
@@ -115,6 +114,7 @@ Ext.regController('checkout', {
 			/** Create the payment methods */
 			for(idx in data.sPaymentMethods) {
 				var payItem = data.sPaymentMethods[idx];
+				
 				if(App.Helpers.inArray(payItem.id, payments)) {
 					methods.push(new Ext.form.Radio({
 						name: 'paymentMethod',
@@ -127,6 +127,7 @@ Ext.regController('checkout', {
 						}
 					}));
 
+					/** Set the active payment */
 					if(userData.additional.payment.id == payItem.id) {
 						this.selectedMethod = payItem;
 					}
@@ -141,10 +142,14 @@ Ext.regController('checkout', {
 			if(this.selectedMethod.embediframe) {
 				var url = this.selectedMethod.embediframe;
 				this.view.submitOrderBtn.setText('Zahlung durchführen').setHandler(function() {
+
+					if(Ext.isEmpty(Ext.getCmp('agbCheckbox').getValue())) {
+						Ext.Msg.alert('{s name="MobileCheckoutError"}Fehler{/s}', '{s name="MobileCheckoutEmptyAGB"}Bitte best&auml;tigen Sie die AGB um Ihre Bestellung durchzuf&uuml;hren.{/s}');
+						return false;
+					}
+
 					window.location.href = url;
 				});
-
-
 			}
 
 			/** Update the parent view */
@@ -182,13 +187,38 @@ Ext.regController('checkout', {
 		});
 		
 		if(me.selectedMethod.embediframe) {
-			me.view.submitOrderBtn.setText('Zahlung durchführen');
-			console.log(me.selectedMethod.embediframe);
+			var url = me.selectedMethod.embediframe;
+			me.view.submitOrderBtn.setText('Zahlung durchführen').setHandler(function() {
+
+				if(Ext.isEmpty(Ext.getCmp('checkoutForm').getValues().paymentMethod)) {
+					Ext.Msg.alert('{s name="MobileCheckoutError"}Fehler{/s}', '{s name="MobileCheckoutEmptyPaymentMethod"}Bitte w&auml;hlen Sie eine Zahlungsart aus um Ihre Bestellung durchzuf&uuml;hren.{/s}');
+					return false;
+				}
+
+				if(!Ext.getCmp('agbCheckbox').isChecked()) {
+					Ext.Msg.alert('{s name="MobileCheckoutError"}Fehler{/s}', '{s name="MobileCheckoutEmptyAGB"}Bitte best&auml;tigen Sie die AGB um Ihre Bestellung durchzuf&uuml;hren.{/s}');
+					return false;
+				}
+
+				window.location.href = url;
+			});
 		} else {
-			me.view.submitOrderBtn.setText('Bestellung absenden');
+			me.view.submitOrderBtn.setText('Bestellung absenden').setHandler(function() {
+				var pnl     = Ext.getCmp('orderPnl'),
+					values  = pnl.getValues();
+
+				if(Ext.isEmpty(Ext.getCmp('checkoutForm').getValues().paymentMethod)) {
+					Ext.Msg.alert('{s name="MobileCheckoutError"}Fehler{/s}', '{s name="MobileCheckoutEmptyPaymentMethod"}Bitte w&auml;hlen Sie eine Zahlungsart aus um Ihre Bestellung durchzuf&uuml;hren.{/s}');
+					return false;
+				}
+
+				if(!Ext.getCmp('agbCheckbox').isChecked()) {
+					Ext.Msg.alert('{s name="MobileCheckoutError"}Fehler{/s}', '{s name="MobileCheckoutEmptyAGB"}Bitte best&auml;tigen Sie die AGB um Ihre Bestellung durchzuf&uuml;hren.{/s}');
+					return false;
+				}
+				pnl.submit();
+			});
 		}
-
-
 	},
 
 	/**
@@ -237,5 +267,4 @@ Ext.regController('checkout', {
 		return true;
 	}
 });
-{/literal}
 </script>

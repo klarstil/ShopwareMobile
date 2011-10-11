@@ -11,14 +11,16 @@
 class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Components_Plugin_Bootstrap
 {
 
-	/* MobileTemplate Backend Icon */
+	/** 16px x 16px phone icon for the backend module (base64 encoded) */
 	private static $icnBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABwElEQVQ4jY3SO6/TMBjG8b/jpAlJSi+0alVoYUEHmJC4iIlP0q1zJyYY+Q6Hjc6I4fA1GBAdGJCABVF0quoAp216cWI7DCAEDVLr0Xqen+zXFuys4+Nn+Ww2wxhDHIW4nodSCqVSms0Gw+FQ/J13d4Hx+C2vTk6o1qrcf/AQ13MZv3nNZDKh3+/vxotAkiTcvnOXXrfL5StdttstRzdv0Wp3UErtBxzp8eTpYxq1+E8h8APOFktePH+5HxACOldjKlEJbeSvkCvxqhdBFPpFwBiDsUu2uSQnR+CQ6pS1NhitD7iCgMn8A5dMiHAFYHE2Zc5PHfRBgOPwZfaO70uDyRVuZFGfGsSre2ht9gMgCIMQ31ekWY5aLXDKKxLxEWsPAIwxlCK4EHl4WuKlEr/uslydYa3dD2RZhso/Q64wQuP4gkRK1iWPTBef4b/A11Mol0NcE5JaSywVer0hVQecYLPZskk6eCIiME02WlNx55RWS7Jsuh+Yz88ZPXqPsWCFpFqtsfjxDaUUN46uFwBnd6NerxP4Pr7n0mm1uNbrEQYlKuWIOI4KQGEqo9Eon06nvz+NAHIApJS0220Gg8E/nZ864b4HQnsY4wAAAABJRU5ErkJggg==';
 
 	/**
-	 * install()
+	 * Standard install method which creates the event listeners, the plugin configuration form,
+	 * and a new menu entry in the backend.
 	 *
-	 * Installationsroutine des Plugins
-	 * 
+	 * Note that this method fills in the default configuration
+	 *
+	 * @access public
 	 * @return bool
 	 */
 	public function install()
@@ -79,11 +81,11 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 	}
 
 	/**
-	 * uninstall()
+	 * Standard uninstall method which just drops the configuration
+	 * tables from DB
 	 *
-	 * Deinstallationsroutine des Plugins
-	 *
-	 * @return void
+	 * @access public
+	 * @return bool
 	 */
 	public function uninstall()
 	{
@@ -100,10 +102,9 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 	}
 
 	/**
-	 * createEvents()
+	 * Helper method which subscribes the necessary events
 	 *
-	 * Erstellt die benoetigten Events fuer dieses Plugin
-	 *
+	 * @access public
 	 * @return void
 	 */
 	public function createEvents()
@@ -142,10 +143,9 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 	}
 
 	/**
-	 * deletePreviousEntries()
+	 * Helper method whichs deletes old subscribers from the DB
 	 *
-	 * Loescht alte Eintraege in der DB
-	 *
+	 * @access public
 	 * @return void
 	 */
 	public function deletePreviousEntries()
@@ -155,10 +155,10 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 	}
 
 	/**
-	 * createBackendMenuEntry()
+	 * Helper method which creates the backend menu entry
+	 * for the mobile template
 	 *
-	 * Erstellt einen neuen Eintrag im Backendmenu
-	 *
+	 * @access public
 	 * @return void
 	 */
 	public function createBackendMenuEntry()
@@ -178,10 +178,9 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 
 
 	/**
-	 * getInfo()
+	 * Returns the meta informations of this plugin
 	 *
-	 * Gibt alle Meta-Daten des Plugins zurueck
-	 * 
+	 * @access public
 	 * @return mixed
 	 */
 	public function getInfo()
@@ -190,12 +189,12 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
     }
     
 	/**
-	 * onPostDispatch()
-	 *
-	 * Stellt den Template alle wesentlichen Konfigurationsoptionen
-     * zur Verfuegung
+	 * Passes the plugin configuration to the view, handles the subshop
+	 * support, checks if the the used device is supported and sets
+	 * the backend module icon
 	 *
 	 * @static
+	 * @access public
 	 * @param Enlight_Event_EventArgs $args
 	 * @return
 	 */
@@ -289,11 +288,11 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
     }
 
 	/**
-	 * onGetControllerPath()
-     *
-     * Stellt die komplette Frontendlogik zur Verfuegung
+	 * Returns the path of the frontend controller which handles the
+	 * whole mobile template
 	 *
 	 * @static
+	 * @access public
 	 * @return string
 	 */
     public static function onGetControllerPath()
@@ -302,28 +301,25 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
     }
     
     /**
-     * onGetControllerPathBackend()
-     *
-     * Stellt die komplette Backendlogik zur Verfuegung
-     *
+	 * Returns the path of the backend controller which handles the whole
+	 * backend module
+	 *
 	 * @static
-     * @access public
-     * @return mixed
-     */
+	 * @access public
+	 * @return string
+	 */
     public static function onGetControllerPathBackend()
     {
     	return dirname(__FILE__) . DIRECTORY_SEPARATOR . 'MobileTemplateAdmin.php';
     }
 
 	/**
-	 * onPostDispatchRegister()
-	 *
-	 * Stellt die Fehlermeldungen bei der Registrierung
-	 * als einzelnen String zu Verf&uuml;gung
+	 * Refactors the error message string in a suitable format (utf8 encoded)
 	 *
 	 * @static
+	 * @access public
 	 * @param Enlight_Event_EventArgs $args
-	 * @return 
+	 * @return void
 	 */
 	public static function onPostDispatchRegister(Enlight_Event_EventArgs $args)
 	{
@@ -358,11 +354,12 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 	}
 
 	/**
-	 * onSaveRegisterStart
-	 *
-	 * Event-Methode - Setzt das richtige Encoding fuer die Registrierungsdaten
+	 * Corrects the character encoding for the registration
+	 * informations due to the fact that sencha touch needs
+	 * the strings utf8 encoded.
 	 *
 	 * @static
+	 * @access public
 	 * @param Enlight_Event_EventArgs $args
 	 * @return void
 	 */
@@ -381,12 +378,13 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 	}
 
 	/**
-	 * checkForMobileDevice()
-     *
-     * Untersucht den User Agent nach Mobilen Endgeraeten
+	 * Checks against the user agent if the user's
+	 * currently used device is supported by the
+	 * mobile template
 	 *
-	 * @param str $devices
-	 * @return str
+	 * @access private
+	 * @param $devices
+	 * @return string
 	 */
     private function checkForMobileDevice($devices) {
     	$agent = $_SERVER['HTTP_USER_AGENT'];
