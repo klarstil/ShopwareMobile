@@ -35,12 +35,13 @@ Now head over to your Shopware Backend (e.g. `http://example.de/shop/backend`), 
 ---
 
 Here's the complete workflow to create an easy to use install package from Shopware Mobile
-    $ mkdir Frontend
-    $ cd Frontend
-    $ git clone git://github.com/ShopwareAG/ShopwareMobile.git
-    $ mv ShopwareMobile SwagMobileTemplate
-    $ cd .. && zip -r SwagMobileTemplate.zip Frontend
-    $ rm -rf Frontend
+
+	$ mkdir Frontend
+	$ cd Frontend
+	$ git clone git://github.com/ShopwareAG/ShopwareMobile.git
+	$ mv ShopwareMobile SwagMobileTemplate
+	$ cd .. && zip -r SwagMobileTemplate.zip Frontend
+	$ rm -rf Frontend
     
 # Hacking
 
