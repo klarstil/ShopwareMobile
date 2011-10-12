@@ -33,13 +33,15 @@
 
 # Introduction
 
+![Shopware Mobile Banner](http://wiki.shopware.de/images/articles/f3cd41215e9f495a07e18194567dc910.jpg)
+
 Shopware Mobile is a mobile optimized template based on Sencha Touch 1.1 for the eCommerce software "showpare". The template
 uses the well known plugin structure of shopware in what way the installation and customizing is as easy as possible for
 the shop owner.
 
 More informations about Shopware Mobile could be found on [shopware.de](http://www.shopware.de/die-shopsoftware/Shopware-Mobile/, "Shopware Mobile on shopware.de")
 
-** Want to jump right into it?**
+**Want to jump right into it?**
 
 You could download the latest version of Shopware Mobile from our community store for free, just head over to the [store article](http://store.shopware.de/template-design/shopware-mobile-beta)
 and start downloading it right now.
