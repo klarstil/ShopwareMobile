@@ -22,9 +22,32 @@
 * Tracking orders and registrations via a subshop configuration
 * Dynamic calulation of the basket summary
 
+### Planned features for the next major release:
+
+* Ability to request a native application over the built-in backend module
+* Support for third party payment providers e.g. PayPal Express Mobile
+* Extended documentation of the javascript components
+* Refactor of the underlying MVC structure
+* Improved customizing options for third party developers
+* New improved start page
+
+# Introduction
+
+Shopware Mobile is a mobile optimized template based on Sencha Touch 1.1 for the eCommerce software "showpare". The template
+uses the well known plugin structure of shopware in what way the installation and customizing is as easy as possible for
+the shop owner.
+
+More informations about Shopware Mobile could be found on [shopware.de](http://www.shopware.de/die-shopsoftware/Shopware-Mobile/, "Shopware Mobile on shopware.de")
+
+** Want to jump right into it?**
+
+You could download the latest version of Shopware Mobile from our community store for free, just head over to the [store article](http://store.shopware.de/template-design/shopware-mobile-beta)
+and start downloading it right now.
+
+
 # Installation from the github.com repository
 
-1. Create a new folder to place in the repository using `$ mkdir Frontend` and change it that folder using `$ cd Frontend`
+1. Create a new folder to place in the repository using `$ mkdir Frontend` and change in that folder using `$ cd Frontend`
 2. Clone the repository from github.com using `$ git clone git://github.com/ShopwareAG/ShopwareMobile.git`
 3. Rename the cloned repository to *SwagMobileTemplate* using `$ mv ShopwareMobile SwagMobileTemplate`
 4. Now go to the parent folder using `$ cd ..` and create a ZIP-Archive of the plugin using `zip -r SwagMobileTemplate.zip Frontend`

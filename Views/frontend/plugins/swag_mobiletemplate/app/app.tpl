@@ -98,7 +98,11 @@ App = Ext.regApplication(
 			/** Check if a payment over an external payment provider was processed */
 			if(lastOrder && Ext.isDefined(lastOrder.payment_method)) {
 				Ext.Msg.alert('Zahlung erfolgreich', {/literal}{s name="MobilePaymentSuccessful"}'Danke für Ihre Zahlung über ' + lastOrder.payment_method + '. In Kürze erhalten Sie eine Bestellbestätigungsmail.'{/s}{literal});
+			}
 
+			/** Check if a payment over an external payment provider was canceled */
+			if(canceledOrder && canceledOrder === true) {
+				Ext.Msg.alert('Zahlung abgebrochen', 'Die Zahlung wurde durch Sie abgebrochen. Wählen Sie bitte eine neue Zahlungsart und fahren Sie fort');
 			}
 		}
 	}

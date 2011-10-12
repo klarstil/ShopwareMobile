@@ -400,7 +400,12 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 		$request = $subject->Request();
 		$view = $args->getSubject()->View();
 
-		if($request->getActionName() === 'finish' && !$request->isXmlHttpRequest()) {
+		$uniqueID = $request->getParam('sUniqueID');
+		$paymentType = $request->getParam('paymentType');
+
+		/** Payment successfully */
+		if($request->getActionName() === 'finish' && !$request->isXmlHttpRequest() && !empty($uniqueID)) {
+				
 			/** PayPal Express Mobile payment */
 			if($view->sUserData['additional']['user']['paymentID'] == 20) {
 				$result = Shopware()->Db()->query('SELECT * FROM s_order WHERE transactionID = ?', array($request->getParam('sUniqueID')));
@@ -412,6 +417,13 @@ class Shopware_Plugins_Frontend_SwagMobileTemplate_Bootstrap extends Shopware_Co
 					'date' => date('H:i:s d.m.Y', strtotime($result['ordertime'])),
 					'payment_method' => 'PayPal'
 				));
+			}
+		}
+
+		/** Payment canceled */
+		if($request->getActionName() === 'confirm' && !$request->isXmlHttpRequest()) {
+			if(!empty($paymentType) && $paymentType === 'Sale') {
+				$view->assign('canceledOrder', true);
 			}
 		}
 

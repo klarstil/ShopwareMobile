@@ -55,6 +55,8 @@
 		lastOrder.{$key} = '{$value}';
 		{/foreach}
 		{/if}
+
+		var canceledOrder = {if $canceledOrder}true{else}false{/if};
     //]]>
     </script>
 </head>
